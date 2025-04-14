@@ -2,20 +2,18 @@ using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
-public static class GameBoard
+public static class GameBoardMap
 {
     private static GameBoardManager _managerInstance;
 
-    static GameBoard()
-    {
-        EditorApplication.update += RunOnceOnStartup;
-    }
+    static GameBoardMap() { EditorApplication.update += RunOnceOnStartup; }
 
     private static void RunOnceOnStartup()
     {
         EditorApplication.update -= RunOnceOnStartup;
 
         _managerInstance = Object.FindFirstObjectByType<GameBoardManager>();
+
         if (_managerInstance != null)
         {
             _managerInstance.recoverGameBoard();

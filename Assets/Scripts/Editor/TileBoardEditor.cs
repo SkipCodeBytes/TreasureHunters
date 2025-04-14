@@ -14,6 +14,7 @@ public class TileBoardEditor : Editor
         EditorGUILayout.LabelField("Tile properties", EditorStyles.boldLabel);
         GUILayout.Space(10);
         EditorGUI.indentLevel++;
+        //base.OnInspectorGUI();
         _myTile.Type = (TileType)EditorGUILayout.EnumPopup("Type", _myTile.Type);
         GUI.enabled = false;
         _myTile.Order = EditorGUILayout.Vector2IntField("Order", _myTile.Order);
@@ -78,15 +79,12 @@ public class TileBoardEditor : Editor
         Undo.RegisterCreatedObjectUndo(newObj, "Tile created");
 
         Selection.activeGameObject = newObj;
-        TileBoard _newBoardTile = newObj.GetComponent<TileBoard>();
-        _newBoardTile.Order = order;
+        TileBoard _newTile = newObj.GetComponent<TileBoard>();
+        _newTile.Order = order;
+        EditorUtility.SetDirty(_newTile);
 
         Undo.RecordObject(_gameBoard, "Añade tile al diccionario");
-        _gameBoard.TileDicc[order] = _newBoardTile;
+        _gameBoard.TileDicc[order] = _newTile;
 
-        EditorUtility.SetDirty(_gameBoard);
-        EditorUtility.SetDirty(_newBoardTile);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
     }
 }

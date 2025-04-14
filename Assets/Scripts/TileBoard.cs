@@ -8,9 +8,8 @@ using Unity.Collections;
 [Serializable]
 public class TileBoard : MonoBehaviour
 {
-    private Vector2Int _order = Vector2Int.zero;
-
-    private TileType _type = TileType.None;
+    [SerializeField] private Vector2Int _order;
+    [SerializeField] private TileType _type = TileType.None;
 
     public Vector2Int Order { get => _order; set => _order = value; }
     public TileType Type { get => _type; set => _type = value; }

@@ -30,8 +30,7 @@ public class GameBoardManager : MonoBehaviour
             {
                 DestroyImmediate(child.gameObject);
                 continue;
-            }
-            if (_tileDicc.ContainsKey(tile.Order))
+            } else if (_tileDicc.ContainsKey(tile.Order))
             {
                 DestroyImmediate(child.gameObject);
                 continue;
