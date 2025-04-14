@@ -43,6 +43,6 @@ public class GameBoardManager : MonoBehaviour
 
             EditorUtility.SetDirty(tile);
         }
-        Debug.Log("Tiles actualizados: " + _tileDicc.Count);
+        //Debug.Log("Tiles actualizados: " + _tileDicc.Count);
     }
 }
