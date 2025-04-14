@@ -43,8 +43,6 @@ public class GameBoardManagerEditor : Editor
             Undo.RecordObject(_myGameBoard, "Añade tile al diccionario");
             _myGameBoard.TileDicc[Vector2Int.zero] = newObj.GetComponent<TileBoard>();
             EditorUtility.SetDirty(_myGameBoard);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
         }
 
         GUILayout.FlexibleSpace();
@@ -57,8 +55,6 @@ public class GameBoardManagerEditor : Editor
         if (GUILayout.Button("Refresh Data", GUILayout.Width(200), GUILayout.Height(40)))
         {
             _myGameBoard.recoverGameBoard();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
         }
 
         GUILayout.FlexibleSpace();

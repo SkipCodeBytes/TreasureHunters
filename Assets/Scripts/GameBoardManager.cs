@@ -37,6 +37,11 @@ public class GameBoardManager : MonoBehaviour
             }
             child.localPosition = new Vector3(tile.Order.x * _separationOffset.x, 0f, tile.Order.y * _separationOffset.y);
             _tileDicc.Add(tile.Order, tile);
+
+            tile.PreviusTiles.RemoveAll(item => item == null);
+            tile.NextTiles.RemoveAll(item => item == null);
+
+            EditorUtility.SetDirty(tile);
         }
         Debug.Log("Tiles actualizados: " + _tileDicc.Count);
     }
