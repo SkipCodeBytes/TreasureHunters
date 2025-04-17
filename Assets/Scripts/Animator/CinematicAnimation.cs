@@ -9,6 +9,7 @@ public class CinematicAnimation : MonoBehaviour
     //Movimiento PingPong
     //Transision de color
     //Movimiento por velocidad y duración
+    //Movimiento por lista de puntos
     
     static public IEnumerator RotateTo(Transform affectedTransform, Vector3 direction, float time, Action callback = null) =>
         InternalRotate(affectedTransform, Quaternion.LookRotation(direction) , time, callback);

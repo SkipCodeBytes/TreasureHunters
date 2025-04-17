@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<GameMoment> momentList;
     [SerializeField] private bool isMomentRunnning = false;
 
-
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
 

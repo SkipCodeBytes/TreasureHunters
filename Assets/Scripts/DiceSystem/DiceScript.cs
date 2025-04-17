@@ -1,23 +1,30 @@
+
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
+[System.Serializable]
 public class DiceScript : MonoBehaviour
 {
     [Header("Config Values")]
     [SerializeField] private LayerMask sideLayer;
-    [SerializeField] private Vector3 checkOriginPoint;
-    [SerializeField] private float CheckSize;
+    [SerializeField] private Vector3 checkOriginPoint = new Vector3(0,0.2f,0);
+    [SerializeField] private float CheckSize = 0.24f;
+    [SerializeField] private float force = 1f;
+    [SerializeField] private float torque = 0.02f;
 
     [Header("Check Values")]
     [SerializeField] private int diceValue = 0;
-    [SerializeField] private bool _hasBeenRolled = false;
+    [SerializeField] private bool hasBeenRolled = false;
+    [SerializeField] private bool isSelected = false;
     [SerializeField] private List<BoxCollider> sideColliders;
+    private Vector2 LaunchDirection;
+    private Vector3 staticPosition;
+
     private Rigidbody _rb;
 
-
-    void Start()
+    void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         sideColliders = new List<BoxCollider>();
@@ -25,15 +32,14 @@ public class DiceScript : MonoBehaviour
         {
             sideColliders.Add(transform.GetChild(i).GetComponent<BoxCollider>());
         }
-        resetDice();
+        resetDice(Vector3.zero);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (_rb.IsSleeping())
         {
-            if (diceValue == 0 && _hasBeenRolled)
+            if (diceValue == 0 && hasBeenRolled)
             {
                 checkResult();
             }
@@ -43,12 +49,16 @@ public class DiceScript : MonoBehaviour
             diceValue = 0;
         }
 
-        Debug.DrawRay(transform.position + checkOriginPoint, Vector3.down * CheckSize, Color.red, 1f);
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonUp(0) && hasBeenRolled == false && isSelected)
         {
-            resetDice();
+            hasBeenRolled = true;
+            _rb.useGravity = true;
+            _rb.AddForce(new Vector3(-LaunchDirection.x, 0.5f, -LaunchDirection.y) * force, ForceMode.Impulse);
         }
+
+        if(!hasBeenRolled) transform.localPosition = staticPosition;
+
+        //if (Input.GetKeyDown(KeyCode.Q)) resetDice();
     }
 
     private void checkResult()
@@ -62,30 +72,33 @@ public class DiceScript : MonoBehaviour
         }
     }
 
-    private void resetDice()
+    public void resetDice(Vector3 initPosition)
     {
-        transform.localPosition = Vector3.zero;
-        _hasBeenRolled = false;
+        staticPosition = initPosition;
+        transform.localPosition = staticPosition;
+        hasBeenRolled = false;
+        isSelected = false;
         _rb.useGravity = false;
-       // _rb.linearVelocity = Vector3.zero;
-        //_rb.angularVelocity = Vector3.zero;
-        _rb.isKinematic = true;
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.AddTorque(Random.onUnitSphere * torque, ForceMode.Impulse);
         diceValue = 0;
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
-        _hasBeenRolled = true;
-        _rb.isKinematic = false;
-        _rb.useGravity = true;
-        //_rb.AddForce(Random.onUnitSphere * fuerza, ForceMode.Impulse);
-        //_rb.AddTorque(Random.onUnitSphere * torque, ForceMode.Impulse); 
+        isSelected = true;
     }
 
-    void OnDrawGizmosSelected()
+    private void OnMouseDrag()
     {
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(transform.position + test1, transform.position + test2);
-        //Gizmos.DrawWireCube(transform.position + test1, test2);
+        Vector2 cursorPosition = GameController.Instance.GameControls.Player.CursorPoint.ReadValue<Vector2>();
+        Vector2 centerScreen = new Vector2(Screen.width / 2, Screen.height / 2);
+        if (cursorPosition != centerScreen)
+        {
+            LaunchDirection = (cursorPosition - centerScreen).normalized;
+            //Debug.DrawLine(transform.position, new Vector3(transform.position.x + LaunchDirection.x, transform.position.y, transform.position.z + LaunchDirection.y));
+        }
     }
+
 }
