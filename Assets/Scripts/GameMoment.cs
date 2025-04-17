@@ -11,32 +11,40 @@ public class GameMoment
     public string MomentName { get => _momentName; }
     public Action MomentAction { get => _momentAction; }
 
-    public GameMoment(string name, Action action)
+    public GameMoment(Action action)
     {
-        this._momentName = name;
+        this._momentName = action.Method.Name;
         this._momentAction = action;
     }
 
     public void PlayMoment()
     {
         //Declara el inicio
-        //Si hay intervensión y si es válida, Los momentos que intervienen se ponen primeros en la lista y este Momento se desplazará luego de ellos
-        //En caso de que no, se Declara la ejecución de este Momento
-        //Al terminar el momento, se Declara la finalización del Momento
+        //Si hay intervensiï¿½n y si es vï¿½lida, Los momentos que intervienen se ponen primeros en la lista y este Momento se desplazarï¿½ luego de ellos
+        //En caso de que no, se Declara la ejecuciï¿½n de este Momento
+        //Al terminar el momento, se Declara la finalizaciï¿½n del Momento
         this._continueAction = true;
         EventManager.TriggerEvent("I_" + _momentName); //InitMoment: Declara ser el siguiente "Momento" en ser ejecutado
         if (!_continueAction) return;
         EventManager.TriggerEvent("C_" + _momentName); //CheckMoment: Declara que no hay intervenciones (Este es el Evento para comprobar si cumple con las condicones para ejecutar este Momento)
         if (!_continueAction) return;
-        EventManager.TriggerEvent("P_" + _momentName); //PlayMoment: Declara que cumple con las condiciones para ejecutar este momento y está a punto de Accionar este "Momento" 
+        EventManager.TriggerEvent("P_" + _momentName); //PlayMoment: Declara que cumple con las condiciones para ejecutar este momento y estï¿½ a punto de Accionar este "Momento" 
         if (!_continueAction) return;
         this._momentAction.Invoke();
         EventManager.TriggerEvent("E_" + _momentName); //End actions: Declara que ha terminado de ejecutar este Momento satisfactoriamente
+        GameManager.Instance.MomentDestroy(this);
+        
     }
 
-    public void StopMoment()
+    public void CancelMoment(){
+        this._continueAction = false;
+        EventManager.TriggerEvent("S_" + _momentName); //Stop Moment: Declara que este "Momento" ha sido interrumpido pero aÃºn se mantiene en la cola de ejecuciÃ³n
+    }
+
+    public void DestroyMoment()
     {
         this._continueAction = false;
-        EventManager.TriggerEvent("S_" + _momentName); //Stop Moment: Declara que este "Momento" ha sido interrumpido
+        GameManager.Instance.MomentDestroy(this);
+        EventManager.TriggerEvent("D_" + _momentName); //Destroy Moment: Declara que este "Momento" ha sido quitado de la Cola de ejecuciÃ³n
     }
 }

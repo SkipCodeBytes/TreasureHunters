@@ -10,11 +10,11 @@ public class BoardPlayer : MonoBehaviour
 
 
     private TileBoard _nextTile = null;
-    [SerializeField] private int availableMovements = 0;
+    private int availableMovements = 0;
 
     private void Update()
     {
-        MovePlayer();
+        //MovePlayer();
     }
 
     private void MovePlayer()
@@ -27,7 +27,7 @@ public class BoardPlayer : MonoBehaviour
         }
     }
 
-    //También se implementa la lógica en caminos alternativos
+    //Tambiï¿½n se implementa la lï¿½gica en caminos alternativos
     private void MoveNextTile()
     {
         int numOfRoutes = currentTilePosition.NextTiles.Count;
@@ -38,7 +38,7 @@ public class BoardPlayer : MonoBehaviour
             DisplaceToTile(_nextTile, travelTime);
         }
         if (numOfRoutes > 1) {
-            //A elección del jugador
+            //A elecciï¿½n del jugador
         }
     }
 
@@ -47,7 +47,7 @@ public class BoardPlayer : MonoBehaviour
         Vector3 newPos = new Vector3(tileTarget.transform.position.x, transform.position.y, tileTarget.transform.position.z);
         if (tileTarget != null)
         {
-            StartCoroutine(CinematicAnimation.MoveObject(this.gameObject, newPos, duration, finishMove));
+            StartCoroutine(CinematicAnimation.MoveTo(this.gameObject, newPos, duration, finishMove));
         }
     }
 
