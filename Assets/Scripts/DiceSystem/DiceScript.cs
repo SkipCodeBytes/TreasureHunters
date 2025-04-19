@@ -18,11 +18,16 @@ public class DiceScript : MonoBehaviour
     [SerializeField] private int diceValue = 0;
     [SerializeField] private bool hasBeenRolled = false;
     [SerializeField] private bool isSelected = false;
+    [SerializeField] private bool isItStill = false;
     [SerializeField] private List<BoxCollider> sideColliders;
     private Vector2 LaunchDirection;
     private Vector3 staticPosition;
 
     private Rigidbody _rb;
+
+    public int DiceValue { get => diceValue; set => diceValue = value; }
+    public bool HasBeenRolled { get => hasBeenRolled; set => hasBeenRolled = value; }
+    public bool IsItStill { get => isItStill; set => isItStill = value; }
 
     void Awake()
     {
@@ -37,9 +42,10 @@ public class DiceScript : MonoBehaviour
 
     void Update()
     {
-        if (_rb.IsSleeping())
+        if (hasBeenRolled)
         {
-            if (diceValue == 0 && hasBeenRolled)
+            isItStill = _rb.IsSleeping();
+            if (diceValue == 0 && isItStill)
             {
                 checkResult();
             }
@@ -57,8 +63,6 @@ public class DiceScript : MonoBehaviour
         }
 
         if(!hasBeenRolled) transform.localPosition = staticPosition;
-
-        //if (Input.GetKeyDown(KeyCode.Q)) resetDice();
     }
 
     private void checkResult()

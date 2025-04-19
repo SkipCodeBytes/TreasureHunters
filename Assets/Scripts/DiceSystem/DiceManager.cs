@@ -5,17 +5,22 @@ using System.Linq;
 
 public class DiceManager : MonoBehaviour
 {
+    [Header("Config Values")]
     [SerializeField] private Camera diceCamera;
     [SerializeField] private Transform dicePool;
     [SerializeField] private float separationSpace = 0.5f;
+    [SerializeField] private float timeToCheck = 1.2f;
 
+    [Header("Check Values")]
+    [SerializeField] private float checkTimer = 0;
     [SerializeField] private List<DiceScript> diceList;
     [SerializeField] List<DiceScript> chosenDice;
 
+    [Header("Test Values")]
     [SerializeField] int diceQuantityProbe = 1;
 
 
-    void Start()
+    void Awake()
     {
         List<DiceScript> chosenDice = new List<DiceScript>();
         for (int i = 0; i < dicePool.childCount; i++)
@@ -31,7 +36,49 @@ public class DiceManager : MonoBehaviour
             HideDices();
             PrepareDice(diceQuantityProbe);
         }
+
+        if (chosenDice.Count > 0)
+        {
+            CheckDiceStatus();
+        }
     }
+
+    private void CheckDiceStatus()
+    {
+        if (AreAllDiceStill()) checkTimer += Time.deltaTime;
+        else checkTimer = 0;
+
+        if (checkTimer >= timeToCheck)
+        {
+            Debug.Log("Resultado es: " + GetDiceValues());
+            HideDices();
+        }
+    }
+
+    private bool AreAllDiceStill()
+    {
+        bool areAllDiceStill = true;
+        for (int i = 0; i < chosenDice.Count; i++)
+        {
+            if (!chosenDice[i].IsItStill || !chosenDice[i].HasBeenRolled)
+            {
+                areAllDiceStill = false;
+                break;
+            }
+        }
+        return areAllDiceStill;
+    }
+
+    private int GetDiceValues()
+    {
+        int resultValue = 0;
+        for (int i = 0; i < chosenDice.Count; i++)
+        {
+            resultValue += chosenDice[i].DiceValue;
+        }
+        return resultValue;
+    }
+
 
     public void HideDices()
     {
@@ -64,9 +111,7 @@ public class DiceManager : MonoBehaviour
         }
 
         int Columns = quantity > 3 ? 3 : quantity;
-        Debug.Log(Rows);
-        Debug.Log(Columns);
-        dicePool.localPosition = new Vector3(-(Columns -1) * separationSpace/2, dicePool.localPosition.y, (-(Rows - 1) * separationSpace/2) - 0.1f) ;
+        dicePool.localPosition = new Vector3(-(Columns - 1) * separationSpace / 2, dicePool.localPosition.y, (-(Rows - 1) * separationSpace / 2) - 0.1f);
     }
 
 }
