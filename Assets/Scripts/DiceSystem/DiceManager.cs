@@ -10,15 +10,22 @@ public class DiceManager : MonoBehaviour
     [SerializeField] private Transform dicePool;
     [SerializeField] private float separationSpace = 0.5f;
     [SerializeField] private float timeToCheck = 1.2f;
+    [SerializeField] float fieldViewToResults = 30f;
+    [SerializeField] float transicionTime = 0.3f;
+    [SerializeField] float waitViewResultsTime = 1.5f;
 
     [Header("Check Values")]
+    [SerializeField] private float fieldViewCamBase;
     [SerializeField] private float checkTimer = 0;
     [SerializeField] private List<DiceScript> diceList;
     [SerializeField] List<DiceScript> chosenDice;
+    [SerializeField] private bool isCheckingResults = false;
+    [SerializeField] private int resultValue = 0;
 
     [Header("Test Values")]
     [SerializeField] int diceQuantityProbe = 1;
 
+    public int ResultValue { get => resultValue; set => resultValue = value; }
 
     void Awake()
     {
@@ -27,6 +34,7 @@ public class DiceManager : MonoBehaviour
         {
             diceList.Add(dicePool.GetChild(i).GetComponent<DiceScript>());
         }
+        fieldViewCamBase = diceCamera.fieldOfView;
     }
 
     private void Update()
@@ -34,10 +42,10 @@ public class DiceManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             HideDices();
-            PrepareDice(diceQuantityProbe);
+            UseDice(diceQuantityProbe);
         }
 
-        if (chosenDice.Count > 0)
+        if (chosenDice.Count > 0 && !isCheckingResults)
         {
             CheckDiceStatus();
         }
@@ -50,10 +58,17 @@ public class DiceManager : MonoBehaviour
 
         if (checkTimer >= timeToCheck)
         {
-            Debug.Log("Resultado es: " + GetDiceValues());
-            HideDices();
+            isCheckingResults = true;
+            StartCoroutine(CinematicAnimation.FieldViewLerp(diceCamera, fieldViewToResults, transicionTime, TransicionFinish));
         }
     }
+
+    private void TransicionFinish()
+    {
+        Debug.Log("Resultado es: " + GetDiceValues());
+        StartCoroutine(CinematicAnimation.WaitTime(waitViewResultsTime, HideDices));
+    }
+
 
     private bool AreAllDiceStill()
     {
@@ -82,6 +97,7 @@ public class DiceManager : MonoBehaviour
 
     public void HideDices()
     {
+        diceCamera.gameObject.SetActive(false);
         if (chosenDice.Count > 0)
         {
             for (int i = 0; i < chosenDice.Count; i++)
@@ -91,10 +107,15 @@ public class DiceManager : MonoBehaviour
             }
             chosenDice.Clear();
         }
+        EventManager.TriggerEvent("DiceManagerFinish");
     }
 
-    public void PrepareDice(int quantity = 1)
+    public void UseDice(int quantity = 1)
     {
+        diceCamera.gameObject.SetActive(true);
+        diceCamera.fieldOfView = fieldViewCamBase;
+        isCheckingResults = false;
+        resultValue = 0;
         diceList = diceList.OrderBy(x => Random.value).ToList();
         chosenDice = diceList.Take(quantity).ToList();
 

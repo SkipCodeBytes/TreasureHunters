@@ -94,7 +94,7 @@ public class CinematicAnimation : MonoBehaviour
 
 
 
-    static public IEnumerator FadeImage(Image img, float alphaTarget, float time, Action callback = null)
+    static public IEnumerator ImageAlphaLerp(Image img, float alphaTarget, float time, Action callback = null)
     {
         float t = 0;
         float originAlpha = img.color.a;
@@ -108,6 +108,34 @@ public class CinematicAnimation : MonoBehaviour
         }
         color.a = alphaTarget;
         img.color = color;
+        if (callback != null) { callback?.Invoke(); }
+    }
+
+
+    static public IEnumerator FieldViewLerp(Camera cam, float fieldViewTarget, float time, Action callback = null)
+    {
+        float t = 0;
+        float origin = cam.fieldOfView;
+
+        while (t < time)
+        {
+            t += Time.deltaTime;
+            cam.fieldOfView = Mathf.Abs(origin + ((fieldViewTarget - origin) * t / time));
+            yield return null;
+        }
+        cam.fieldOfView = fieldViewTarget;
+        if (callback != null) { callback?.Invoke(); }
+    }
+
+    static public IEnumerator WaitTime(float time, Action callback)
+    {
+        float t = 0;
+
+        while (t < time)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
         if (callback != null) { callback?.Invoke(); }
     }
 }

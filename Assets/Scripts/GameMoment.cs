@@ -23,6 +23,7 @@ public class GameMoment
         //Si hay intervensi�n y si es v�lida, Los momentos que intervienen se ponen primeros en la lista y este Momento se desplazar� luego de ellos
         //En caso de que no, se Declara la ejecuci�n de este Momento
         //Al terminar el momento, se Declara la finalizaci�n del Momento
+        Debug.Log("Running " + _momentName);
         this._continueAction = true;
         EventManager.TriggerEvent("I_" + _momentName); //InitMoment: Declara ser el siguiente "Momento" en ser ejecutado
         if (!_continueAction) return;
@@ -31,8 +32,9 @@ public class GameMoment
         EventManager.TriggerEvent("P_" + _momentName); //PlayMoment: Declara que cumple con las condiciones para ejecutar este momento y est� a punto de Accionar este "Momento" 
         if (!_continueAction) return;
         this._momentAction.Invoke();
+        Debug.Log("Ending " + _momentName);
         EventManager.TriggerEvent("E_" + _momentName); //End actions: Declara que ha terminado de ejecutar este Momento satisfactoriamente
-        GameManager.Instance.MomentDestroy(this);
+        //GameManager.Instance.MomentEnd(this);
         
     }
 
@@ -41,10 +43,11 @@ public class GameMoment
         EventManager.TriggerEvent("S_" + _momentName); //Stop Moment: Declara que este "Momento" ha sido interrumpido pero aún se mantiene en la cola de ejecución
     }
 
+    /*
     public void DestroyMoment()
     {
         this._continueAction = false;
-        GameManager.Instance.MomentDestroy(this);
+        //GameManager.Instance.MomentEnd(this);
         EventManager.TriggerEvent("D_" + _momentName); //Destroy Moment: Declara que este "Momento" ha sido quitado de la Cola de ejecución
-    }
+    }*/
 }

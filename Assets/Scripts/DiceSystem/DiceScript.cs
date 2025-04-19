@@ -59,7 +59,7 @@ public class DiceScript : MonoBehaviour
         {
             hasBeenRolled = true;
             _rb.useGravity = true;
-            _rb.AddForce(new Vector3(-LaunchDirection.x, 0.5f, -LaunchDirection.y) * force, ForceMode.Impulse);
+            _rb.AddForce(new Vector3(-LaunchDirection.x, 0.15f, -LaunchDirection.y) * force, ForceMode.Impulse);
         }
 
         if(!hasBeenRolled) transform.localPosition = staticPosition;

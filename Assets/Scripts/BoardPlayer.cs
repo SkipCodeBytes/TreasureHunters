@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class BoardPlayer : MonoBehaviour
@@ -14,12 +15,17 @@ public class BoardPlayer : MonoBehaviour
 
     private void Update()
     {
-        //MovePlayer();
+        Move();
     }
 
-    private void MovePlayer()
+    public void MovePlayer(int movents)
     {
-        if(isMoving == false && availableMovements > 0)
+        availableMovements = movents;
+    }
+
+    private void Move()
+    {
+        if (isMoving == false && availableMovements > 0)
         {
             availableMovements--;
             isMoving = true;
