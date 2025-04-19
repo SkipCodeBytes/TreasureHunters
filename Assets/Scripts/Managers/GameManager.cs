@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerPanel;
     [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject cardPanel;
-
+    [SerializeField] private CinemachineCamera cinemachineCamera;
 
     [Header("Game Config")]
     [SerializeField] private float timeLimitPerTurn = 20f;
@@ -147,6 +148,9 @@ public class GameManager : MonoBehaviour
             if (playersList[currentPlayerTurnIndex] != null)
             {
                 //Enfocamos la cámara del juego
+                //cinemachineCamera.Follow = playersList[currentPlayerTurnIndex].transform;
+                //cinemachineCamera.LookAt = playersList[currentPlayerTurnIndex].transform;
+
                 momentList.Add(new GameMoment(PlayerCheckStatus));
             }
             else

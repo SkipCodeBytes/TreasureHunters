@@ -16,6 +16,11 @@ public class BoardPlayer : MonoBehaviour
     private void Update()
     {
         Move();
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            availableMovements += 4;
+        }
     }
 
     public void MovePlayer(int movents)
