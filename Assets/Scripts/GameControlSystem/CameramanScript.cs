@@ -1,0 +1,37 @@
+using System.Collections;
+using UnityEngine;
+
+public class CameramanScript : MonoBehaviour
+{
+    [SerializeField] private float timeToFocus = 0.8f;
+    private GameObject _currentTarget;
+    private Coroutine _moveCoorutine;
+    private bool _followTarget = false;
+
+    private void Update()
+    {
+        if (_followTarget)
+        {
+            if(_currentTarget != null) transform.position = _currentTarget.transform.position;
+            else transform.position = Vector3.zero;
+        }
+    }
+
+    public void FocusTarget(GameObject target)
+    {
+        _followTarget = false;
+        _currentTarget = target;
+        if (_moveCoorutine != null)
+        {
+            StopCoroutine(_moveCoorutine);
+            _moveCoorutine = null;
+        }
+        _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTo(gameObject, target.transform.position, timeToFocus, focusComplete));
+    }
+
+    private void focusComplete()
+    {
+        _followTarget = true;
+        EventManager.TriggerEvent("CameraFocusComplete", true);
+    }
+}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class EventManager : MonoBehaviour
      * - Suscribirse al evento          StartListening(string eventName, Action listener, int priority = 0)
      * - Desuscribirse al evento        StopListening(string eventName, Action listener)
      * - Lanzar evento                  TriggerEvent(string eventName)
+     * 
+     * Evitar desuscribirse a un evento mientras se lanza el Trigger
      */
 
     private Dictionary<string, SortedDictionary<int, List<Action>>> _eventDictionary;
@@ -56,6 +59,7 @@ public class EventManager : MonoBehaviour
 
     public static void StartListening(string eventName, Action listener, int priority = 0)
     {
+        Debug.Log("Listener created: " +  eventName);
         if (!instance._eventDictionary.TryGetValue(eventName, out SortedDictionary<int, List<Action>> priorityDict))
         {
             //En caso de que no logre obtener "priorityDict", crea uno nuevo
@@ -92,17 +96,28 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public static void TriggerEvent(string eventName)
+    public static void TriggerEvent(string eventName, bool debug = false)
     {
+        List<Action> actions = new List<Action>();
+
         if (instance._eventDictionary.TryGetValue(eventName, out SortedDictionary<int, List<Action>> priorityDict))
         {
             foreach (var actionList in priorityDict.Values)
             {
                 foreach (Action action in actionList)
                 {
-                    action?.Invoke();
+                    actions.Add(action);
                 }
             }
+            if(debug) Debug.Log("Trigger Event: " + eventName);
+        } else
+        {
+            if(debug) Debug.LogWarning("Could not find an event with the name: " + eventName);
+        }
+
+        for (int i = 0; i < actions.Count; i++)
+        {
+            actions[i]?.Invoke();
         }
     }
 

@@ -25,6 +25,8 @@ public class DiceManager : MonoBehaviour
     [Header("Test Values")]
     [SerializeField] int diceQuantityProbe = 1;
 
+    //ORDENAR LOS DADOS DE MANERA CIRCULAR
+
     public int ResultValue { get => resultValue; set => resultValue = value; }
 
     void Awake()
@@ -39,11 +41,12 @@ public class DiceManager : MonoBehaviour
 
     private void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Q))
         {
             HideDices();
             UseDice(diceQuantityProbe);
-        }
+        }*/
 
         if (chosenDice.Count > 0 && !isCheckingResults)
         {
@@ -65,7 +68,8 @@ public class DiceManager : MonoBehaviour
 
     private void TransicionFinish()
     {
-        Debug.Log("Resultado es: " + GetDiceValues());
+        //Debug.Log("Resultado es: " + GetDiceValues());
+        resultValue = GetDiceValues();
         StartCoroutine(CinematicAnimation.WaitTime(waitViewResultsTime, HideDices));
     }
 
@@ -107,7 +111,7 @@ public class DiceManager : MonoBehaviour
             }
             chosenDice.Clear();
         }
-        EventManager.TriggerEvent("DiceManagerFinish");
+        EventManager.TriggerEvent("DiceManagerFinish", true);
     }
 
     public void UseDice(int quantity = 1)

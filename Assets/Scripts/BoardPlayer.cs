@@ -7,23 +7,19 @@ public class BoardPlayer : MonoBehaviour
 
     [SerializeField] private float travelTime = 0.5f;
 
-    [SerializeField] private bool isMoving = false;
-
+    //[SerializeField] private bool isMoving = false;
 
     private TileBoard _nextTile = null;
-    private int availableMovements = 0;
 
+    //private int availableMovements = 0;
+
+    /*
     private void Update()
     {
-        Move();
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            availableMovements += 4;
-        }
+        //Move();
     }
 
-    public void MovePlayer(int movents)
+    public void MovePlayer(int movents = 1)
     {
         availableMovements = movents;
     }
@@ -36,10 +32,21 @@ public class BoardPlayer : MonoBehaviour
             isMoving = true;
             MoveNextTile();
         }
-    }
+    }*/
+
+    /*
+    private void MovePlayer()
+    {
+        if (isMoving == false && availableMovements > 0)
+        {
+            availableMovements--;
+            isMoving = true;
+            MoveNextTile();
+        }
+    }*/
 
     //Tambi�n se implementa la l�gica en caminos alternativos
-    private void MoveNextTile()
+    public void MoveNextTile()
     {
         int numOfRoutes = currentTilePosition.NextTiles.Count;
         if (numOfRoutes == 0) return;
@@ -66,7 +73,8 @@ public class BoardPlayer : MonoBehaviour
     {
         currentTilePosition = _nextTile;
         _nextTile = null;
-        isMoving = false;
+        //isMoving = false;
+        EventManager.TriggerEvent("EndPlayerMovent", true);
     }
 
 }

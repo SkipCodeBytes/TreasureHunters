@@ -10,10 +10,10 @@ public class GameManager : MonoBehaviour
     [Header("Game References")]
     [SerializeField] private GameBoardManager boardManager;
     [SerializeField] private List<BoardPlayer> playersList;
-    [SerializeField] private GameObject playerPanel;
+    [SerializeField] private GameObject playerActionPanel;
     [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject cardPanel;
-    [SerializeField] private CinemachineCamera cinemachineCamera;
+    [SerializeField] private CameramanScript cameraman;
 
     [Header("Game Config")]
     [SerializeField] private float timeLimitPerTurn = 20f;
@@ -24,10 +24,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int gameRound = 0;
     [SerializeField] private int currentPlayerTurnIndex = -1;
     [SerializeField] private int diceResult = 0;
-    [SerializeField] private List<GameMoment> momentList;
     [SerializeField] private GameMoment currentMoment;
     [SerializeField] private bool isMomentRunnning = false;
     [SerializeField] private bool isWaitingForEvent = false;
+    [SerializeField] private List<GameMoment> momentList;
+
+    [Header("Debug and Test options")]
+    [SerializeField] private bool stepMomentMode = false;
 
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
@@ -41,6 +44,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        EventManager.StartListening("EndMoment", MomentEnd);
+
+        EventManager.StartListening("DiceManagerFinish", SetDiceResults);
+        EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
+        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
+
         //Esperamos unos segundos
         //Sorteamos el orden de los jugadores
         //Comienza el primer turno
@@ -53,16 +62,28 @@ public class GameManager : MonoBehaviour
         {
             if (momentList.Count > 0)
             {
-                ReadNextMoment();
+                if (stepMomentMode)
+                {
+                    if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
+                } else
+                {
+                    ReadNextMoment();
+                }
+                
             }
             else
             {
-                Debug.LogError("Ciclo terminado - GAME OVER");
-                isMomentRunnning = true; //Con esta línea se detiene el ciclo completamente
+                //Se detiene el ciclo completamente con un momento vacío
+                momentList.Insert(0, new GameMoment(EndTurn));
+                //Debug.LogWarning("Ciclo terminado - GAME OVER");
             }
         }
     }
 
+
+    //---------------- OPERACIONES CON MOMENTOS ----------------
+
+    //Brinda oportunidad de leer el siguiente momento
     private void ReadNextMoment()
     {
         if (momentList[0] != null)
@@ -70,7 +91,6 @@ public class GameManager : MonoBehaviour
             currentMoment = momentList[0];
             momentList.RemoveAt(0);
             isMomentRunnning = true;
-            EventManager.StartListening("E_" + currentMoment.MomentName, MomentEnd);
             currentMoment.PlayMoment();
         }
         else
@@ -79,52 +99,84 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void MomentEnd()
-    {
-        EventManager.StopListening("E_" + currentMoment.MomentName, MomentEnd);
-        isMomentRunnning = false;
-    }
-
     //Cancela un momento para ir por otro
-    public void CancelMoment(GameMoment gameMoment)
+    private void CancelMoment(GameMoment gameMoment)
     {
-        EventManager.StopListening("E_" + currentMoment.MomentName, MomentEnd);
         isMomentRunnning = false;
         momentList.Insert(0, gameMoment);
+        currentMoment.CancelMoment();
     }
 
     //Pospone el momento actual para ir por otro
-    public void InterveneMoment(GameMoment gameMoment)
+    private void InterveneMoment(GameMoment gameMoment)
     {
-        EventManager.StopListening("E_" + currentMoment.MomentName, MomentEnd);
         isMomentRunnning = false;
         momentList.Insert(0, currentMoment);
         momentList.Insert(0, gameMoment);
+        currentMoment.CancelMoment();
     }
 
+    //Llamada automática después de evento tras finalizar algún momento
+    private void MomentEnd() => isMomentRunnning = false;
+    
 
 
-
-
+    //---------------- MOMENTOS GENERALES ----------------
 
     //MOMENTO DE USO DE DADOS
-
     public void OpenDicePanel()
     {
         diceResult = 0;
         diceManager.UseDice(2);
-        EventManager.StartListening("DiceManagerFinish", setDiceResults);
         isWaitingForEvent = true;
     }
 
-    public void setDiceResults()
+    public void SetDiceResults()
     {
         diceResult = diceManager.ResultValue;
         isWaitingForEvent = false;
     }
 
 
+    //MOMENTO DE ENFOQUE DE CÁMARA
+    private void CameraFocusPlayer()
+    {
+        cameraman.FocusTarget(playersList[currentPlayerTurnIndex].gameObject);
+        isWaitingForEvent = true;
+    }
 
+    private void EndCameraFocus()
+    {
+        isWaitingForEvent = false;
+    }
+
+
+    //MOMENTO DE MOVIMIENTO DE JUGADOR
+    public void SetPlayerNumberMoves()
+    {
+        for(int i = 0; i < diceResult; i++)
+        {
+            momentList.Insert(0, new GameMoment(MovePlayerNextTile));
+        }
+        diceResult = 0;
+    }
+
+    private void MovePlayerNextTile()
+    {
+        isWaitingForEvent = true;
+        playersList[currentPlayerTurnIndex].MoveNextTile();
+    }
+
+    private void EndMovePlayer()
+    {
+        isWaitingForEvent = false;
+    }
+
+
+
+    //---------------- CICLO COMÚN ----------------
+
+    //INICIO DEL CICLO
 
     private void NewRound()
     {
@@ -135,9 +187,10 @@ public class GameManager : MonoBehaviour
             if (playersList[i] != null) activePlayersCount++;
         }
         //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
-        if (activePlayersCount > 0) momentList.Add(new GameMoment(NewTurn));
+        if (activePlayersCount > 0) momentList.Insert(0, new GameMoment(NewTurn));
         else Debug.LogError("No hay jugadores disponibles");
     }
+
 
     private void NewTurn()
     {
@@ -147,54 +200,75 @@ public class GameManager : MonoBehaviour
             //En caso el jugador haya salido del juego, saltamos el turno
             if (playersList[currentPlayerTurnIndex] != null)
             {
-                //Enfocamos la cámara del juego
-                //cinemachineCamera.Follow = playersList[currentPlayerTurnIndex].transform;
-                //cinemachineCamera.LookAt = playersList[currentPlayerTurnIndex].transform;
-
-                momentList.Add(new GameMoment(PlayerCheckStatus));
+                momentList.Insert(0, new GameMoment(PlayerCheckStatus));
+                momentList.Insert(0, new GameMoment(CameraFocusPlayer));
             }
             else
             {
-                momentList.Add(new GameMoment(NewTurn));
+                momentList.Insert(0, new GameMoment(NewTurn));
             }
         }
         else
         {
             currentPlayerTurnIndex = -1;
-            momentList.Add(new GameMoment(NewRound));
+            momentList.Insert(0, new GameMoment(NewRound));
         }
     }
 
+
+
+
+
+
     private void PlayerCheckStatus()
     {
-        //Se realiza el check de disponibilidad del player (Desmayado, retenido, bloqueado, etc)
-        momentList.Add(new GameMoment(OpenPlayerPanel));
+        //SE REVISA LA DISPONIBILIDAD DEL PLAYER (Desmayado, retenido, bloqueado, etc)
+        momentList.Insert(0, new GameMoment(OpenPlayerActionPanel));
     }
 
-    private void OpenPlayerPanel()
+    private void OpenPlayerActionPanel()
     {
-        playerPanel.SetActive(true);
+        //HABILITAR SOLO LAS ACCIONES QUE TIENE DISPONIBLES REALIZAR
+        playerActionPanel.SetActive(true);
+        isWaitingForEvent = true;
     }
-
 
     public void BtnOpenCardPanel()
     {
+        playerActionPanel.SetActive(false);
         cardPanel.SetActive(true);
     }
 
     public void BtnMovePlayer()
     {
         OpenDicePanel();
-        momentList.Add(new GameMoment(MovePlayer));
+        playerActionPanel.SetActive(false);
+        EventManager.StartListening("DiceManagerFinish", SetPlayerNumberMoves, 1);
     }
 
-    public void MovePlayer()
+    private void EndTurn()
     {
-        playersList[currentPlayerTurnIndex].MovePlayer(diceResult);
-        diceResult = 0;
+        momentList.Clear();
+        momentList.Insert(0, new GameMoment(NewTurn));
     }
-    
-
 }
 
 
+
+
+/*
+ Para intervenciones
+EventManager.StartListening("InitMoment", InterventionTest);
+
+
+    private void InterventionTest()
+    {
+        if(currentMoment.MomentName == "PlayerCheckStatus")
+        {
+            Debug.Log("SE HA INTERVENIDO");
+            InterveneMoment(new GameMoment(MovePlayer));
+        }
+    }
+
+
+ */

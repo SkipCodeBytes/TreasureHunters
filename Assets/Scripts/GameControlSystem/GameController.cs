@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    /*
+     * CameraController.cs: Usa cursor y clic del mouse para control de movimiento de cámara
+     * 
+     * Buscar posibilidas de realizar cambio de enfoque de cámara al usar tecla TAB
+     */
+
     public static GameController Instance { get; private set; }
 
     private InputSystem_Actions _gameControls;
