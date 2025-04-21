@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ExplorablePanel : MonoBehaviour
 {
@@ -30,6 +31,16 @@ public class ExplorablePanel : MonoBehaviour
     public void CloseCurrentPanel()
     {
         gameObject.SetActive(false);
+    }
+
+    public void SelectInputField(InputField inputField)
+    {
+        inputField.Select();
+    }
+
+    public void ClearInputField(InputField inputField)
+    {
+        inputField.text = string.Empty;
     }
 
     public void CloseGame()
