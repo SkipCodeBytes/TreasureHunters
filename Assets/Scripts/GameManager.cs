@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Config")]
     [SerializeField] private float timeLimitPerTurn = 20f;
-    [SerializeField] private float gameSpeed = 1f;
+    [SerializeField] private float gameSpeed = 2f;
 
 
     [Header("Check Values")]
