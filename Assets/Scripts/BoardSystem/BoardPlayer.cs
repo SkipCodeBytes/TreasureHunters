@@ -1,4 +1,3 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class BoardPlayer : MonoBehaviour
@@ -7,43 +6,7 @@ public class BoardPlayer : MonoBehaviour
 
     [SerializeField] private float travelTime = 0.5f;
 
-    //[SerializeField] private bool isMoving = false;
-
     private TileBoard _nextTile = null;
-
-    //private int availableMovements = 0;
-
-    /*
-    private void Update()
-    {
-        //Move();
-    }
-
-    public void MovePlayer(int movents = 1)
-    {
-        availableMovements = movents;
-    }
-
-    private void Move()
-    {
-        if (isMoving == false && availableMovements > 0)
-        {
-            availableMovements--;
-            isMoving = true;
-            MoveNextTile();
-        }
-    }*/
-
-    /*
-    private void MovePlayer()
-    {
-        if (isMoving == false && availableMovements > 0)
-        {
-            availableMovements--;
-            isMoving = true;
-            MoveNextTile();
-        }
-    }*/
 
     //Tambi�n se implementa la l�gica en caminos alternativos
     public void MoveNextTile()

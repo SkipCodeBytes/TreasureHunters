@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ConsoleScript : MonoBehaviour
@@ -81,6 +82,7 @@ public class ConsoleScript : MonoBehaviour
             int minutos = Mathf.FloorToInt(Time.time / 60);
             int segundos = Mathf.FloorToInt(Time.time % 60);
             messageBox.messageShow("\n" + $"[{minutos:D2}:{segundos:D2}]: " + consoleInputField.text + "\n");
+            if(EventManager.instance != null) EventManager.TriggerEvent("MSJ_" + consoleInputField.text);
             consoleInputField.text = "";
             Canvas.ForceUpdateCanvases();
             StartCoroutine(RepositionYScroll());
@@ -93,9 +95,26 @@ public class ConsoleScript : MonoBehaviour
         }
     }
 
+    public void clearConsole()
+    {
+        for(int i = 0; i < messagesPool.Count; i++)
+        {
+            if(i == 0)
+            {
+                messagesPool[0].TextBox.transform.SetAsFirstSibling();
+                messagesPool[0].TextBox.SetActive(true);
+                messagesPool[0].Message.color = Color.black;
+                messagesPool[0].Message.text = "\nStart console input\n";
+                Canvas.ForceUpdateCanvases();
+                StartCoroutine(RepositionYScroll());
+            } else messagesPool[i].TextBox.SetActive(false);
+        }
+    }
+
     private void openConsole()
     {
         consoleObject.SetActive(true);
+        consoleObject.GetComponent<RectTransform>().transform.localPosition = Vector3.zero;
         consoleInputField.ActivateInputField();
     }
 
@@ -109,6 +128,7 @@ public class ConsoleScript : MonoBehaviour
         for (int i = 0; i < 4; i++) yield return new WaitForEndOfFrame();
         scrollRect.verticalNormalizedPosition = 0f;
     }
+
 }
 
 

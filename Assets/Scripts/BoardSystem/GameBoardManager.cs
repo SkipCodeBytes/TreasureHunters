@@ -41,7 +41,9 @@ public class GameBoardManager : MonoBehaviour
             tile.PreviusTiles.RemoveAll(item => item == null);
             tile.NextTiles.RemoveAll(item => item == null);
 
+            #if UNITY_EDITOR
             EditorUtility.SetDirty(tile);
+            #endif
         }
         //Debug.Log("Tiles actualizados: " + _tileDicc.Count);
     }

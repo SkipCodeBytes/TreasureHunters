@@ -76,9 +76,12 @@ public class SelectableBar : MonoBehaviour
         else { btnPrevOption.interactable = true; }
         if (explorerIndex + 1 < optionStringsList.Count) { btnNextOption.interactable = true; }
         else { btnNextOption.interactable = false; }
-        txtView.text = optionStringsList[explorerIndex];
+        if(optionStringsList.Count > 0) txtView.text = optionStringsList[explorerIndex];
     }
 
     //EVENTO DE BOTÓN APLICAR
-    public void applySelection() { if(applyBtnAction != null) applyBtnAction?.Invoke(); }
+    public void applySelection() { 
+        if(applyBtnAction != null) applyBtnAction?.Invoke();
+        Debug.Log("Apply Selection");
+    }
 }

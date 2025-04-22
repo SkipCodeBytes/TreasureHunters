@@ -16,4 +16,8 @@ public class NetworkConfig : MonoBehaviour
             PhotonNetwork.LocalPlayer.NickName = data.text;
         }
     }
+    public void RefreshDataUserName(Text welcomeTxt)
+    {
+        welcomeTxt.text = "¡Bienvenido " + PhotonNetwork.NickName + "!";
+    }
 }

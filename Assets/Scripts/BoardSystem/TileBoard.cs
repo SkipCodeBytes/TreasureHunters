@@ -19,6 +19,7 @@ public class TileBoard : MonoBehaviour
     public List<TileBoard> PreviusTiles { get => previusTiles; set => previusTiles = value; }
     public List<TileBoard> NextTiles { get => nextTiles; set => nextTiles = value; }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         float arrowSize = 1f;
@@ -37,4 +38,5 @@ public class TileBoard : MonoBehaviour
             Handles.ArrowHandleCap(0, transform.position - (direction * arrowSize), Quaternion.LookRotation(direction), arrowSize, EventType.Repaint);
         }
     }
+#endif
 }
