@@ -13,6 +13,7 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     [SerializeField] private Text playerCountText;
     [SerializeField] private Text debugText;
     [SerializeField] private GameObject messagePanel;
+    [SerializeField] private Text messagePanelTxt;
 
     [SerializeField] private List<Button> slotButtonList;
 
@@ -55,6 +56,8 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
 
     private void asingSlots()
     {
+        Debug.Log("Asing: " + PhotonNetwork.PlayerList.Length);
+        Debug.Log("Slots: " + playerSlotDicc.Keys.Count);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             foreach (Button key in playerSlotDicc.Keys)
@@ -120,13 +123,13 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
             else
             {
                 messagePanel.SetActive(true);
-                messagePanel.transform.GetChild(0).GetComponent<Text>().text = "Name of room empty";
+                messagePanelTxt.text = "Name of room empty";
             }
         }
         catch (System.Exception e)
         {
             messagePanel.SetActive(true);
-            messagePanel.transform.GetChild(0).GetComponent<Text>().text = e.Message;
+            messagePanelTxt.text = e.Message;
         }
     }
 
@@ -164,13 +167,13 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         messagePanel.SetActive(true);
-        messagePanel.transform.GetChild(0).GetComponent<Text>().text = message;
+        messagePanelTxt.text = message;
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         messagePanel.SetActive(true);
-        messagePanel.transform.GetChild(0).GetComponent<Text>().text = message;
+        messagePanelTxt.text = message;
     }
 
 
