@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Barbarian
   m_EditorClassIdentifier: 
   characterName: "B\xE1rbaro"
+  characterPrefab: {fileID: 3546334690243903374, guid: f9bc8b615819fa4489e6de9d85539f61, type: 3}
   lifeStat: 6
   attackStat: -1
   defenseStat: 2

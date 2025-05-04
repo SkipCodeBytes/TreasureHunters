@@ -1,14 +1,36 @@
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class BoardPlayer : MonoBehaviour
+public class BoardPlayer : MonoBehaviourPunCallbacks
 {
+    [Header("General Info")]
+    [SerializeField] private Player player;
+    [SerializeField] private PhotonView view;
+    [SerializeField] private UnitData unitData;
+    [SerializeField] private TileBoard homeTile;
+
+    [Header("Player Info")]
+    [SerializeField] private int coins;
+    //Lista de efectos
+    //Lista de gemas
+    //Lista de cartas
+
+
+    [Header("Game Info")]
     [SerializeField] private TileBoard currentTilePosition;
 
+    [Header("Config")]
     [SerializeField] private float travelTime = 0.5f;
-
     private TileBoard _nextTile = null;
 
-    //Tambi�n se implementa la l�gica en caminos alternativos
+
+
+    private void Awake()
+    {
+        view = GetComponent<PhotonView>();
+    }
+
     public void MoveNextTile()
     {
         int numOfRoutes = currentTilePosition.NextTiles.Count;

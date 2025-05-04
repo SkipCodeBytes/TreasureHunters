@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
+﻿
 using UnityEditor;
 using UnityEngine;
 using UnityGameBoard.Tiles;
@@ -8,36 +8,11 @@ public class TileBoardEditor : Editor
 {
     private TileBoard _currentTile;
 
-    private SerializedProperty previusTilesProp;
-    private SerializedProperty nextTilesProp;
-
-    private void OnEnable()
-    {
-        previusTilesProp = serializedObject.FindProperty("previusTiles");
-        nextTilesProp = serializedObject.FindProperty("nextTiles");
-    }
-
     public override void OnInspectorGUI()
     {
         _currentTile = (TileBoard)target;
 
-        EditorGUILayout.LabelField("Tile properties", EditorStyles.boldLabel);
-        GUILayout.Space(10);
-        EditorGUI.indentLevel++;
-        //base.OnInspectorGUI();
-        _currentTile.Type = (TileType)EditorGUILayout.EnumPopup("Type", _currentTile.Type);
-        GUI.enabled = false;
-        _currentTile.Order = EditorGUILayout.Vector2IntField("Order", _currentTile.Order);
-        GUI.enabled = true;
-        EditorGUI.indentLevel--;
-        GUILayout.Space(10);
-
-        serializedObject.Update();
-        EditorGUILayout.PropertyField(previusTilesProp, new GUIContent("Previus Tiles"), true);
-        EditorGUILayout.PropertyField(nextTilesProp, new GUIContent("Next Tiles"), true);
-        serializedObject.ApplyModifiedProperties();
-
-        EditorGUILayout.LabelField("Create new tile", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Create and connect tile", EditorStyles.boldLabel);
         GUILayout.Space(10);
 
         GUILayout.BeginHorizontal();
@@ -52,7 +27,10 @@ public class TileBoardEditor : Editor
 
         if (GUILayout.Button("Delete", GUILayout.Width(60), GUILayout.Height(40))) {
             GameBoardManager _gameBoard = _currentTile.transform.parent.GetComponent<GameBoardManager>();
+            if (_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.recoverGameBoard();
+
             Undo.RecordObject(_gameBoard, "Eliminar tile del diccionario");
+
             _gameBoard.TileDicc.Remove(_currentTile.Order);
             EditorUtility.SetDirty(_gameBoard);
 
@@ -79,6 +57,7 @@ public class TileBoardEditor : Editor
             }
 
             Selection.activeGameObject = nextSelectionObj;
+            //SceneView.lastActiveSceneView.FrameSelected();
 
             Undo.DestroyObjectImmediate(_currentTile.gameObject);
 
@@ -95,6 +74,24 @@ public class TileBoardEditor : Editor
         if (GUILayout.Button("▼", GUILayout.Width(60), GUILayout.Height(40))) { createTile(_currentTile.Order + new Vector2Int(0, -1)); }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
+
+
+        EditorGUILayout.LabelField("Tile properties", EditorStyles.boldLabel);
+        GUILayout.Space(10);
+        EditorGUI.indentLevel++;
+        TileType newType = (TileType)EditorGUILayout.EnumPopup("Type", _currentTile.Type);
+        if (newType != _currentTile.Type)
+        {
+            _currentTile.Type = newType;
+            _currentTile.GenerateTileType();
+        }
+        GUI.enabled = false;
+        _currentTile.Order = EditorGUILayout.Vector2IntField("Order", _currentTile.Order);
+        GUI.enabled = true;
+        EditorGUI.indentLevel--;
+        GUILayout.Space(10);
+
+        if(_currentTile != null) DrawDefaultInspector();
     }
 
 
@@ -102,8 +99,9 @@ public class TileBoardEditor : Editor
     {
         GameBoardManager _gameBoard = _currentTile.transform.parent.GetComponent<GameBoardManager>();
 
-        if (_gameBoard.BaseTilePrefab == null) return;
+        if(_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.recoverGameBoard();
 
+        if (_gameBoard.BaseTilePrefab == null) return;
         if (_gameBoard.TileDicc.ContainsKey(order))
         {
             if (_gameBoard.TileDicc[order] != null)
@@ -114,7 +112,6 @@ public class TileBoardEditor : Editor
                     _currentTile.NextTiles.Add(_gameBoard.TileDicc[order]);
                     _gameBoard.TileDicc[order].PreviusTiles.Add(_currentTile);
                 }
-
                 return; 
             }
         }
@@ -122,10 +119,10 @@ public class TileBoardEditor : Editor
         GameObject newObj = (GameObject)PrefabUtility.InstantiatePrefab(_gameBoard.BaseTilePrefab.gameObject, _gameBoard.transform);
         newObj.transform.localPosition = new Vector3(order.x * _gameBoard.SeparationOffset.x,0f , order.y * _gameBoard.SeparationOffset.y);
         newObj.name = $"{order.x}_{order.y} Tile";
-
         Undo.RegisterCreatedObjectUndo(newObj, "Tile created");
 
         Selection.activeGameObject = newObj;
+        //SceneView.lastActiveSceneView.FrameSelected();
         TileBoard _newTile = newObj.GetComponent<TileBoard>();
         _newTile.Order = order;
 
@@ -134,12 +131,11 @@ public class TileBoardEditor : Editor
             _currentTile.NextTiles.Add(_newTile);
             _newTile.PreviusTiles.Add(_currentTile);
         }
-
+        _newTile.GenerateTileType();
         EditorUtility.SetDirty(_currentTile);
         EditorUtility.SetDirty(_newTile);
 
         Undo.RecordObject(_gameBoard, "Añade tile al diccionario");
         _gameBoard.TileDicc[order] = _newTile;
-
     }
 }

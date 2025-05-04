@@ -1,32 +1,42 @@
 
+using Photon.Pun;
+using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     private static GameManager _instance;
 
     [Header("Game References")]
     [SerializeField] private GameBoardManager boardManager;
-    [SerializeField] private List<BoardPlayer> playersList;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private BoardPlayer[] playersArray = new BoardPlayer[4];
     [SerializeField] private GameObject playerActionPanel;
     [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject cardPanel;
     [SerializeField] private CameramanScript cameraman;
 
     [Header("Game Config")]
+    [SerializeField] private float waitToInitGame = 2f;
     [SerializeField] private float timeLimitPerTurn = 20f;
     [SerializeField] private float gameSpeed = 2f;
 
 
     [Header("Check Values")]
+    [SerializeField] private bool isHostPlayer = false;
+    [SerializeField] private BoardPlayer playerReference;
     [SerializeField] private int gameRound = 0;
     [SerializeField] private int currentPlayerTurnIndex = -1;
     [SerializeField] private int diceResult = 0;
-    [SerializeField] private GameMoment currentMoment;
+    [SerializeField] private List<TileBoard> homeTileList;
     [SerializeField] private bool isMomentRunnning = false;
     [SerializeField] private bool isWaitingForEvent = false;
+    [SerializeField] private GameMoment currentMoment;
     [SerializeField] private List<GameMoment> momentList;
 
     [Header("Debug and Test options")]
@@ -44,17 +54,82 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        EventManager.StartListening("EndMoment", MomentEnd);
+        isHostPlayer = NetworkRoomsManager.IsMasterPlayer;
+        playerReference = PhotonNetwork.Instantiate(playerPrefab.name, transform.position, Quaternion.identity).GetComponent<BoardPlayer>();
 
-        EventManager.StartListening("DiceManagerFinish", SetDiceResults);
-        EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
-        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
+        if (isHostPlayer)
+        {
+            EventManager.StartListening("EndMoment", MomentEnd);
+            EventManager.StartListening("DiceManagerFinish", SetDiceResults);
+            EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
+            EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
 
-        //Esperamos unos segundos
-        //Sorteamos el orden de los jugadores
+            homeTileList = new List<TileBoard>();
+
+            foreach (Vector2Int key in boardManager.TileDicc.Keys)
+            {
+                if (boardManager.TileDicc[key].Type == UnityGameBoard.Tiles.TileType.Home)
+                {
+                    homeTileList.Add(boardManager.TileDicc[key]);
+                }
+            }
+            if (homeTileList.Count < 4)
+            {
+                Debug.LogError("No hay suficientes casas");
+                return;
+            }
+
+
+            //Sorteamos el orden de los jugadores
+            StartCoroutine(PrepareScene(waitToInitGame/2));
+        }
+
+
+    }
+    private IEnumerator PrepareScene(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        /*
+        Dictionary<int, Player> luckyDiccionary = new Dictionary<int, Player>();
+
+        foreach(Player player in PhotonNetwork.PlayerList)
+        {
+            int LuckyValue = (int)player.CustomProperties["luckyNumber"];
+            while (true)
+            {
+                if (luckyDiccionary.ContainsKey(LuckyValue))
+                {
+                    LuckyValue = Random.Range(1, 100);
+                }
+                else
+                {
+                    luckyDiccionary[LuckyValue] = player;
+                    break;
+                }
+            }
+        }
+
+        var order = luckyDiccionary.OrderBy(kv => kv.Key);
+        int i = 0;
+        foreach (var kv in order)
+        {
+            //playersArray[i]
+            Debug.Log($"{kv.Key}: {kv.Value}");
+        }
+        */
+        StartCoroutine(StartGame(waitToInitGame/2));
+    }
+
+
+    private IEnumerator StartGame(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
         //Comienza el primer turno
         momentList.Insert(0, new GameMoment(NewRound));
     }
+
+
+
 
     void Update()
     {
@@ -141,7 +216,7 @@ public class GameManager : MonoBehaviour
     //MOMENTO DE ENFOQUE DE CÁMARA
     private void CameraFocusPlayer()
     {
-        cameraman.FocusTarget(playersList[currentPlayerTurnIndex].gameObject);
+        cameraman.FocusTarget(playersArray[currentPlayerTurnIndex].gameObject);
         isWaitingForEvent = true;
     }
 
@@ -164,7 +239,7 @@ public class GameManager : MonoBehaviour
     private void MovePlayerNextTile()
     {
         isWaitingForEvent = true;
-        playersList[currentPlayerTurnIndex].MoveNextTile();
+        playersArray[currentPlayerTurnIndex].MoveNextTile();
     }
 
     private void EndMovePlayer()
@@ -183,8 +258,8 @@ public class GameManager : MonoBehaviour
         gameRound++;
         //Comprobamos si hay jugadores suficientes en juego
         int activePlayersCount = 0;
-        for (int i = 0; i < playersList.Count; i++) {
-            if (playersList[i] != null) activePlayersCount++;
+        for (int i = 0; i < playersArray.Length; i++) {
+            if (playersArray[i] != null) activePlayersCount++;
         }
         //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
         if (activePlayersCount > 0) momentList.Insert(0, new GameMoment(NewTurn));
@@ -195,10 +270,10 @@ public class GameManager : MonoBehaviour
     private void NewTurn()
     {
         currentPlayerTurnIndex++;
-        if (currentPlayerTurnIndex < playersList.Count)
+        if (currentPlayerTurnIndex < playersArray.Length)
         {
             //En caso el jugador haya salido del juego, saltamos el turno
-            if (playersList[currentPlayerTurnIndex] != null)
+            if (playersArray[currentPlayerTurnIndex] != null)
             {
                 momentList.Insert(0, new GameMoment(PlayerCheckStatus));
                 momentList.Insert(0, new GameMoment(CameraFocusPlayer));

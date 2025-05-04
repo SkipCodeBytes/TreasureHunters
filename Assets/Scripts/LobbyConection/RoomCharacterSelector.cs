@@ -9,6 +9,9 @@ public class RoomCharacterSelector : MonoBehaviour
     [SerializeField] private int selectedIndex = 0;
     [SerializeField] private List<PlayableCharacter> playableCharacters;
 
+    [SerializeField] private Button nextButton;
+    [SerializeField] private Button prevButton;
+
     [SerializeField] private Text txtCharacterName;
     [SerializeField] private Text txtCharacterAtk;
     [SerializeField] private Text txtCharacterDef;
@@ -18,11 +21,24 @@ public class RoomCharacterSelector : MonoBehaviour
 
     [SerializeField] private Transform targetCamPreview;
 
+    public int SelectedIndex { get => selectedIndex; set => selectedIndex = value; }
+
     void Start()
     {
         setSelection();
     }
 
+    public void DisableButtons()
+    {
+        nextButton.interactable = false;
+        prevButton.interactable = false;
+    }
+
+    public void EnableButtons()
+    {
+        nextButton.interactable = true;
+        prevButton.interactable = true;
+    }
 
     public void nextCharacter()
     {

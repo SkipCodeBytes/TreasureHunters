@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -8,12 +9,21 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
 {
     [Header("References")]
     [SerializeField] private GameObject roomPanel;
-    [SerializeField] private Button btnClosePanel;
     [SerializeField] private Text roomNameText;
     [SerializeField] private Text playerCountText;
     [SerializeField] private Text debugText;
     [SerializeField] private GameObject messagePanel;
     [SerializeField] private Text messagePanelTxt;
+    [SerializeField] private Button readyButton;
+    [SerializeField] private Button startButton;
+    [SerializeField] private Button btnClosePanel;
+
+    [SerializeField] private RoomMapSelector mapSelector;
+    [SerializeField] private RoomCharacterSelector characterSelector;
+
+    [SerializeField] private Material slotDefaultMaterial;
+    [SerializeField] private Material slotReadyMaterial;
+    [SerializeField] private Material slotNonReadyMaterial;
 
     [SerializeField] private List<Button> slotButtonList;
 
@@ -21,12 +31,14 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     [SerializeField] private int maxPlayers = 4;
 
     [Header("Check Values")]
-    [SerializeField] private bool isMasterPlayer = false;
+    [SerializeField] private static bool isMasterPlayer = false;
 
     private Player _hostPlayer;
     private Dictionary<Button, Player> playerSlotDicc;
+    private bool _isPlayerReady = false;
+    private Hashtable _customProperty = new Hashtable();
 
-
+    public static bool IsMasterPlayer { get => isMasterPlayer;}
 
     private void Start()
     {
@@ -56,8 +68,6 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
 
     private void asingSlots()
     {
-        Debug.Log("Asing: " + PhotonNetwork.PlayerList.Length);
-        Debug.Log("Slots: " + playerSlotDicc.Keys.Count);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             foreach (Button key in playerSlotDicc.Keys)
@@ -100,6 +110,7 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
             if (playerSlotDicc[slot] == player)
             {
                 playerSlotDicc[slot] = null;
+                slot.image.material = slotDefaultMaterial;
                 slot.transform.GetChild(0).GetComponent<Text>().text = "<VACÍO>";
                 break;
             }
@@ -181,24 +192,46 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        readyButton.GetComponent<Image>().material = slotDefaultMaterial;
+        readyButton.transform.GetChild(0).GetComponent<Text>().text = "LISTO";
+
         Debug.Log("Ingresando a sala");
+
         if (isMasterPlayer)
         {
+            debugText.color = Color.yellow;
+            debugText.text = "You are the Host";
             photonView.RPC("SetMasterPlayer", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
+            startButton.transform.GetChild(0).GetComponent<Text>().text = "INICIAR";
+            startButton.interactable = true;
+            startButton.GetComponent<Image>().material = slotDefaultMaterial;
         }
-        Debug.Log("RPC check");
-        
+        else
+        {
+            debugText.color = Color.yellow;
+            debugText.text = "You are joined to the room";
+            startButton.interactable = false;
+            startButton.transform.GetChild(0).GetComponent<Text>().text = "Esperando al host...";
+            startButton.GetComponent<Image>().material = slotDefaultMaterial;
+        }
+
         roomPanel.SetActive(true);
-        debugText.text = "You are joined to the room";
         roomNameText.text = "Sala: " + PhotonNetwork.CurrentRoom.Name;
         clearSlots();
         asingSlots();
         photonView.RPC("EnterPlayerRoom", RpcTarget.Others, PhotonNetwork.LocalPlayer);
+
+        _isPlayerReady = false;
+        _customProperty["isReady"] = _isPlayerReady;
+        _customProperty["luckyNumber"] = Random.Range(0,100);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(_customProperty);
+        photonView.RPC("SetReadyStatus", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer, _isPlayerReady);
     }
 
 
     public override void OnPlayerEnteredRoom(Player otherPlayer)
     {
+        debugText.color = Color.green;
         debugText.text = "The player " + otherPlayer.NickName + " has joined the room";
     }
 
@@ -212,20 +245,61 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
         } else
         {
             removePlayer(otherPlayer);
+            debugText.color = Color.yellow;
             debugText.text = "The player " + otherPlayer.NickName + " has left the room";
         }
     }
 
+    public void btnReadyUnready()
+    {
+        _isPlayerReady = !_isPlayerReady;
+        _customProperty["isReady"] = _isPlayerReady;
+        _customProperty["characterSelected"] = characterSelector.SelectedIndex;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(_customProperty);
+        photonView.RPC("SetReadyStatus", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer, _isPlayerReady);
+    }
+
+
+    public void btnStartGame()
+    {
+        if (isMasterPlayer)
+        {
+            foreach(Button key in playerSlotDicc.Keys)
+            {
+                if(playerSlotDicc[key] != null)
+                {
+                    if (!(bool)playerSlotDicc[key].CustomProperties["isReady"])
+                    {
+                        debugText.color = Color.red;
+                        debugText.text = "All players must be ready to start";
+                        return;
+                    }
+                }
+                else
+                {
+                    debugText.color = Color.red;
+                    debugText.text = "4 players are needed to start";
+                    return;
+                }
+            }
+        }
+        else
+        {
+            debugText.color = Color.red;
+            debugText.text = "Only the host can start the game";
+            return;
+        }
+        photonView.RPC("StarGameAll", RpcTarget.All, mapSelector.PlayableMapList[mapSelector.SelectedMapIndex].SceneName);
+    }
 
     [PunRPC]
-    public void SetMasterPlayer(Player player)
+    private void SetMasterPlayer(Player player)
     {
         _hostPlayer = player;
     }
 
-
     [PunRPC]
-    public void EnterPlayerRoom(Player player)
+    private void EnterPlayerRoom(Player player)
     {
         foreach (Button key in playerSlotDicc.Keys)
         {
@@ -235,5 +309,51 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
                 break;
             }
         }
+    }
+
+    [PunRPC]
+    private void SetReadyStatus(Player player, bool isReady)
+    {
+        foreach(Button key in playerSlotDicc.Keys)
+        {
+            if(playerSlotDicc[key] == player)
+            {
+                if (isReady)
+                {
+                    key.image.material = slotReadyMaterial;
+                    if (player == PhotonNetwork.LocalPlayer)
+                    {
+                        readyButton.GetComponent<Image>().material = slotNonReadyMaterial;
+                        readyButton.transform.GetChild(0).GetComponent<Text>().text = "X CANCELAR";
+                        mapSelector.DisableButtons();
+                        characterSelector.DisableButtons();
+                        if(isMasterPlayer) startButton.GetComponent<Image>().material = slotReadyMaterial;
+                    }
+                } else
+                {
+                    key.image.material = slotNonReadyMaterial;
+                    if (player == PhotonNetwork.LocalPlayer)
+                    {
+                        readyButton.GetComponent<Image>().material = slotReadyMaterial;
+                        readyButton.transform.GetChild(0).GetComponent<Text>().text = "LISTO";
+                        if (isMasterPlayer) { 
+                            mapSelector.EnableButtons();
+                            startButton.GetComponent<Image>().material = slotDefaultMaterial;
+                        }
+                        else mapSelector.DisableButtons();
+                        characterSelector.EnableButtons();
+                    }
+                }
+                break;
+            }
+
+        }
+    }
+
+    [PunRPC]
+    private void StarGameAll(string gameSceneName)
+    {
+        Debug.Log("JUEGO EN: " + gameSceneName);
+        //PhotonNetwork.LoadLevel(gameSceneName);
     }
 }

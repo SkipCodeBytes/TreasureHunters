@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Mage
   m_EditorClassIdentifier: 
   characterName: Mago
+  characterPrefab: {fileID: 5281267427725191315, guid: 219453ce68e99f84eabd07e1f09d731e, type: 3}
   lifeStat: 4
   attackStat: 2
   defenseStat: -1

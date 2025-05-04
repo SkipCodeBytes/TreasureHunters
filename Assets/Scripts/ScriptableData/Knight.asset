@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Knight
   m_EditorClassIdentifier: 
   characterName: Caballero
+  characterPrefab: {fileID: 1294182179581547577, guid: a646ee060f4c8fa4d9a87e0066ad1458, type: 3}
   lifeStat: 5
   attackStat: 0
   defenseStat: 0

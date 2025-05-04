@@ -10,17 +10,33 @@ public class GameBoardManager : MonoBehaviour
 
     private Dictionary<Vector2Int, TileBoard> _tileDicc = new Dictionary<Vector2Int, TileBoard>();
 
+    [SerializeField, HideInInspector] private List<GameObject> _tilesPrefab = new List<GameObject>();
+
     public TileBoard BaseTilePrefab { get => _baseTilePrefab; set => _baseTilePrefab = value; }
     public Vector2 SeparationOffset { get => _separationOffset; set => _separationOffset = value; }
     public Dictionary<Vector2Int, TileBoard> TileDicc { get => _tileDicc; set => _tileDicc = value; }
+    public List<GameObject> TilesPrefab { get => _tilesPrefab; set => _tilesPrefab = value; }
 
     private void Awake()
     {
         recoverGameBoard();
     }
 
+    public void DeleteAllTiles()
+    {
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+#if UNITY_EDITOR
+            DestroyImmediate(transform.GetChild(0).gameObject);
+#else
+            Destroy(transform.GetChild(0).gameObject);
+#endif
+        }
+    }
+
     public void recoverGameBoard()
     {
+        Debug.Log("Recuperando Datos");
         //Reposicionamos tiles, eliminamos posibles duplicados y elementos que no pertenecen a la lógica del GameBoard
         _tileDicc.Clear();
         foreach (Transform child in transform)
@@ -45,6 +61,5 @@ public class GameBoardManager : MonoBehaviour
             EditorUtility.SetDirty(tile);
             #endif
         }
-        //Debug.Log("Tiles actualizados: " + _tileDicc.Count);
     }
 }

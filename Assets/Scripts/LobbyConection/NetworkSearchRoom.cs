@@ -73,7 +73,7 @@ public class NetworkSearchRoom : MonoBehaviourPunCallbacks
     {
         RectTransform uiObject = Instantiate(uiOptionPrefab, optionsContent.transform).GetComponent<RectTransform>();
         uiObject.anchoredPosition = new Vector2(0f, -40f - (60 * index));
-        uiObject.GetComponent<UiRoomOptionSelection>().RoomName = room.Name;
+        uiObject.GetComponent<UiRoomOptionSelector>().RoomName = room.Name;
         uiObject.GetChild(0).GetComponent<Text>().text = room.Name;
         uiObject.GetChild(2).GetComponent<Text>().text = $"{room.PlayerCount}/{room.MaxPlayers}";
     }
@@ -94,7 +94,7 @@ public class NetworkSearchRoom : MonoBehaviourPunCallbacks
         {
             if (_cursorSelection != null)
             {
-                PhotonNetwork.JoinRoom(_cursorSelection.GetComponent<UiRoomOptionSelection>().RoomName);
+                PhotonNetwork.JoinRoom(_cursorSelection.GetComponent<UiRoomOptionSelector>().RoomName);
             }
             else
             {

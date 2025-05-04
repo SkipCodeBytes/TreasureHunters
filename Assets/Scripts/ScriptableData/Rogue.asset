@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Rogue
   m_EditorClassIdentifier: 
   characterName: "P\xEDcaro"
+  characterPrefab: {fileID: 8666318563775927735, guid: 6a51be17971708a4aaae2976ae6580bb, type: 3}
   lifeStat: 4
   attackStat: 0
   defenseStat: -1

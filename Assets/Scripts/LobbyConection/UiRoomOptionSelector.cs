@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UiRoomOptionSelection : MonoBehaviour, IPointerClickHandler
+public class UiRoomOptionSelector : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Material selectionMaterial;
     private string _roomName;
@@ -26,7 +26,7 @@ public class UiRoomOptionSelection : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (NetworkSearchRoom.CursorSelection != null)
-            NetworkSearchRoom.CursorSelection.GetComponent<UiRoomOptionSelection>().SetDefaultMaterial();
+            NetworkSearchRoom.CursorSelection.GetComponent<UiRoomOptionSelector>().SetDefaultMaterial();
         NetworkSearchRoom.CursorSelection = this.GetComponent<RectTransform>();
         NetworkSearchRoom.CursorSelection.GetComponent<Image>().material = selectionMaterial;
     }
