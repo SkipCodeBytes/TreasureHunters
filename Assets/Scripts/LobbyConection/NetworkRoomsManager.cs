@@ -33,14 +33,16 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     [Header("Check Values")]
     [SerializeField] private static bool isMasterPlayer = false;
 
-    private Player _hostPlayer;
+    private static Player _hostPlayer;
+
     private Dictionary<Button, Player> playerSlotDicc;
     private bool _isPlayerReady = false;
     private Hashtable _customProperty = new Hashtable();
 
     public static bool IsMasterPlayer { get => isMasterPlayer;}
+    public static Player HostPlayer { get => _hostPlayer; set => _hostPlayer = value; }
 
-    private void Start()
+    private void Awake()
     {
         playerSlotDicc = new Dictionary<Button, Player>();
     }
@@ -254,7 +256,7 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     {
         _isPlayerReady = !_isPlayerReady;
         _customProperty["isReady"] = _isPlayerReady;
-        _customProperty["characterSelected"] = characterSelector.SelectedIndex;
+        _customProperty["characterSelected"] = characterSelector.PlayableCharacters[characterSelector.SelectedIndex].CharacterData.characterName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(_customProperty);
         photonView.RPC("SetReadyStatus", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer, _isPlayerReady);
     }
@@ -354,6 +356,6 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     private void StarGameAll(string gameSceneName)
     {
         Debug.Log("JUEGO EN: " + gameSceneName);
-        //PhotonNetwork.LoadLevel(gameSceneName);
+        PhotonNetwork.LoadLevel(gameSceneName);
     }
 }

@@ -22,6 +22,7 @@ public class RoomCharacterSelector : MonoBehaviour
     [SerializeField] private Transform targetCamPreview;
 
     public int SelectedIndex { get => selectedIndex; set => selectedIndex = value; }
+    public List<PlayableCharacter> PlayableCharacters { get => playableCharacters; set => playableCharacters = value; }
 
     void Start()
     {

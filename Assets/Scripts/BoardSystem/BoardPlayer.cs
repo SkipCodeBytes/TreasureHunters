@@ -2,33 +2,46 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
+[System.Serializable]
 public class BoardPlayer : MonoBehaviourPunCallbacks
 {
-    [Header("General Info")]
-    [SerializeField] private Player player;
-    [SerializeField] private PhotonView view;
-    [SerializeField] private UnitData unitData;
-    [SerializeField] private TileBoard homeTile;
-
-    [Header("Player Info")]
-    [SerializeField] private int coins;
-    //Lista de efectos
-    //Lista de gemas
-    //Lista de cartas
-
-
-    [Header("Game Info")]
-    [SerializeField] private TileBoard currentTilePosition;
-
     [Header("Config")]
     [SerializeField] private float travelTime = 0.5f;
     private TileBoard _nextTile = null;
 
+    [Header("General Info")]
+    [SerializeField] private Player player;
+    [SerializeField] private PhotonView view;
+    [SerializeField] private UnitData selectedCharacter;
+    [SerializeField] private TileBoard homeTile;
 
+    [Header("Game Info")]
+    [SerializeField] private TileBoard currentTilePosition;
+
+
+    public Player Player { get => player; set => player = value; }
+    public PhotonView View { get => view; set => view = value; }
+    public UnitData SelectedCharacter { get => selectedCharacter; set => selectedCharacter = value; }
+    public TileBoard HomeTile { get => homeTile; set => homeTile = value; }
 
     private void Awake()
     {
         view = GetComponent<PhotonView>();
+    }
+    [PunRPC]
+    public void SetPlayerInfo(int tileOrderX, int tileOrderY)
+    {
+        TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
+        currentTilePosition = tile;
+        transform.position = tile.transform.position;
+        homeTile = tile;
+    }
+
+
+    public void SetTilePosition(TileBoard tile)
+    {
+        currentTilePosition = tile;
+        transform.position = tile.transform.position;
     }
 
     public void MoveNextTile()

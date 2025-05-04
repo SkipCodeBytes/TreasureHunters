@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Unit", menuName = "Game/Unit")]

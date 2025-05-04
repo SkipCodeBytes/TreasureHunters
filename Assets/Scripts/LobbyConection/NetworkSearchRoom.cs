@@ -16,7 +16,7 @@ public class NetworkSearchRoom : MonoBehaviourPunCallbacks
 
     public static RectTransform CursorSelection { get => _cursorSelection; set => _cursorSelection = value; }
 
-    void Start()
+    void Awake()
     {
         foreach (Transform optionRoom in optionsContent.transform)
         {
@@ -52,7 +52,7 @@ public class NetworkSearchRoom : MonoBehaviourPunCallbacks
 
                     Debug.Log("Actualizando info Room " + index);
                     _availableRooms[index] = room;
-                    optionsContent.GetChild(index).GetChild(1).GetComponent<Text>().text = $"{room.PlayerCount}/{room.MaxPlayers}";
+                    optionsContent.GetChild(index).GetChild(2).GetComponent<Text>().text = $"{room.PlayerCount}/{room.MaxPlayers}";
 
                     //createUiOptionInstance(_availableRooms.Count - 1, _availableRooms[index]);
                 }

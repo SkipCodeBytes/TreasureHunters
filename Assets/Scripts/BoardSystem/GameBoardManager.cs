@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityGameBoard.Tiles;
 
 public class GameBoardManager : MonoBehaviour
 {
@@ -61,5 +62,18 @@ public class GameBoardManager : MonoBehaviour
             EditorUtility.SetDirty(tile);
             #endif
         }
+    }
+
+    public List<TileBoard> GetAllTileOfType(TileType type)
+    {
+        List<TileBoard> tileList = new List<TileBoard>();
+        foreach (Vector2Int key in _tileDicc.Keys)
+        {
+            if (_tileDicc[key].Type == type)
+            {
+                tileList.Add(_tileDicc[key]);
+            }
+        }
+        return tileList;
     }
 }

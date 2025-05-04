@@ -46,6 +46,10 @@ MonoBehaviour:
   - SetMasterPlayer
   - SetReadyStatus
   - StarGameAll
+  - AssingPlayer
+  - setPlayerPosition
+  - SetTilePosition
+  - SetPlayerInfo
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

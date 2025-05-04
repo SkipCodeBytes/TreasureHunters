@@ -3,19 +3,17 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Cinemachine;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityGameBoard.Tiles;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
     private static GameManager _instance;
 
     [Header("Game References")]
+    [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private GameBoardManager boardManager;
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private BoardPlayer[] playersArray = new BoardPlayer[4];
     [SerializeField] private GameObject playerActionPanel;
     [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject cardPanel;
@@ -29,11 +27,15 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("Check Values")]
     [SerializeField] private bool isHostPlayer = false;
+    [SerializeField] private bool isGameStart = false;
+    [SerializeField] private bool isPreparingScene = false;
     [SerializeField] private BoardPlayer playerReference;
     [SerializeField] private int gameRound = 0;
     [SerializeField] private int currentPlayerTurnIndex = -1;
     [SerializeField] private int diceResult = 0;
+
     [SerializeField] private List<TileBoard> homeTileList;
+
     [SerializeField] private bool isMomentRunnning = false;
     [SerializeField] private bool isWaitingForEvent = false;
     [SerializeField] private GameMoment currentMoment;
@@ -44,6 +46,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
+    public BoardPlayer[] BoardPlayers { get => boardPlayers; set => boardPlayers = value; }
 
     private void Awake()
     {
@@ -64,60 +67,64 @@ public class GameManager : MonoBehaviourPunCallbacks
             EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
             EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
 
-            homeTileList = new List<TileBoard>();
-
-            foreach (Vector2Int key in boardManager.TileDicc.Keys)
-            {
-                if (boardManager.TileDicc[key].Type == UnityGameBoard.Tiles.TileType.Home)
-                {
-                    homeTileList.Add(boardManager.TileDicc[key]);
-                }
-            }
+            homeTileList = boardManager.GetAllTileOfType(TileType.Home);
             if (homeTileList.Count < 4)
             {
                 Debug.LogError("No hay suficientes casas");
                 return;
             }
-
-
-            //Sorteamos el orden de los jugadores
-            StartCoroutine(PrepareScene(waitToInitGame/2));
+            ListExtensions.Shuffle(homeTileList);
         }
-
-
+        
     }
-    private IEnumerator PrepareScene(float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        /*
-        Dictionary<int, Player> luckyDiccionary = new Dictionary<int, Player>();
 
-        foreach(Player player in PhotonNetwork.PlayerList)
+
+    void Update()
+    {
+        if (isHostPlayer)
         {
-            int LuckyValue = (int)player.CustomProperties["luckyNumber"];
-            while (true)
+            if (isGameStart)
             {
-                if (luckyDiccionary.ContainsKey(LuckyValue))
+                if (!isMomentRunnning && !isWaitingForEvent)
                 {
-                    LuckyValue = Random.Range(1, 100);
+                    if (momentList.Count > 0)
+                    {
+                        if (stepMomentMode)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
+                        }
+                        else
+                        {
+                            ReadNextMoment();
+                        }
+
+                    }
+                    else
+                    {
+                        //Se detiene el ciclo completamente con un momento vacío
+                        momentList.Insert(0, new GameMoment(EndTurn));
+                        //Debug.LogWarning("Ciclo terminado - GAME OVER");
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (!isPreparingScene)
                 {
-                    luckyDiccionary[LuckyValue] = player;
-                    break;
+                    for (int i = 0; i < boardPlayers.Length; i++)
+                    {
+                        if (boardPlayers[i] == null) { return; }
+                    }
+                    Debug.Log("All players are Ready");
+                    isPreparingScene = true;
+                    boardPlayers.Shuffle();
+                    for(int i = 0; i < boardPlayers.Length; i++)
+                    {
+                        boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
+                    }
                 }
             }
         }
-
-        var order = luckyDiccionary.OrderBy(kv => kv.Key);
-        int i = 0;
-        foreach (var kv in order)
-        {
-            //playersArray[i]
-            Debug.Log($"{kv.Key}: {kv.Value}");
-        }
-        */
-        StartCoroutine(StartGame(waitToInitGame/2));
     }
 
 
@@ -129,31 +136,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-
-
-    void Update()
-    {
-        if (!isMomentRunnning && !isWaitingForEvent)
-        {
-            if (momentList.Count > 0)
-            {
-                if (stepMomentMode)
-                {
-                    if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
-                } else
-                {
-                    ReadNextMoment();
-                }
-                
-            }
-            else
-            {
-                //Se detiene el ciclo completamente con un momento vacío
-                momentList.Insert(0, new GameMoment(EndTurn));
-                //Debug.LogWarning("Ciclo terminado - GAME OVER");
-            }
-        }
-    }
 
 
     //---------------- OPERACIONES CON MOMENTOS ----------------
@@ -216,7 +198,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     //MOMENTO DE ENFOQUE DE CÁMARA
     private void CameraFocusPlayer()
     {
-        cameraman.FocusTarget(playersArray[currentPlayerTurnIndex].gameObject);
+        cameraman.FocusTarget(boardPlayers[currentPlayerTurnIndex].gameObject);
         isWaitingForEvent = true;
     }
 
@@ -239,7 +221,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void MovePlayerNextTile()
     {
         isWaitingForEvent = true;
-        playersArray[currentPlayerTurnIndex].MoveNextTile();
+        boardPlayers[currentPlayerTurnIndex].MoveNextTile();
     }
 
     private void EndMovePlayer()
@@ -258,8 +240,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         gameRound++;
         //Comprobamos si hay jugadores suficientes en juego
         int activePlayersCount = 0;
-        for (int i = 0; i < playersArray.Length; i++) {
-            if (playersArray[i] != null) activePlayersCount++;
+        for (int i = 0; i < boardPlayers.Length; i++) {
+            if (boardPlayers[i] != null) activePlayersCount++;
         }
         //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
         if (activePlayersCount > 0) momentList.Insert(0, new GameMoment(NewTurn));
@@ -270,10 +252,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void NewTurn()
     {
         currentPlayerTurnIndex++;
-        if (currentPlayerTurnIndex < playersArray.Length)
+        if (currentPlayerTurnIndex < boardPlayers.Length)
         {
             //En caso el jugador haya salido del juego, saltamos el turno
-            if (playersArray[currentPlayerTurnIndex] != null)
+            if (boardPlayers[currentPlayerTurnIndex] != null)
             {
                 momentList.Insert(0, new GameMoment(PlayerCheckStatus));
                 momentList.Insert(0, new GameMoment(CameraFocusPlayer));
