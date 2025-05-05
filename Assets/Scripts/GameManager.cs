@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isHostPlayer = NetworkRoomsManager.IsMasterPlayer;
         playerReference = PhotonNetwork.Instantiate(playerPrefab.name, transform.position, Quaternion.identity).GetComponent<BoardPlayer>();
+        cameraman.FocusTarget(playerReference.gameObject);
 
         if (isHostPlayer)
         {

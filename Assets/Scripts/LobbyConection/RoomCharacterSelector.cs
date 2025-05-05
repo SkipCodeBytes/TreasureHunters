@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class RoomCharacterSelector : MonoBehaviour
 {
     [SerializeField] private int selectedIndex = 0;
-    [SerializeField] private List<PlayableCharacter> playableCharacters;
+    [SerializeField] private Transform charactersContent;
 
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
@@ -20,12 +20,20 @@ public class RoomCharacterSelector : MonoBehaviour
     [SerializeField] private Text txtCharacterRec;
 
     [SerializeField] private Transform targetCamPreview;
+    private List<PlayableCharacter> playableCharacters;
 
     public int SelectedIndex { get => selectedIndex; set => selectedIndex = value; }
     public List<PlayableCharacter> PlayableCharacters { get => playableCharacters; set => playableCharacters = value; }
 
     void Start()
     {
+        playableCharacters = new List<PlayableCharacter>();
+        for(int i = 0; i < charactersContent.childCount; i++)
+        {
+            PlayableCharacter playableCharacter = charactersContent.GetChild(i).GetComponent<PlayableCharacter>();
+            if (!playableCharacter.gameObject.activeInHierarchy) continue;
+            if(playableCharacter != null) playableCharacters.Add(playableCharacter);
+        }
         setSelection();
     }
 

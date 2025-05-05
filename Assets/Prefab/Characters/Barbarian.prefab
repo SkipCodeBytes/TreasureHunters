@@ -60,6 +60,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6288891028444226299, guid: 26c705091f9381d4a83f91b5c50a04d7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6057219835555335545, guid: 26c705091f9381d4a83f91b5c50a04d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3443577493287228248, guid: 26c705091f9381d4a83f91b5c50a04d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 26c705091f9381d4a83f91b5c50a04d7, type: 3}
       propertyPath: m_Name
       value: Barbarian
@@ -87,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 3546334690243903374}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e04e2aa7d84144742bd41e56bb0f5d4d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
