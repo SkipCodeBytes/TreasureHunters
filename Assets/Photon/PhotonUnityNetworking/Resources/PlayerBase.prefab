@@ -151,7 +151,7 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
+    TeleportIfDistanceGreaterThan: 1
     InterpolateOption: 2
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 1
@@ -181,11 +181,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4972777d333bca4a8311720a83de5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  travelTime: 0.5
+  speed: 0.5
   view: {fileID: 0}
   selectedCharacter: {fileID: 0}
   homeTile: {fileID: 0}
   currentTilePosition: {fileID: 0}
+  isPlayerTurn: 0
 --- !u!114 &1267731009501999969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,6 +204,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25ce572acfc3557439af2c90f5b1a7f4, type: 2}
   - {fileID: 11400000, guid: 5011e90e0c2609543b3df784845ee976, type: 2}
   - {fileID: 11400000, guid: d5c19186c2cd9e44ea9b109fb4a1cb15, type: 2}
+  - {fileID: 11400000, guid: cbf68ee87f6beb54d804edad08296c0d, type: 2}
   coins: 0
 --- !u!114 &4791087903368924159
 MonoBehaviour:
@@ -216,3 +218,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a083526b43a41746bea91c13348d0d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 0.5
+  runSpeed: 1
+  rotationSpeed: 15
+  isResting: 0
+  isWalking: 0
+  isRunning: 0
+  isRotating: 0
+  stackableAnimations: []

@@ -13,10 +13,18 @@ public class TileBoard : MonoBehaviour
     [SerializeField] private List<TileBoard> previusTiles = new List<TileBoard>();
     [SerializeField] private List<TileBoard> nextTiles = new List<TileBoard>();
 
+    private TileBehaviorScript _behaviorScript;
+
     public Vector2Int Order { get => _order; set => _order = value; }
     public TileType Type { get => _type; set => _type = value; }
     public List<TileBoard> PreviusTiles { get => previusTiles; set => previusTiles = value; }
     public List<TileBoard> NextTiles { get => nextTiles; set => nextTiles = value; }
+    public TileBehaviorScript BehaviorScript { get => _behaviorScript; set => _behaviorScript = value; }
+
+    private void Awake()
+    {
+        _behaviorScript = transform.GetComponentInChildren<TileBehaviorScript>();
+    }
 
 
     public void GenerateTileType()

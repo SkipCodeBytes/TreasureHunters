@@ -29,6 +29,15 @@ public class CinematicAnimation : MonoBehaviour
     static public IEnumerator RotateTo(GameObject affectedObject, Quaternion rotation, float time, Action callback = null) => 
         InternalRotate(affectedObject.transform, rotation , time, callback);
 
+    static public IEnumerator Rotate(Transform affectedTransform, Vector3 direction, float speed, Action callback = null)
+    {
+        float duration = 0;
+        float angleDifference = Quaternion.Angle(affectedTransform.rotation, Quaternion.LookRotation((direction - affectedTransform.position).normalized));
+        duration = angleDifference / speed;
+        return InternalRotate(affectedTransform, Quaternion.LookRotation(direction), duration, callback);
+    }
+        
+
     static private IEnumerator InternalRotate(Transform affectedTransform, Quaternion rotation, float time, Action callback){
         Quaternion initRotation = affectedTransform.rotation;
         float t = 0f;
@@ -49,6 +58,13 @@ public class CinematicAnimation : MonoBehaviour
 
     static public IEnumerator MoveTo(Transform affectedTransform, Vector3 target, float time, Action callback = null) =>
         InternalMove(affectedTransform, target, time, callback);
+    static public IEnumerator Move(Transform affectedTransform, Vector3 target, float speed, Action callback = null)
+    {
+        float duration = 0;
+        duration = (affectedTransform.position - target).magnitude / speed;
+        return InternalMove(affectedTransform, target, duration, callback);
+    }
+        
 
     static private IEnumerator InternalMove(Transform affectedTransform, Vector3 target, float time, Action callback){
         float t = 0;

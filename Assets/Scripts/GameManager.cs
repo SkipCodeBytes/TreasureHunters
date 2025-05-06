@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     private static GameManager _instance;
 
     [Header("Game References")]
-    [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private GameBoardManager boardManager;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject playerActionPanel;
@@ -20,12 +19,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private CameramanScript cameraman;
 
     [Header("Game Config")]
+    [SerializeField] private Vector3 playerSpawnPoint;
     [SerializeField] private float waitToInitGame = 2f;
     [SerializeField] private float timeLimitPerTurn = 20f;
     [SerializeField] private float gameSpeed = 2f;
 
 
     [Header("Check Values")]
+    [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private bool isHostPlayer = false;
     [SerializeField] private bool isGameStart = false;
     [SerializeField] private bool isPreparingScene = false;
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
     public BoardPlayer[] BoardPlayers { get => boardPlayers; set => boardPlayers = value; }
+    public int CurrentPlayerTurnIndex { get => currentPlayerTurnIndex; set => currentPlayerTurnIndex = value; }
 
     private void Awake()
     {
@@ -58,7 +60,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     void Start()
     {
         isHostPlayer = NetworkRoomsManager.IsMasterPlayer;
-        playerReference = PhotonNetwork.Instantiate(playerPrefab.name, transform.position, Quaternion.identity).GetComponent<BoardPlayer>();
+        playerReference = PhotonNetwork.Instantiate(playerPrefab.name, playerSpawnPoint, Quaternion.identity).GetComponent<BoardPlayer>();
+
+        cameraman.FocusPanoramicView(true);
         cameraman.FocusTarget(playerReference.gameObject);
 
         if (isHostPlayer)
@@ -69,11 +73,13 @@ public class GameManager : MonoBehaviourPunCallbacks
             EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
 
             homeTileList = boardManager.GetAllTileOfType(TileType.Home);
+
             if (homeTileList.Count < 4)
             {
                 Debug.LogError("No hay suficientes casas");
                 return;
             }
+
             ListExtensions.Shuffle(homeTileList);
         }
         
@@ -102,9 +108,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                     }
                     else
                     {
-                        //Se detiene el ciclo completamente con un momento vacío
                         momentList.Insert(0, new GameMoment(EndTurn));
-                        //Debug.LogWarning("Ciclo terminado - GAME OVER");
                     }
                 }
             }
@@ -116,13 +120,18 @@ public class GameManager : MonoBehaviourPunCallbacks
                     {
                         if (boardPlayers[i] == null) { return; }
                     }
+
                     Debug.Log("All players are Ready");
                     isPreparingScene = true;
+
                     boardPlayers.Shuffle();
+
                     for(int i = 0; i < boardPlayers.Length; i++)
                     {
                         boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
                     }
+
+                    //StartCoroutine(StartGame(waitToInitGame));
                 }
             }
         }

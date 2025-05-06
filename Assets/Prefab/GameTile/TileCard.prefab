@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2450095226529262925}
+  - component: {fileID: 8060947586380358445}
   m_Layer: 0
   m_Name: TileCard
   m_TagString: Untagged
@@ -32,6 +33,27 @@ Transform:
   - {fileID: 2436746489769258887}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8060947586380358445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2473302540693228955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a9025aa6f2b7464595f0a5eecd3b63c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionPositionOffset: {x: 0, y: 0, z: -0.65}
+  _interactionViewRotation: 0
+  _hideableProps:
+  - {fileID: 4694209846947617051}
+  _restPoints:
+  - {x: 0.75, y: 0, z: 0.75}
+  - {x: 0.75, y: 0, z: -0.75}
+  - {x: -0.75, y: 0, z: 0.75}
+  - {x: -0.75, y: 0, z: -0.75}
 --- !u!1001 &221312263321592882
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -243,6 +265,11 @@ PrefabInstance:
       addedObject: {fileID: 331290729496560601}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 683b86259e1713948871b93861923d4e, type: 3}
+--- !u!1 &4694209846947617051 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 683b86259e1713948871b93861923d4e, type: 3}
+  m_PrefabInstance: {fileID: 5612689298378269770}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5363503828056687521 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 683b86259e1713948871b93861923d4e, type: 3}
