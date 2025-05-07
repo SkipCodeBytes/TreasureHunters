@@ -69,6 +69,22 @@ public class CinematicAnimation : MonoBehaviour
         callback?.Invoke();
     }
 
+    public static IEnumerator EulerRotation(Transform affectedTransform, Vector3 eulerValues, float time, Action callback = null)
+    {
+        float t = 0f;
+        Quaternion rotInicial = affectedTransform.rotation;
+        Quaternion rotFinal = rotInicial * Quaternion.Euler(eulerValues.x, eulerValues.y, eulerValues.z);
+
+        while (t < time)
+        {
+            t += Time.deltaTime;
+            affectedTransform.rotation = Quaternion.Euler(0, Mathf.Lerp(0, 360, t/time), 0);
+            yield return null;
+        }
+        affectedTransform.rotation = rotFinal;
+        callback?.Invoke();
+    }
+
 
     static public IEnumerator MoveTo(GameObject affectedObject, Vector3 target, float time, Action callback = null) =>
         InternalMove(affectedObject.transform, target, time, callback);
@@ -94,7 +110,20 @@ public class CinematicAnimation : MonoBehaviour
         affectedTransform.position = target;
         if (callback != null) { callback?.Invoke(); }
     }
-
+    public static IEnumerator MoveTo(RectTransform rect, Vector2 target, float time, Action callback = null)
+    {
+        Vector2 start = rect.anchoredPosition;
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / time);
+            rect.anchoredPosition = Vector2.Lerp(start, target, t);
+            yield return null;
+        }
+        rect.anchoredPosition = target;
+        callback?.Invoke();
+    }
 
 
     static public IEnumerator ParabolicMotion(Transform affectedTransform, Vector3 target, float time, float height, Action callback = null) =>
@@ -144,6 +173,17 @@ public class CinematicAnimation : MonoBehaviour
         if (callback != null) { callback?.Invoke(); }
     }
 
+    static public IEnumerator TextTypewriter(Text textUI, string txt, float timeBetween, Action callback = null)
+    {
+        foreach (char c in txt)
+        {
+            textUI.text += c;
+            yield return new WaitForSeconds(timeBetween);
+        }
+
+        callback?.Invoke();
+    }
+
 
     static public IEnumerator FieldViewLerp(Camera cam, float fieldViewTarget, float time, Action callback = null)
     {
@@ -162,13 +202,15 @@ public class CinematicAnimation : MonoBehaviour
 
     static public IEnumerator WaitTime(float time, Action callback)
     {
+        /*
         float t = 0;
 
         while (t < time)
         {
             t += Time.deltaTime;
             yield return null;
-        }
+        }*/
+        yield return new WaitForSeconds(time);
         if (callback != null) { callback?.Invoke(); }
     }
 }

@@ -12,10 +12,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("Game References")]
     [SerializeField] private GameBoardManager boardManager;
+    [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject playerActionPanel;
-    [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject cardPanel;
+    [SerializeField] private TurnOrderUi turnOrderUi;
     [SerializeField] private CameramanScript cameraman;
 
     [Header("Game Config")]
@@ -26,16 +27,16 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
     [Header("Check Values")]
-    [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private bool isHostPlayer = false;
-    [SerializeField] private bool isGameStart = false;
+    [SerializeField] private bool isGamePlaying = false;
     [SerializeField] private bool isPreparingScene = false;
     [SerializeField] private BoardPlayer playerReference;
     [SerializeField] private int gameRound = 0;
-    [SerializeField] private int currentPlayerTurnIndex = -1;
     [SerializeField] private int diceResult = 0;
 
+    [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private List<TileBoard> homeTileList;
+    [SerializeField] private int currentPlayerTurnIndex = -1;
 
     [SerializeField] private bool isMomentRunnning = false;
     [SerializeField] private bool isWaitingForEvent = false;
@@ -68,7 +69,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (isHostPlayer)
         {
-            EventManager.StartListening("EndMoment", MomentEnd);
+            EventManager.StartListening("PlayerPresentationEnd", GenericEndEvent);
+            EventManager.StartListening("EndMoment", GenericMomentEnd);
             EventManager.StartListening("DiceManagerFinish", SetDiceResults);
             EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
             EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
@@ -91,51 +93,59 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (isHostPlayer)
         {
-            if (isGameStart)
+            if (isGamePlaying)
             {
-                if (!isMomentRunnning && !isWaitingForEvent)
-                {
-                    if (momentList.Count > 0)
-                    {
-                        if (stepMomentMode)
-                        {
-                            if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
-                        }
-                        else
-                        {
-                            ReadNextMoment();
-                        }
-
-                    }
-                    else
-                    {
-                        momentList.Insert(0, new GameMoment(EndTurn));
-                    }
-                }
+                PlayGameCycle();
             }
             else
             {
-                if (!isPreparingScene)
+                PrepareScene();
+            }
+        }
+    }
+
+    private void PrepareScene()
+    {
+        if (!isPreparingScene)
+        {
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (boardPlayers[i] == null) { return; }
+            }
+
+            Debug.Log("All players are Ready");
+            isPreparingScene = true;
+
+            boardPlayers.Shuffle();
+
+            for (int i = 0; i < boardPlayers.Length; i++)
+            {
+                if (boardPlayers[i] == null) continue;
+                boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
+            }
+            StartCoroutine(StartGame(waitToInitGame));
+        }
+    }
+
+    private void PlayGameCycle()
+    {
+        if (!isMomentRunnning && !isWaitingForEvent)
+        {
+            if (momentList.Count > 0)
+            {
+                if (stepMomentMode)
                 {
-                    //for (int i = 0; i < boardPlayers.Length; i++)
-                    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-                    {
-                        if (boardPlayers[i] == null) { return; }
-                    }
-
-                    Debug.Log("All players are Ready");
-                    isPreparingScene = true;
-
-                    boardPlayers.Shuffle();
-
-                    for(int i = 0; i < boardPlayers.Length; i++)
-                    {
-                        if (boardPlayers[i] == null) continue;
-                        boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
-                    }
-
-                    //StartCoroutine(StartGame(waitToInitGame));
+                    if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
                 }
+                else
+                {
+                    ReadNextMoment();
+                }
+
+            }
+            else
+            {
+                momentList.Insert(0, new GameMoment(EndTurn));
             }
         }
     }
@@ -143,9 +153,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator StartGame(float waitTime)
     {
+        momentList.Insert(0, new GameMoment(NewGame));
         yield return new WaitForSeconds(waitTime);
-        //Comienza el primer turno
-        momentList.Insert(0, new GameMoment(NewRound));
+        isGamePlaying = true;
     }
 
 
@@ -187,7 +197,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     //Llamada automática después de evento tras finalizar algún momento
-    private void MomentEnd() => isMomentRunnning = false;
+    private void GenericMomentEnd() => isMomentRunnning = false;
     
 
 
@@ -242,9 +252,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         isWaitingForEvent = false;
     }
 
-
+    private void GenericEndEvent() => isWaitingForEvent = false;
 
     //---------------- CICLO COMÚN ----------------
+
+    private void NewGame()
+    {
+        isWaitingForEvent = true;
+        turnOrderUi.StartPresentation();
+        //momentList.Insert(0, new GameMoment(NewRound));
+    }
 
     //INICIO DEL CICLO
 

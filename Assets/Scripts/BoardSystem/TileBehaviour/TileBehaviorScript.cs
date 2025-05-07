@@ -70,9 +70,6 @@ public class TileBehaviorScript : MonoBehaviour
                             _restPointDicc[_restPoints[j]] = null;
                         }
                     }
-
-
-
                     _restPointDicc[_restPoints[i]] = boardPlayer;
                     return _restPoints[i];
                 }
