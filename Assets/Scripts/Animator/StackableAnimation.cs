@@ -44,10 +44,12 @@ public class StackableAnimation
     {
         _isInProgress = true;
 
+        if (_initCallback != null) { _initCallback?.Invoke(); }
+
         switch (_animationType)
         {
             case AnimationType.RotateTo:
-                _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.Rotate(_affectedTransform, _target, _speed, FinishAnimation));
+                _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.RotateToPoint(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
 
             case AnimationType.MoveTo:
@@ -61,7 +63,6 @@ public class StackableAnimation
             default:
                 break;
         }
-        if (_initCallback != null) { _initCallback?.Invoke(); }
     }
 
     private void FinishAnimation()

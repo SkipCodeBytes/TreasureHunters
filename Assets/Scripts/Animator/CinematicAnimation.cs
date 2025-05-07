@@ -11,7 +11,7 @@ public class CinematicAnimation : MonoBehaviour
     //Movimiento por velocidad y duración
     //Movimiento por lista de puntos
     
-    static public IEnumerator RotateTo(Transform affectedTransform, Vector3 direction, float time, Action callback = null) =>
+    static public IEnumerator RotateToDirection(Transform affectedTransform, Vector3 direction, float time, Action callback = null) =>
         InternalRotate(affectedTransform, Quaternion.LookRotation(direction) , time, callback);
 
     static public IEnumerator RotateTo(Transform affectedTransform, Transform target, float time, Action callback = null) =>
@@ -29,28 +29,45 @@ public class CinematicAnimation : MonoBehaviour
     static public IEnumerator RotateTo(GameObject affectedObject, Quaternion rotation, float time, Action callback = null) => 
         InternalRotate(affectedObject.transform, rotation , time, callback);
 
-    static public IEnumerator Rotate(Transform affectedTransform, Vector3 direction, float speed, Action callback = null)
+    public static IEnumerator RotateToPoint(Transform affectedTransform, Vector3 pointPosition, float speed, Action callback = null)
     {
-        float duration = 0;
-        float angleDifference = Quaternion.Angle(affectedTransform.rotation, Quaternion.LookRotation((direction - affectedTransform.position).normalized));
-        duration = angleDifference / speed;
-        return InternalRotate(affectedTransform, Quaternion.LookRotation(direction), duration, callback);
-    }
-        
+        Vector3 direction = (pointPosition - affectedTransform.position).normalized;
 
-    static private IEnumerator InternalRotate(Transform affectedTransform, Quaternion rotation, float time, Action callback){
+        if (direction == Vector3.zero)
+        {
+            callback?.Invoke();
+            yield break;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        float angleDifference = Quaternion.Angle(affectedTransform.rotation, targetRotation);
+
+        if (angleDifference < 0.1f)
+        {
+            callback?.Invoke();
+            yield break;
+        }
+
+        float duration = angleDifference / speed;
+
+        yield return InternalRotate(affectedTransform, targetRotation, duration, callback);
+    }
+
+    private static IEnumerator InternalRotate(Transform affectedTransform, Quaternion rotation, float time, Action callback)
+    {
         Quaternion initRotation = affectedTransform.rotation;
         float t = 0f;
+
         while (t < time)
         {
             affectedTransform.rotation = Quaternion.Slerp(initRotation, rotation, t / time);
             t += Time.deltaTime;
             yield return null;
         }
-        affectedTransform.rotation = rotation;
-        if (callback != null) { callback?.Invoke(); }
-    }
 
+        affectedTransform.rotation = rotation;
+        callback?.Invoke();
+    }
 
 
     static public IEnumerator MoveTo(GameObject affectedObject, Vector3 target, float time, Action callback = null) =>
@@ -62,7 +79,7 @@ public class CinematicAnimation : MonoBehaviour
     {
         float duration = 0;
         duration = (affectedTransform.position - target).magnitude / speed;
-        return InternalMove(affectedTransform, target, duration, callback);
+        yield return InternalMove(affectedTransform, target, duration, callback);
     }
         
 

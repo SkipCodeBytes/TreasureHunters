@@ -10,9 +10,15 @@ public class TileBehaviorScript : MonoBehaviour
     [SerializeField] private List<Vector3> _restPoints = new List<Vector3>();
 
     private Dictionary<Vector3, BoardPlayer> _restPointDicc = new Dictionary<Vector3, BoardPlayer>();
+    private TileBoard _tileBoard;
 
     public List<GameObject> HideableProps { get => _hideableProps; set => _hideableProps = value; }
     public List<Vector3> RestPoints { get => _restPoints; set => _restPoints = value; }
+
+    protected virtual void Awake()
+    {
+        _tileBoard = transform.parent.GetComponent<TileBoard>();
+    }
 
     protected virtual void Start()
     {
@@ -52,17 +58,44 @@ public class TileBehaviorScript : MonoBehaviour
         {
             if (_restPointDicc.ContainsKey(_restPoints[i]))
             {
+                //Buscamos un espcio libre
                 if (_restPointDicc[_restPoints[i]] == null) {
+
+                    //Eliminamos si existe este jugador registrado en este tile
+                    for (int j = 0; j < _restPoints.Count; j++)
+                    {
+                        if (!_restPointDicc.ContainsKey(_restPoints[j])) continue;
+                        if (_restPointDicc[_restPoints[j]] == boardPlayer)
+                        {
+                            _restPointDicc[_restPoints[j]] = null;
+                        }
+                    }
+
+
+
                     _restPointDicc[_restPoints[i]] = boardPlayer;
                     return _restPoints[i];
                 }
-                else if (transform.parent.GetComponent<TileBoard>() != boardPlayer.CurrentTilePosition) {
+                //En caso de que el diccionario indique que está ocupado por un jugador, pero se encuentra en otro tile
+                else if (_tileBoard != _restPointDicc[_restPoints[i]].CurrentTilePosition) {
                     _restPointDicc[_restPoints[i]] = boardPlayer;
                     return _restPoints[i];
                 } else continue;
             } else
             {
-                _restPointDicc[_restPoints[i]] = boardPlayer;
+                //En caso de que no exista este key, crea un nuevo (Armando el diccionario)
+                _restPointDicc[_restPoints[i]] = null;
+
+                //Eliminamos si existe este jugador registrado en este tile
+                for (int j = 0; j < _restPoints.Count; j++)
+                {
+                    if (!_restPointDicc.ContainsKey(_restPoints[j])) continue;
+                    if (_restPointDicc[_restPoints[j]] == boardPlayer)
+                    {
+                        _restPointDicc[_restPoints[j]] = null;
+                    }
+                }
+
                 return _restPoints[i];
             }
         }

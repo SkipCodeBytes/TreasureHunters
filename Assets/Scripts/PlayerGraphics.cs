@@ -38,6 +38,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
      * 5 - Block
      * 6 - Death
      * 7 - Lie
+     * 8 - Rotating
      */
 
     private void Awake()
@@ -50,6 +51,8 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     {
         if (_view.IsMine)
         {
+            //Stackeable Animation Cycle
+
             if (stackableAnimations.Count > 0)
             {
                 if (!stackableAnimations[0].IsInProgress)
@@ -57,6 +60,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
                     if (stackableAnimations[0].IsUsed)
                     {
                         stackableAnimations.RemoveAt(0);
+                        return;
                     }
                     else
                     {
@@ -64,12 +68,6 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
                     }
                 }
             }
-            else
-            {
-                animStatus = 0;
-            }
-
-
 
 
             if (_boardPlayer.IsPlayerTurn)
@@ -77,7 +75,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
 
             }
-            else if (stackableAnimations.Count == 0)
+            else //if (stackableAnimations.Count == 0)
             {
                 if (!isWalking)
                 {
@@ -130,6 +128,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
             if (isWalking) animStatus = 1;
             if (isRunning) animStatus = 2;
             if (isResting) animStatus = 3;
+            if (isRotating) animStatus = 8;
 
             if(previusAnimation != animStatus)
             {
@@ -187,10 +186,10 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
     //GENERAL TRANSFORM
 
-    public void MovePlayerAtPoint(Vector3 Point, bool runing = true, Action callback = null)
+    public void MovePlayerAtPoint(Vector3 Point, bool running = true, Action callback = null)
     {
         Action init = null;
-        if (runing) { 
+        if (running) { 
             init = setRunningAnimation;
         }
         else { 

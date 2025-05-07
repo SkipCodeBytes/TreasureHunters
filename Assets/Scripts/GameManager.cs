@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Header("Debug and Test options")]
     [SerializeField] private bool stepMomentMode = false;
 
+
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
     public BoardPlayer[] BoardPlayers { get => boardPlayers; set => boardPlayers = value; }
@@ -116,7 +117,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 if (!isPreparingScene)
                 {
-                    for (int i = 0; i < boardPlayers.Length; i++)
+                    //for (int i = 0; i < boardPlayers.Length; i++)
+                    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
                     {
                         if (boardPlayers[i] == null) { return; }
                     }
@@ -128,6 +130,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                     for(int i = 0; i < boardPlayers.Length; i++)
                     {
+                        if (boardPlayers[i] == null) continue;
                         boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
                     }
 

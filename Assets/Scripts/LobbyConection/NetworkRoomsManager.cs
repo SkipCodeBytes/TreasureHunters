@@ -279,9 +279,10 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
                 }
                 else
                 {
+                    /* *--------------------- RETIRAR ESTO DESPUES DE LOS TESTS -------------------------------------------
                     debugText.color = Color.red;
                     debugText.text = "4 players are needed to start";
-                    return;
+                    return;*/
                 }
             }
         }

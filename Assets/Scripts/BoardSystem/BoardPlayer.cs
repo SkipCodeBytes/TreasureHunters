@@ -69,7 +69,6 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
         if (tileTarget != null)
         {
             _playerGraphics.MovePlayerAtPoint(newPos, true, finishMove);
-            //StartCoroutine(CinematicAnimation.MoveTo(this.gameObject, newPos, duration, finishMove));
         }
     }
 
