@@ -12,7 +12,7 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     [Header("General Info")]
     [SerializeField] private Player player;
     [SerializeField] private PhotonView view;
-    [SerializeField] private UnitData selectedCharacter;
+    [SerializeField] private CharacterData selectedCharacter;
     [SerializeField] private TileBoard homeTile;
 
     [Header("Check Values")]
@@ -23,7 +23,7 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
 
     public Player Player { get => player; set => player = value; }
     public PhotonView View { get => view; set => view = value; }
-    public UnitData SelectedCharacter { get => selectedCharacter; set => selectedCharacter = value; }
+    public CharacterData SelectedCharacter { get => selectedCharacter; set => selectedCharacter = value; }
     public TileBoard HomeTile { get => homeTile; set => homeTile = value; }
     public TileBoard CurrentTilePosition { get => currentTilePosition; set => currentTilePosition = value; }
     public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayableCharacter : MonoBehaviour
 {
-    [SerializeField] private UnitData characterData;
+    [SerializeField] private CharacterData characterData;
 
-    public UnitData CharacterData { get => characterData;}
+    public CharacterData CharacterData { get => characterData;}
 
 }

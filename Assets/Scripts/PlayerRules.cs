@@ -6,10 +6,13 @@ using UnityEngine;
 public class PlayerRules : MonoBehaviourPunCallbacks
 {
     [Header("Config Values")]
-    [SerializeField] private List<UnitData> availableCharacters;
+    [SerializeField] private List<CharacterData> availableCharacters;
 
     [Header("Player Info")]
+    [SerializeField] private int life;
     [SerializeField] private int coins;
+    //[SerializeField]
+
     //Lista de efectos
     //Lista de gemas
     //Lista de cartas
@@ -54,7 +57,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         Debug.Log("Jugador " + player.NickName + " listo");
     }
 
-    private UnitData findCharacterData(Player player)
+    private CharacterData findCharacterData(Player player)
     {
         string selectedCharacter = (string)player.CustomProperties["characterSelected"];
         for (int i = 0; i < availableCharacters.Count; i++)
