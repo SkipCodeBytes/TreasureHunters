@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a26b8beba42692e438f1972fe6ecd59f, type: 3}
   m_Name: CoinData
   m_EditorClassIdentifier: Assembly-CSharp::CoinItemData
-  itemPrefab: {fileID: 8447409376864820789, guid: 63f4df8576c86254fb068567ba270033, type: 3}
+  itemObjectPrefab: {fileID: -2548531386805680812, guid: 63f4df8576c86254fb068567ba270033, type: 3}
   icon: {fileID: 21300000, guid: 0208780b948cb4b4a8e9d1c96c092093, type: 3}
   price: 1

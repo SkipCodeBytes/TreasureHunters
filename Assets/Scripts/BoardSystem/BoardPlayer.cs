@@ -20,6 +20,8 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     [SerializeField] private bool isPlayerTurn = false;
 
     private PlayerGraphics _playerGraphics;
+    private PlayerRules _playerRules;
+    private PlayerInventory _playerInventory;
 
     public Player Player { get => player; set => player = value; }
     public PhotonView View { get => view; set => view = value; }
@@ -28,10 +30,16 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     public TileBoard CurrentTilePosition { get => currentTilePosition; set => currentTilePosition = value; }
     public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
 
+    public PlayerGraphics PlayerGraphics { get => _playerGraphics; set => _playerGraphics = value; }
+    public PlayerRules PlayerRules { get => _playerRules; set => _playerRules = value; }
+    public PlayerInventory PlayerInventory { get => _playerInventory; set => _playerInventory = value; }
+
     private void Awake()
     {
         view = GetComponent<PhotonView>();
         _playerGraphics = GetComponent<PlayerGraphics>();
+        _playerRules = GetComponent<PlayerRules>();
+        _playerInventory = GetComponent<PlayerInventory>();
     }
 
     [PunRPC]

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 9297657d1f5c039418f80b10e687517f, type: 3}
   m_Name: StarRedGemData
   m_EditorClassIdentifier: Assembly-CSharp::GemItemData
   itemObjectPrefab: {fileID: -939793798556501044, guid: 641b73ed146916640880a9780db1f54c, type: 3}

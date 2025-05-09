@@ -11985,7 +11985,7 @@ MonoBehaviour:
   - {fileID: 237663052}
   - {fileID: 58475045}
   playerSlotsTransicionTime: 0.4
-  eulerRotationAnim: {x: 0, y: 720, z: 0}
+  eulerRotationAnim: {x: 0, y: 0, z: 720}
   timeToClosePanel: 4
 --- !u!222 &1247528139
 CanvasRenderer:
@@ -16197,23 +16197,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   registeredItems:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 7a1879e2a25cea649a1d5250a8e5b44d, type: 2}
+  - {fileID: 11400000, guid: 9f5cb828b1c520147be28f94a95709bb, type: 2}
+  - {fileID: 11400000, guid: ba92533df66fd7f4fa4e7ed703e7f582, type: 2}
+  - {fileID: 11400000, guid: 66ffccb20e48d13439f8ae14c3ce1f06, type: 2}
+  - {fileID: 11400000, guid: e0cb7f0236371174ea613a64ef7401db, type: 2}
+  - {fileID: 11400000, guid: a36c58376cdfdef498ba493579b16cae, type: 2}
+  - {fileID: 11400000, guid: 5118e9c3ae7870a4da2af7cf9e5319b9, type: 2}
+  - {fileID: 11400000, guid: c5edeedef54f8d843aa0d47d54e16246, type: 2}
+  - {fileID: 11400000, guid: a1e186411c1af8f4bba12b5df5a7d121, type: 2}
+  - {fileID: 11400000, guid: 5fbc8b66aa71cf24bb5a2fd0b7ae07bf, type: 2}
+  - {fileID: 11400000, guid: 9abe01e612b3427479dc04199e8d6d22, type: 2}
+  - {fileID: 11400000, guid: 5730ce75ccc38af438dfa90bf79a745a, type: 2}
+  - {fileID: 11400000, guid: dfd806b500e97974bb9fbe372c4d1d46, type: 2}
+  - {fileID: 11400000, guid: cca80619299e2f1488a5783a5c9db735, type: 2}
+  - {fileID: 11400000, guid: 292c1385867f05a4c84ff675d6026bdc, type: 2}
+  - {fileID: 11400000, guid: c8d005c4f7e7ef847bb47d35275257fb, type: 2}
+  - {fileID: 11400000, guid: 167db462ccbe0e24c9929f70a8c13240, type: 2}
 --- !u!1 &1786469759
 GameObject:
   m_ObjectHideFlags: 0

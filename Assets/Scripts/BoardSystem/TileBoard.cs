@@ -42,12 +42,12 @@ public class TileBoard : MonoBehaviour
         {
             if (_gameBoard.TilesPrefab[(int)Type] != null)
             {
-
 #if UNITY_EDITOR
                 GameObject newTile = (GameObject)PrefabUtility.InstantiatePrefab(_gameBoard.TilesPrefab[(int)Type], transform);
                 newTile.transform.position = transform.position;
                 newTile.transform.rotation = transform.rotation;
 #else
+                
                 GameObject newTile = Instantiate(_gameBoard.TilesPrefab[(int)Type], transform);
                 newTile.transform.position = transform.position;
                 newTile.transform.rotation = transform.rotation;

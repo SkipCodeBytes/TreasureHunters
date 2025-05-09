@@ -13,7 +13,7 @@ public class PlayerInventory : MonoBehaviour
     public int SafeRelicsQuantity { get => safeRelicsQuantity; }
     public List<GemItemData> GemItems { get => gemItems; }
     public List<CardItemData> CardItems { get => cardItems; }
-    public RelicItemData RelicItem { get => relicItem; set => relicItem = value; }
+    public RelicItemData RelicItem { get => relicItem; }
 
     //Drop items
 }

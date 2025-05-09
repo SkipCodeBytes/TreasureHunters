@@ -124,7 +124,20 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 if (boardPlayers[i] == null) continue;
                 boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
+                boardPlayers[i].CurrentTilePosition = homeTileList[i];
+                boardPlayers[i].HomeTile = homeTileList[i];
+
+                //boardPlayers[i].PlayerRules.Life = 0;
             }
+
+            List<int> plyrID = new List<int>();
+
+            for (int i = 0; i < boardPlayers.Length; i++) {
+                if (boardPlayers[i] != null) plyrID.Add(boardPlayers[i].Player.ActorNumber);
+                else plyrID.Add(-1);
+            }
+
+            photonView.RPC("FirstSyncGameData", RpcTarget.Others, plyrID[0], plyrID[1], plyrID[2], plyrID[3]);
             StartCoroutine(StartGame(waitToInitGame));
         }
     }
@@ -262,7 +275,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isWaitingForEvent = true;
         turnOrderUi.StartPresentation();
-        //EventManager.StartListening("PlayerPresentationEnd", GenericEndEvent);
+        for (int i = 0; i < boardPlayers.Length; i++)
+        {
+            if (boardPlayers[i] == null) continue;
+            boardPlayers[i].PlayerRules.SetDefaultValues();
+        }
         momentList.Add(new GameMoment(ShowPlayerInfoUI));
         //momentList.Add(new GameMoment(NewRound));
     }

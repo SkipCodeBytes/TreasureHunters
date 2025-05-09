@@ -70,4 +70,8 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         return null;
     }
 
+    public void SetDefaultValues()
+    {
+        life = _boardPlayer.SelectedCharacter.lifeStat;
+    }
 }
