@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6359713530244830183}
   - component: {fileID: 757067876003786168}
   - component: {fileID: 1546203436361252023}
+  - component: {fileID: -939793798556501044}
   m_Layer: 0
   m_Name: StarGem
   m_TagString: Untagged
@@ -86,3 +87,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-939793798556501044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4841173153184202398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154f9b8d86d4f6443b8a36cab331bf91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

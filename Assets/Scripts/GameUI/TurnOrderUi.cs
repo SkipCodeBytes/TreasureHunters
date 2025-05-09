@@ -97,7 +97,7 @@ public class TurnOrderUi : MonoBehaviour
 
     private void closeCanvas()
     {
-        EventManager.TriggerEvent("PlayerPresentationEnd");
+        EventManager.TriggerEvent("EndEvent");
         gameObject.SetActive(false);
     }
 }

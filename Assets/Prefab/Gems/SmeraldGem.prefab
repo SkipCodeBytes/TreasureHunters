@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5937978700676172763}
   - component: {fileID: 4897515059375470721}
   - component: {fileID: 8734780463605386530}
+  - component: {fileID: -4555269648522212324}
   m_Layer: 0
   m_Name: SmeraldGem
   m_TagString: Untagged
@@ -86,3 +87,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4555269648522212324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981928118942672004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154f9b8d86d4f6443b8a36cab331bf91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

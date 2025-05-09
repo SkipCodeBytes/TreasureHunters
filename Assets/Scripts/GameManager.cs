@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerActionPanel;
     [SerializeField] private GameObject cardPanel;
     [SerializeField] private TurnOrderUi turnOrderUi;
+    [SerializeField] private GameObject playerInfoPanel;
     [SerializeField] private CameramanScript cameraman;
 
     [Header("Game Config")]
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
     [SerializeField] private List<TileBoard> homeTileList;
+    [SerializeField] private List<PlayerSlotInfoUi> slotInfoUIList;
     [SerializeField] private int currentPlayerTurnIndex = -1;
 
     [SerializeField] private bool isMomentRunnning = false;
@@ -69,8 +71,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (isHostPlayer)
         {
-            EventManager.StartListening("PlayerPresentationEnd", GenericEndEvent);
             EventManager.StartListening("EndMoment", GenericMomentEnd);
+            EventManager.StartListening("EndEvent", GenericEndEvent);
             EventManager.StartListening("DiceManagerFinish", SetDiceResults);
             EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
             EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
@@ -145,7 +147,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                momentList.Insert(0, new GameMoment(EndTurn));
+                //momentList.Insert(0, new GameMoment(EndTurn));
             }
         }
     }
@@ -197,7 +199,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     //Llamada automática después de evento tras finalizar algún momento
-    private void GenericMomentEnd() => isMomentRunnning = false;
+    private void GenericMomentEnd() => isMomentRunnning = false; 
     
 
 
@@ -260,11 +262,24 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isWaitingForEvent = true;
         turnOrderUi.StartPresentation();
-        //momentList.Insert(0, new GameMoment(NewRound));
+        //EventManager.StartListening("PlayerPresentationEnd", GenericEndEvent);
+        momentList.Add(new GameMoment(ShowPlayerInfoUI));
+        //momentList.Add(new GameMoment(NewRound));
+    }
+
+    private void ShowPlayerInfoUI()
+    {
+        slotInfoUIList = new List<PlayerSlotInfoUi>();
+        for (int i = 0; i < playerInfoPanel.transform.childCount; i++) {
+            PlayerSlotInfoUi plySlotInfo = playerInfoPanel.transform.GetChild(i).GetComponent<PlayerSlotInfoUi>();
+            if (plySlotInfo == null) continue;
+            plySlotInfo.StartChargingPlayerInfo();
+            slotInfoUIList.Add(plySlotInfo);
+        }
+        playerInfoPanel.SetActive(true);
     }
 
     //INICIO DEL CICLO
-
     private void NewRound()
     {
         gameRound++;

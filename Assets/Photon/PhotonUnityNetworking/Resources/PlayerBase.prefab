@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1895449674452696092}
   - component: {fileID: 1267731009501999969}
   - component: {fileID: 4791087903368924159}
+  - component: {fileID: 6890984425498750945}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -205,7 +206,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5011e90e0c2609543b3df784845ee976, type: 2}
   - {fileID: 11400000, guid: d5c19186c2cd9e44ea9b109fb4a1cb15, type: 2}
   - {fileID: 11400000, guid: cbf68ee87f6beb54d804edad08296c0d, type: 2}
-  coins: 0
+  life: 0
 --- !u!114 &4791087903368924159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,3 +227,20 @@ MonoBehaviour:
   isRunning: 0
   isRotating: 0
   stackableAnimations: []
+--- !u!114 &6890984425498750945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797882284151870367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78483e778c83e1449cb8e4a2c940ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsQuantity: 0
+  safeRelicsQuantity: 0
+  gemItems: []
+  cardItems: []
+  relicItem: {fileID: 0}

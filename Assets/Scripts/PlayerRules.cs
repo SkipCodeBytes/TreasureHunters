@@ -10,7 +10,6 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 
     [Header("Player Info")]
     [SerializeField] private int life;
-    [SerializeField] private int coins;
     //[SerializeField]
 
     //Lista de efectos
@@ -19,6 +18,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     private BoardPlayer _boardPlayer;
     private PlayerGraphics _playerGraphics;
 
+    public int Life { get => life; }
 
     private void Awake()
     {
