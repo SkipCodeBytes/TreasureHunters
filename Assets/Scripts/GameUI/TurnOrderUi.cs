@@ -86,7 +86,7 @@ public class TurnOrderUi : MonoBehaviour
 
     private void displacePanel()
     {
-        Vector2 displacePoint = new Vector2(Screen.width, 0f);
+        Vector2 displacePoint = new Vector2(Screen.width * 2, 0f);
         StartCoroutine(CinematicAnimation.MoveTo(desplazablePanel, displacePoint, displaceTime, hidePanel));
     }
 

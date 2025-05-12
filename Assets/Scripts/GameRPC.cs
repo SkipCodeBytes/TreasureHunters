@@ -6,7 +6,20 @@ using UnityEngine;
 
 public class GameRPC : MonoBehaviourPunCallbacks
 {
-    
+    private GameManager _gm;
+
+    private Player _hostPlayer;
+
+    public Player HostPlayer { get => _hostPlayer; set => _hostPlayer = value; }
+
+    private void Awake()
+    {
+        _gm = GameManager.Instance;
+        _hostPlayer = NetworkRoomsManager.HostPlayer;
+    }
+
+
+
     [PunRPC]
     public void FirstSyncGameData(int playerId1, int playerId2, int playerId3, int playerId4)
     {
@@ -22,31 +35,66 @@ public class GameRPC : MonoBehaviourPunCallbacks
             for(int j = 0; j < array.Length; j++)
             {
                 if (playerOrder[i] == null) continue;
-                if (playerOrder[i] == GameManager.Instance.BoardPlayers[j].Player)
+                if (playerOrder[i] == _gm.BoardPlayers[j].Player)
                 {
-                    array[i] = GameManager.Instance.BoardPlayers[j];
+                    array[i] = _gm.BoardPlayers[j];
                     break;
                 }
             }
         }
+        _gm.BoardPlayers = array;
+        _gm.GeneratePlayerIndex();
+    }
 
-        GameManager.Instance.BoardPlayers = array;
+    [PunRPC]
+    public void SetSyncroPlayer(int playerIndex)
+    {
+        _gm.HostManager.SetSyncroPlayer(playerIndex);
+    }
+
+    [PunRPC]
+    public void PlayPresentationPanel() {
+        _gm.TurnOrderUi.StartPresentation();
+    }
+
+    [PunRPC]
+    public void ShowPlayerInfoUI()
+    {
+        _gm.SlotInfoUIList = new List<PlayerSlotInfoUi>();
+        for (int i = 0; i < _gm.PlayerInfoPanel.transform.childCount; i++)
+        {
+            PlayerSlotInfoUi plySlotInfo = _gm.PlayerInfoPanel.transform.GetChild(i).GetComponent<PlayerSlotInfoUi>();
+            if (plySlotInfo == null) continue;
+            plySlotInfo.StartChargingPlayerInfo();
+            _gm.SlotInfoUIList.Add(plySlotInfo);
+        }
+        _gm.PlayerInfoPanel.SetActive(true);
+
+        CamFocusTarget(-1);
     }
 
 
     [PunRPC]
-    public void SyncGameData(int playerIndex, int life, int coins, int gems, int cards, int safeRelics, bool relic)
+    public void CamFocusTarget(int playerIndex)
     {
-        //Num de cartas a disposición
-        //Num de gemas a disposición
-        //Salud de los jugadores
-        //Monedas
-
-        /*
-         HOST > PLAYER - CANVAS 1 Y 2
-
-                Host Game Manager
-                Guest Game Manager
-         */
+        if (playerIndex < 0 || playerIndex >= 4)
+        {
+            _gm.Cameraman.FocusPanoramicView();
+            return;
+        }
+        if (_gm.BoardPlayers[playerIndex] == null)
+        {
+            _gm.Cameraman.FocusPanoramicView();
+            return;
+        }
+        _gm.Cameraman.FocusTarget(_gm.BoardPlayers[playerIndex].gameObject);
     }
+
+    [PunRPC]
+    public void NewRoundInfoUI()
+    {
+        _gm.GameRound++;
+
+    }
+
 }

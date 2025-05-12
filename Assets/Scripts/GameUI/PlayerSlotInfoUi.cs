@@ -65,9 +65,9 @@ public class PlayerSlotInfoUi : MonoBehaviour
             slotPoolObj[i].SetActive(true);
         }
 
-        if (_playerInventory.RelicItem != null)
+        if (_playerInventory.HasRelicItem)
         {
-            slotPoolImg[_playerInventory.CardItems.Count - 1].sprite = _playerInventory.RelicItem.Icon;
+            slotPoolImg[_playerInventory.CardItems.Count - 1].sprite = _playerInventory.RelicItemData.Icon;
             slotPoolObj[_playerInventory.CardItems.Count - 1].SetActive(true);
         }
 

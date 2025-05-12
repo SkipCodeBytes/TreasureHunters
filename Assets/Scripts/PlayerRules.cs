@@ -9,7 +9,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     [SerializeField] private List<CharacterData> availableCharacters;
 
     [Header("Player Info")]
-    [SerializeField] private int life;
+    [SerializeField] private int life = 0;
     //[SerializeField]
 
     //Lista de efectos
@@ -18,7 +18,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     private BoardPlayer _boardPlayer;
     private PlayerGraphics _playerGraphics;
 
-    public int Life { get => life; }
+    public int Life { get => life; set => life = value; }
 
     private void Awake()
     {
@@ -52,6 +52,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         else
         {
             _playerGraphics.GeneratePlayerModel();
+            life = _boardPlayer.SelectedCharacter.lifeStat;
         }
 
         Debug.Log("Jugador " + player.NickName + " listo");
@@ -68,10 +69,5 @@ public class PlayerRules : MonoBehaviourPunCallbacks
             }
         }
         return null;
-    }
-
-    public void SetDefaultValues()
-    {
-        life = _boardPlayer.SelectedCharacter.lifeStat;
     }
 }

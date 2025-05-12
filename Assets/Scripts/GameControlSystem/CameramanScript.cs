@@ -45,6 +45,6 @@ public class CameramanScript : MonoBehaviour
     private void focusComplete()
     {
         _followTarget = true;
-        EventManager.TriggerEvent("CameraFocusComplete", true);
+        EventManager.TriggerEvent("EndEvent", true);
     }
 }

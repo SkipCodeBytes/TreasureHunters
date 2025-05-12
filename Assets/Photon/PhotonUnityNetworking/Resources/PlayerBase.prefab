@@ -243,4 +243,5 @@ MonoBehaviour:
   safeRelicsQuantity: 0
   gemItems: []
   cardItems: []
-  relicItem: {fileID: 0}
+  hasRelicItem: 0
+  relicItemData: {fileID: 0}

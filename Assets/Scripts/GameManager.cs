@@ -1,43 +1,42 @@
 
 using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityGameBoard.Tiles;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
     private static GameManager _instance;
 
     [Header("Game References")]
-    [SerializeField] private GameBoardManager boardManager;
-    [SerializeField] private DiceManager diceManager;
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private DiceManager diceManager;
+    [SerializeField] private GameBoardManager boardManager;
+    [SerializeField] private CameramanScript cameraman;
+
+    [Header("UI References")]
+    [SerializeField] private TurnOrderUi turnOrderUi;
     [SerializeField] private GameObject playerActionPanel;
     [SerializeField] private GameObject cardPanel;
-    [SerializeField] private TurnOrderUi turnOrderUi;
     [SerializeField] private GameObject playerInfoPanel;
-    [SerializeField] private CameramanScript cameraman;
+    [SerializeField] private RoundInfoUI roundInfoPanel;
 
     [Header("Game Config")]
     [SerializeField] private Vector3 playerSpawnPoint;
-    [SerializeField] private float waitToInitGame = 2f;
     [SerializeField] private float timeLimitPerTurn = 20f;
     [SerializeField] private float gameSpeed = 2f;
 
 
     [Header("Check Values")]
+
+    [SerializeField] private int playerIndex = 0;
     [SerializeField] private bool isHostPlayer = false;
-    [SerializeField] private bool isGamePlaying = false;
-    [SerializeField] private bool isPreparingScene = false;
     [SerializeField] private BoardPlayer playerReference;
     [SerializeField] private int gameRound = 0;
     [SerializeField] private int diceResult = 0;
 
     [SerializeField] private BoardPlayer[] boardPlayers = new BoardPlayer[4];
-    [SerializeField] private List<TileBoard> homeTileList;
-    [SerializeField] private List<PlayerSlotInfoUi> slotInfoUIList;
+    [SerializeField] private List<TileBoard> homeTileList = new List<TileBoard>();
+    [SerializeField] private List<PlayerSlotInfoUi> slotInfoUIList = new List<PlayerSlotInfoUi>();
     [SerializeField] private int currentPlayerTurnIndex = -1;
 
     [SerializeField] private bool isMomentRunnning = false;
@@ -45,8 +44,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameMoment currentMoment;
     [SerializeField] private List<GameMoment> momentList;
 
-    [Header("Debug and Test options")]
-    [SerializeField] private bool stepMomentMode = false;
+
+
+    private GameRPC _gameRPC;
+    private PhotonView _gmView;
+    private HostManager _hostManager;
+    private GuestManager _guestManager;
 
 
     public static GameManager Instance { get => _instance; }
@@ -54,10 +57,29 @@ public class GameManager : MonoBehaviourPunCallbacks
     public BoardPlayer[] BoardPlayers { get => boardPlayers; set => boardPlayers = value; }
     public int CurrentPlayerTurnIndex { get => currentPlayerTurnIndex; set => currentPlayerTurnIndex = value; }
 
+
+    public PhotonView GmView { get => _gmView; set => _gmView = value; }
+    public List<TileBoard> HomeTileList { get => homeTileList; set => homeTileList = value; }
+    public GameObject PlayerInfoPanel { get => playerInfoPanel; set => playerInfoPanel = value; }
+    public List<PlayerSlotInfoUi> SlotInfoUIList { get => slotInfoUIList; set => slotInfoUIList = value; }
+    public TurnOrderUi TurnOrderUi { get => turnOrderUi; set => turnOrderUi = value; }
+    public GameRPC GameRPC { get => _gameRPC; set => _gameRPC = value; }
+    public int PlayerIndex { get => playerIndex; set => playerIndex = value; }
+    public HostManager HostManager { get => _hostManager; set => _hostManager = value; }
+    public GuestManager GuestManager { get => _guestManager; set => _guestManager = value; }
+    public BoardPlayer PlayerReference { get => playerReference; set => playerReference = value; }
+    public CameramanScript Cameraman { get => cameraman; set => cameraman = value; }
+    public int GameRound { get => gameRound; set => gameRound = value; }
+
     private void Awake()
     {
         if (_instance == null) _instance = this;
         else Destroy(this);
+
+        _gameRPC = GetComponent<GameRPC>();
+        _gmView = GetComponent<PhotonView>();
+        _hostManager = GetComponent<HostManager>();
+        _guestManager = GetComponent<GuestManager>();
     }
 
 
@@ -69,151 +91,76 @@ public class GameManager : MonoBehaviourPunCallbacks
         cameraman.FocusPanoramicView(true);
         cameraman.FocusTarget(playerReference.gameObject);
 
-        if (isHostPlayer)
-        {
-            EventManager.StartListening("EndMoment", GenericMomentEnd);
-            EventManager.StartListening("EndEvent", GenericEndEvent);
-            EventManager.StartListening("DiceManagerFinish", SetDiceResults);
-            EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
-            EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
-
-            homeTileList = boardManager.GetAllTileOfType(TileType.Home);
-
-            if (homeTileList.Count < 4)
-            {
-                Debug.LogError("No hay suficientes casas");
-                return;
-            }
-
-            ListExtensions.Shuffle(homeTileList);
+        if (isHostPlayer) { 
+            _guestManager.enabled = false;
+            _hostManager.Init();
         }
-        
+        else{ 
+            _hostManager.enabled = false;
+            _guestManager.Init();
+        }
+
+        EventManager.StartListening("DiceManagerFinish", SetDiceResults);
+        EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
+        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
+
     }
 
-
-    void Update()
+    public void GeneratePlayerIndex()
     {
-        if (isHostPlayer)
+        for (int i = 0; i < boardPlayers.Length; i++)
         {
-            if (isGamePlaying)
+            if (boardPlayers[i] == playerReference)
             {
-                PlayGameCycle();
-            }
-            else
-            {
-                PrepareScene();
-            }
-        }
-    }
-
-    private void PrepareScene()
-    {
-        if (!isPreparingScene)
-        {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            {
-                if (boardPlayers[i] == null) { return; }
-            }
-
-            Debug.Log("All players are Ready");
-            isPreparingScene = true;
-
-            boardPlayers.Shuffle();
-
-            for (int i = 0; i < boardPlayers.Length; i++)
-            {
-                if (boardPlayers[i] == null) continue;
-                boardPlayers[i].View.RPC("SetPlayerInfo", boardPlayers[i].Player, homeTileList[i].Order.x, homeTileList[i].Order.y);
-                boardPlayers[i].CurrentTilePosition = homeTileList[i];
-                boardPlayers[i].HomeTile = homeTileList[i];
-
-                //boardPlayers[i].PlayerRules.Life = 0;
-            }
-
-            List<int> plyrID = new List<int>();
-
-            for (int i = 0; i < boardPlayers.Length; i++) {
-                if (boardPlayers[i] != null) plyrID.Add(boardPlayers[i].Player.ActorNumber);
-                else plyrID.Add(-1);
-            }
-
-            photonView.RPC("FirstSyncGameData", RpcTarget.Others, plyrID[0], plyrID[1], plyrID[2], plyrID[3]);
-            StartCoroutine(StartGame(waitToInitGame));
-        }
-    }
-
-    private void PlayGameCycle()
-    {
-        if (!isMomentRunnning && !isWaitingForEvent)
-        {
-            if (momentList.Count > 0)
-            {
-                if (stepMomentMode)
-                {
-                    if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment();
-                }
-                else
-                {
-                    ReadNextMoment();
-                }
-
-            }
-            else
-            {
-                //momentList.Insert(0, new GameMoment(EndTurn));
+                playerIndex = i;
             }
         }
     }
 
 
-    private IEnumerator StartGame(float waitTime)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    public void playerSyncData(int playerIndex)
     {
-        momentList.Insert(0, new GameMoment(NewGame));
-        yield return new WaitForSeconds(waitTime);
-        isGamePlaying = true;
-    }
+        _gmView.RPC("SyncPlayerData", RpcTarget.Others, i,
+                BoardPlayers[playerIndex].PlayerRules.Life,
+                BoardPlayers[playerIndex].PlayerInventory.CoinsQuantity,
+                BoardPlayers[playerIndex].PlayerInventory.GemItems.Count,
+                BoardPlayers[playerIndex].PlayerInventory.CardItems.Count,
+                BoardPlayers[playerIndex].PlayerInventory.SafeRelicsQuantity,
+                BoardPlayers[playerIndex].PlayerInventory.HasRelicItem);
+    }*/
 
-
-
-
-    //---------------- OPERACIONES CON MOMENTOS ----------------
-
-    //Brinda oportunidad de leer el siguiente momento
-    private void ReadNextMoment()
-    {
-        if (momentList[0] != null)
-        {
-            currentMoment = momentList[0];
-            momentList.RemoveAt(0);
-            isMomentRunnning = true;
-            currentMoment.PlayMoment();
-        }
-        else
-        {
-            momentList.RemoveAt(0);
-        }
-    }
-
-    //Cancela un momento para ir por otro
-    private void CancelMoment(GameMoment gameMoment)
-    {
-        isMomentRunnning = false;
-        momentList.Insert(0, gameMoment);
-        currentMoment.CancelMoment();
-    }
-
-    //Pospone el momento actual para ir por otro
-    private void InterveneMoment(GameMoment gameMoment)
-    {
-        isMomentRunnning = false;
-        momentList.Insert(0, currentMoment);
-        momentList.Insert(0, gameMoment);
-        currentMoment.CancelMoment();
-    }
-
-    //Llamada automática después de evento tras finalizar algún momento
-    private void GenericMomentEnd() => isMomentRunnning = false; 
-    
 
 
     //---------------- MOMENTOS GENERALES ----------------
@@ -267,34 +214,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         isWaitingForEvent = false;
     }
 
-    private void GenericEndEvent() => isWaitingForEvent = false;
 
     //---------------- CICLO COMÚN ----------------
 
-    private void NewGame()
-    {
-        isWaitingForEvent = true;
-        turnOrderUi.StartPresentation();
-        for (int i = 0; i < boardPlayers.Length; i++)
-        {
-            if (boardPlayers[i] == null) continue;
-            boardPlayers[i].PlayerRules.SetDefaultValues();
-        }
-        momentList.Add(new GameMoment(ShowPlayerInfoUI));
-        //momentList.Add(new GameMoment(NewRound));
-    }
-
-    private void ShowPlayerInfoUI()
-    {
-        slotInfoUIList = new List<PlayerSlotInfoUi>();
-        for (int i = 0; i < playerInfoPanel.transform.childCount; i++) {
-            PlayerSlotInfoUi plySlotInfo = playerInfoPanel.transform.GetChild(i).GetComponent<PlayerSlotInfoUi>();
-            if (plySlotInfo == null) continue;
-            plySlotInfo.StartChargingPlayerInfo();
-            slotInfoUIList.Add(plySlotInfo);
-        }
-        playerInfoPanel.SetActive(true);
-    }
+    //Preparando el juego
 
     //INICIO DEL CICLO
     private void NewRound()

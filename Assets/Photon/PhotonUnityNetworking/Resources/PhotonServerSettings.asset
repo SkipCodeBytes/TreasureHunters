@@ -54,6 +54,13 @@ MonoBehaviour:
   - SyncGameData
   - GoToRestInCurrentTile
   - SyncAnimation
+  - PlayPresentationPanel
+  - SetPlayerDefaultValues
+  - SetSyncroPlayer
+  - ShowPlayerInfoUI
+  - SetPlayersDefaultValues
+  - CamFocusTarget
+  - NewRoundInfoUI
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
