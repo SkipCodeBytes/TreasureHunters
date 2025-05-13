@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -38,25 +39,39 @@ public class StackableAnimation
         _speed = speed;
         _initCallback = initCallback;
         _endCallback = endCallback;
+
+        //initCallback solo se va a activar cuando se hayan cumplido las condiciones mínimas para realizar el movimiento (Rotaciones Extremadamente corta, movimiento en la misma posición, omite este callaback)
     }
 
     public void LaunchAnimation()
     {
         _isInProgress = true;
 
-        if (_initCallback != null) { _initCallback?.Invoke(); }
 
         switch (_animationType)
         {
             case AnimationType.RotateTo:
+                Vector3 direction = (_target - _affectedTransform.position).normalized;
+                if (direction != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    float angleDifference = Quaternion.Angle(_affectedTransform.rotation, targetRotation);
+                    if (angleDifference > 0.1f)
+                    {
+                        if (_initCallback != null) { _initCallback?.Invoke(); }
+                    }
+                }
                 _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.RotateToPoint(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
 
             case AnimationType.MoveTo:
+                float distance = Vector3.Distance(_affectedTransform.position, _target);
+                if(distance > 0.1f) { if (_initCallback != null) { _initCallback?.Invoke(); } }
                 _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.Move(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
 
             case AnimationType.ParabolicMotion:
+                if (_initCallback != null) { _initCallback?.Invoke(); }
                 _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.ParabolicMotion(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
 

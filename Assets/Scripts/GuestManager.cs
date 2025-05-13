@@ -6,6 +6,8 @@ public class GuestManager : MonoBehaviourPunCallbacks
 {
     private GameManager _gm;
 
+    [Header("Check Values")]
+    [SerializeField] private bool isCicleEnabled = true;
 
     private void Awake()
     {
@@ -17,9 +19,16 @@ public class GuestManager : MonoBehaviourPunCallbacks
         ConfigEventListeners();
     }
 
+    private void Update()
+    {
+
+        if (!isCicleEnabled) return;
+        _gm.MomentManager.MomentUpdate();
+    }
+
     private void ConfigEventListeners()
     {
-        EventManager.StartListening("EndMoment", GenericEndTask);
+        EventManager.StartListening("EndMoment", GenericMomentEnd);
         EventManager.StartListening("EndEvent", GenericEndTask);
     }
 
@@ -28,7 +37,5 @@ public class GuestManager : MonoBehaviourPunCallbacks
     {
         _gm.GmView.RPC("SetSyncroPlayer", _gm.GameRPC.HostPlayer, _gm.PlayerIndex);
     }
-
-
-
+    private void GenericMomentEnd() => _gm.MomentManager.IsMomentRunnning = false;
 }

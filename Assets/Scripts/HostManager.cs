@@ -21,23 +21,14 @@ public class HostManager : MonoBehaviourPunCallbacks
     [Header("Task Syncro")]
     [SerializeField] private bool[] syncronisedPlayers = new bool[4];
 
-    [Header("Moment Systems")]
-    [SerializeField] private GameMoment currentMoment;
-    [SerializeField] private List<GameMoment> momentList;
-
-    [SerializeField] private bool isMomentRunnning = false;
-    [SerializeField] private bool isWaitingForEvent = false;
-    [SerializeField] private bool isWaitingForSyncro = false;
-
-    [Header("Debug and Testing options")]
-    [SerializeField] private bool stepMomentMode = false;
-
+    private MomentManager _momentManager;
 
     //Tendrá lógica del ciclo del juego  
 
     private void Awake()
     {
         _gm = GameManager.Instance;
+        _momentManager = _gm.MomentManager;
     }
 
     public void Init()
@@ -72,23 +63,13 @@ public class HostManager : MonoBehaviourPunCallbacks
 
     private void PlayGameCycle()
     {
-        if (isWaitingForEvent) return;
-        if (isMomentRunnning) return;
-        if (isWaitingForSyncro)
+        if (_momentManager.IsWaitingForSyncro)
         {
             CheckSyncro();
             return;
         }
 
-        if (momentList.Count > 0)
-        {
-            if (stepMomentMode) { if (Input.GetKeyDown(KeyCode.Q)) ReadNextMoment(); }
-            else ReadNextMoment();
-        }
-        else
-        {
-            //momentList.Insert(0, new GameMoment(EndTurn));
-        }
+        _momentManager.MomentUpdate();
     }
 
 
@@ -96,7 +77,7 @@ public class HostManager : MonoBehaviourPunCallbacks
     //Sincronización de tareas
     private bool CheckSyncro()
     {
-        if (!isWaitingForSyncro) return true;
+        if (!_momentManager.IsWaitingForSyncro) return true;
         for (int i = 0; i < syncronisedPlayers.Length; i++)
         {
             if (i == _gm.PlayerIndex)
@@ -108,7 +89,7 @@ public class HostManager : MonoBehaviourPunCallbacks
 
             if (!syncronisedPlayers[i]) return false;
         }
-        isWaitingForSyncro = false;
+        _momentManager.IsWaitingForSyncro = false;
         return true;
     }
 
@@ -161,7 +142,7 @@ public class HostManager : MonoBehaviourPunCallbacks
     //Damos unos segundos de tiempo antes de iniciar
     private IEnumerator StartingGame(float waitTime)
     {
-        momentList.Insert(0, new GameMoment(NewGame));
+        _momentManager.MomentList.Add(new GameMoment(NewGame));
         yield return new WaitForSeconds(waitTime);
         isGamePlaying = true;
     }
@@ -172,8 +153,8 @@ public class HostManager : MonoBehaviourPunCallbacks
         WaitForEvent();
         WaitForSyncro();
         _gm.GmView.RPC("PlayPresentationPanel", RpcTarget.All);
-        momentList.Add(new GameMoment(ShowPlayerInfoUI));
-        momentList.Add(new GameMoment(NewRound));
+        _momentManager.MomentList.Add(new GameMoment(ShowPlayerInfoUI));
+        _momentManager.MomentList.Add(new GameMoment(NewRound));
     }
 
     //Solo activa el panel de información de los jugadores
@@ -203,52 +184,20 @@ public class HostManager : MonoBehaviourPunCallbacks
         {
             syncronisedPlayers[i] = false;
         }
-        isWaitingForSyncro = true;
+        _momentManager.IsWaitingForSyncro = true;
     }
 
     private void WaitForEvent()
     {
-        isWaitingForEvent = true;
+        _momentManager.IsWaitingForEvent = true;
     }
 
 
 
-
-    //---------------- OPERACIONES CON MOMENTOS ----------------
-
-    //Brinda oportunidad de leer el siguiente momento
-    private void ReadNextMoment()
-    {
-        if (momentList[0] != null)
-        {
-            currentMoment = momentList[0];
-            momentList.RemoveAt(0);
-            isMomentRunnning = true;
-            currentMoment.PlayMoment();
-        }
-        else momentList.RemoveAt(0);
-    }
-
-    //Cancela un momento para ir por otro
-    private void CancelMoment(GameMoment gameMoment)
-    {
-        isMomentRunnning = false;
-        momentList.Insert(0, gameMoment);
-        currentMoment.CancelMoment();
-    }
-
-    //Pospone el momento actual para ir por otro
-    private void InterveneMoment(GameMoment gameMoment)
-    {
-        isMomentRunnning = false;
-        momentList.Insert(0, currentMoment);
-        momentList.Insert(0, gameMoment);
-        currentMoment.CancelMoment();
-    }
 
     //Llamada automática después de evento tras finalizar algún momento
-    private void GenericMomentEnd() => isMomentRunnning = false;
-    private void GenericEndEvent() => isWaitingForEvent = false;
+    private void GenericMomentEnd() => _momentManager.IsMomentRunnning = false;
+    private void GenericEndEvent() => _momentManager.IsWaitingForEvent = false;
 
 
 
@@ -273,7 +222,7 @@ public class HostManager : MonoBehaviourPunCallbacks
         if (activePlayersCount > 0) 
         {
             _gm.GmView.RPC("NewRound", RpcTarget.All);
-            momentList.Add(new GameMoment(NewTurn));
+            _momentManager.MomentList.Add(new GameMoment(NewTurn));
             /*
             _gm.RoundInfoPanel.SetActive(true);
             _gm.RoundInfoPanel.Star*/
@@ -287,7 +236,7 @@ public class HostManager : MonoBehaviourPunCallbacks
         WaitForEvent();
         WaitForSyncro();
         _gm.GmView.RPC("NewTurn", RpcTarget.All);
-        momentList.Add(new GameMoment(CheckTurnStatus));
+        _momentManager.MomentList.Add(new GameMoment(CheckTurnStatus));
     }
 
 
@@ -297,10 +246,10 @@ public class HostManager : MonoBehaviourPunCallbacks
 
         if (_gm.CurrentPlayerTurnIndex == -1)
         {
-            momentList.Add(new GameMoment(NewRound));
+            _momentManager.MomentList.Add(new GameMoment(NewRound));
         } else
         {
-            momentList.Add(new GameMoment(OpenPlayerActionPanel));
+            _momentManager.MomentList.Add(new GameMoment(OpenPlayerActionPanel));
         }
 
     }
@@ -324,26 +273,40 @@ public class HostManager : MonoBehaviourPunCallbacks
 
     public void Ply_ThrowDicesAction()
     {
-        momentList.Add(new GameMoment(OpenDicePanel));
-        isWaitingForEvent = false;
+        _momentManager.MomentList.Add(new GameMoment(OpenDicePanel));
+        _momentManager.IsWaitingForEvent = false;
     }
 
     private void OpenDicePanel()
     {
         WaitForSyncro();
         WaitForEvent();
-        switch (_gm.DiceAction)
-        {
-            case PlayerDiceAction.Move:
-                momentList.Add(new GameMoment(MovePlayer));
-                break;
-        }
-        
+        _momentManager.MomentList.Add(new GameMoment(CloseDicePanel));
         _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.DiceManager.DicesQuantityForAction[(int)_gm.DiceAction]);
     }
 
+    private void CloseDicePanel()
+    {
+        WaitForEvent();
+        WaitForSyncro();
+        _gm.GmView.RPC("CloseDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        /*
+        switch (_gm.DiceAction)
+        {
+            case PlayerDiceAction.Move:
+                //_momentManager.MomentList.Add(new GameMoment(MovePlayer));
+                break;
+        }*/
+
+    }
+
+
     private void MovePlayer()
     {
-        Debug.Log("El jugador" + _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].Player.NickName + ", se moverá " + _gm.DiceResult + " casillas");
+        WaitForEvent();
+        WaitForSyncro();
+        //_gm.InitMoventPlayer();
+        //Aquí el player realizará el movimiento
+        //Debug.Log("El jugador" + _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].Player.NickName + ", se moverá " + _gm.DiceResult + " casillas");
     }
 }

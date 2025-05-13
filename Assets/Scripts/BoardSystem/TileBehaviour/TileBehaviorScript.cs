@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class TileBehaviorScript : MonoBehaviour
 
     public List<GameObject> HideableProps { get => _hideableProps; set => _hideableProps = value; }
     public List<Vector3> RestPoints { get => _restPoints; set => _restPoints = value; }
+    public Vector3 InteractionPositionOffset { get => _interactionPositionOffset; set => _interactionPositionOffset = value; }
+    public float InteractionViewRotation { get => _interactionViewRotation; set => _interactionViewRotation = value; }
 
     protected virtual void Awake()
     {
@@ -112,6 +115,12 @@ public class TileBehaviorScript : MonoBehaviour
         }
 
         Debug.Log("No existe este personaje en descanso");
+    }
+
+    public Vector3 GetIteractionViewPoint()
+    {
+        Vector3 nuevaPos = transform.position + _interactionPositionOffset + Quaternion.Euler(0, _interactionViewRotation, 0) * Vector3.forward;
+        return nuevaPos;
     }
 
 #if UNITY_EDITOR

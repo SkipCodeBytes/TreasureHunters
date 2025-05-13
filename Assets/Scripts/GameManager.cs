@@ -44,17 +44,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private List<PlayerSlotInfoUi> slotInfoUIList = new List<PlayerSlotInfoUi>();
     [SerializeField] private int currentPlayerTurnIndex = -1;
 
-    [SerializeField] private bool isMomentRunnning = false;
-    [SerializeField] private bool isWaitingForEvent = false;
-    [SerializeField] private GameMoment currentMoment;
-    [SerializeField] private List<GameMoment> momentList;
 
+    [Header("Moment Systems")]
+    [SerializeField] private GameMoment localCurrentMoment;
+    [SerializeField] private List<GameMoment> localMomentList;
 
 
     private GameRPC _gameRPC;
     private PhotonView _gmView;
     private HostManager _hostManager;
     private GuestManager _guestManager;
+    private MomentManager _momentManager;
 
     private Player _hostPlayer;
 
@@ -86,6 +86,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int DiceResult { get => diceResult; set => diceResult = value; }
     public Player HostPlayer { get => _hostPlayer; set => _hostPlayer = value; }
     public PlayerDiceAction DiceAction { get => diceAction; set => diceAction = value; }
+    public MomentManager MomentManager { get => _momentManager; set => _momentManager = value; }
 
     private void Awake()
     {
@@ -96,6 +97,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         _gmView = GetComponent<PhotonView>();
         _hostManager = GetComponent<HostManager>();
         _guestManager = GetComponent<GuestManager>();
+        _momentManager = GetComponent<MomentManager>();
 
         _hostPlayer = NetworkRoomsManager.HostPlayer;
     }
@@ -118,10 +120,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             _guestManager.Init();
         }
 
-        EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
-        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
-
+        SetListener();
     }
+
+
 
     public void GeneratePlayerIndex()
     {
@@ -134,10 +136,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void SetListener()
+    {
+        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
+    }
 
 
 
-    //---------------- MOMENTOS GENERALES ----------------
+
+
+
+
 
     public void btnMovePlayer()
     {
@@ -156,40 +165,52 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-    //MOMENTO DE ENFOQUE DE CÁMARA
-    private void CameraFocusPlayer()
-    {
-        cameraman.FocusTarget(boardPlayers[currentPlayerTurnIndex].gameObject);
-        isWaitingForEvent = true;
-    }
 
-    private void EndCameraFocus()
-    {
-        isWaitingForEvent = false;
-    }
 
+    //---------------- MOMENTOS GENERALES ----------------
 
     //MOMENTO DE MOVIMIENTO DE JUGADOR
-    public void SetPlayerNumberMoves()
+
+    public void InitMoventPlayer()
     {
-        for(int i = 0; i < diceResult; i++)
+        for (int i = 0; i < diceResult; i++)
         {
-            momentList.Insert(0, new GameMoment(MovePlayerNextTile));
+            if(i == diceResult - 1)
+            {
+                _momentManager.MomentList.Add(new GameMoment(MovePlayerLastTile));
+            } else
+            {
+                _momentManager.MomentList.Add(new GameMoment(MovePlayerNextTile));
+            }
         }
-        diceResult = 0;
     }
 
     private void MovePlayerNextTile()
     {
-        isWaitingForEvent = true;
+        _momentManager.IsWaitingForEvent = true;
         boardPlayers[currentPlayerTurnIndex].MoveNextTile();
+    }
+
+    private void MovePlayerLastTile()
+    {
+        _momentManager.IsWaitingForEvent = true;
+        boardPlayers[currentPlayerTurnIndex].MoveLastTile();
     }
 
     private void EndMovePlayer()
     {
-        isWaitingForEvent = false;
+        _momentManager.IsWaitingForEvent = false;
     }
 
+
+
+
+
+
+
+
+
+    //MOMENTO DE MOVIMIENTO DE JUGADOR
 
 
 
@@ -226,27 +247,19 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void PlayerCheckStatus()
     {
-        momentList.Insert(0, new GameMoment(OpenPlayerActionPanel));
+        //momentList.Insert(0, new GameMoment(OpenPlayerActionPanel));
     }
 
     private void OpenPlayerActionPanel()
     {
         //HABILITAR SOLO LAS ACCIONES QUE TIENE DISPONIBLES REALIZAR
         //playerActionPanel.SetActive(true);
-        isWaitingForEvent = true;
-    }
-
-    public void BtnOpenCardPanel()
-    {
-    }
-
-    public void BtnMovePlayer()
-    {
+        //isWaitingForEvent = true;
     }
 
     private void EndTurn()
     {
-        momentList.Clear();
+        //momentList.Clear();
         //momentList.Insert(0, new GameMoment(NewTurn));
     }
 }

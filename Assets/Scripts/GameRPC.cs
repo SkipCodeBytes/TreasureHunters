@@ -110,6 +110,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
             
             if (_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex] != null) break;
         }
+        _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].IsPlayerTurn = true;
         CamFocusTarget(_gm.CurrentPlayerTurnIndex);
     }
 
@@ -160,6 +161,26 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.DiceResult = result;
         _gm.DiceManager.EndAnimationCamera();
+    }
+
+    [PunRPC]
+    public void CloseDicePanel(int playerIndex)
+    {
+        _gm.DicePanelUI.gameObject.SetActive(false);
+        if (playerIndex == _gm.PlayerIndex)
+        {
+            _gm.MomentManager.IsWaitingForEvent = false;
+            switch (_gm.DiceAction)
+            {
+                case PlayerDiceAction.Move:
+                    _gm.InitMoventPlayer();
+                    break;
+            }
+        } else
+        {
+            EventManager.TriggerEvent("EndEvent");
+        }
+        
     }
 
 

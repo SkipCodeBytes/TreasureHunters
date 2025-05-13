@@ -7033,6 +7033,7 @@ GameObject:
   - component: {fileID: 645806023}
   - component: {fileID: 645806022}
   - component: {fileID: 645806021}
+  - component: {fileID: 645806024}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -7091,11 +7092,9 @@ MonoBehaviour:
   homeTileList: []
   slotInfoUIList: []
   currentPlayerTurnIndex: -1
-  isMomentRunnning: 0
-  isWaitingForEvent: 0
-  currentMoment:
+  localCurrentMoment:
     _momentName: 
-  momentList: []
+  localMomentList: []
 --- !u!4 &645806019
 Transform:
   m_ObjectHideFlags: 0
@@ -7157,6 +7156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d4b53cf4f4962429b6c6533b625de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCicleEnabled: 1
 --- !u!114 &645806023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7174,12 +7174,25 @@ MonoBehaviour:
   isGamePlaying: 0
   isPreparingScene: 0
   syncronisedPlayers: 00000000
+--- !u!114 &645806024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645806016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b737c55a0b2b748ad38b2d16204774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   currentMoment:
     _momentName: 
   momentList: []
   isMomentRunnning: 0
   isWaitingForEvent: 0
   isWaitingForSyncro: 0
+  isMomentManagerFree: 0
   stepMomentMode: 0
 --- !u!1 &651744655
 GameObject:
@@ -9077,10 +9090,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelUI: {fileID: 642859396}
-  transicionTime: 0.5
+  transicionTime: 0.15
   roundTittle: {fileID: 1879726248}
   timeBetweenWrite: 0.1
-  animationEndTime: 3
+  animationEndTime: 1
   exitDisplaceTime: 0.15
 --- !u!114 &807575988
 MonoBehaviour:
@@ -13470,7 +13483,7 @@ MonoBehaviour:
   - {fileID: 58475045}
   playerSlotsTransicionTime: 0.4
   eulerRotationAnim: {x: 0, y: 0, z: 720}
-  timeToClosePanel: 4
+  timeToClosePanel: 2.5
 --- !u!222 &1247528139
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -17090,7 +17103,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 924761130}
-  m_PlaneDistance: 3
+  m_PlaneDistance: 0.8
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0

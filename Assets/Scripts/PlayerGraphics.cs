@@ -8,6 +8,7 @@ using UnityEngine.Splines;
 
 public class PlayerGraphics : MonoBehaviourPunCallbacks
 {
+    private GameManager _gm;
     private BoardPlayer _boardPlayer;
     private Animator _animator;
 
@@ -45,6 +46,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     {
         _boardPlayer = GetComponent<BoardPlayer>();
         _view = GetComponent<PhotonView>();
+        _gm = GameManager.Instance;
     }
 
     private void Update()
@@ -72,8 +74,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
             if (_boardPlayer.IsPlayerTurn)
             {
-
-
+                isResting = false;
             }
             else //if (stackableAnimations.Count == 0)
             {
@@ -148,7 +149,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
 
 
-    private void ClearAnimationStatus()
+    public void ClearAnimationStatus()
     {
         isWalking = false;
         isResting = false;
@@ -189,20 +190,24 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     public void MovePlayerAtPoint(Vector3 Point, bool running = true, Action callback = null)
     {
         Action init = null;
+        float moventSpeed = 0;
         if (running) { 
             init = setRunningAnimation;
+            moventSpeed = runSpeed;
         }
         else { 
             init = setWalkingAnimation;
+            moventSpeed = walkSpeed;
         }
         RotatePlayerAtPoint(Point);
-        stackableAnimations.Add(new StackableAnimation(this, AnimationType.MoveTo, gameObject.transform, Point, runSpeed, init, callback));
+        stackableAnimations.Add(new StackableAnimation(this, AnimationType.MoveTo, gameObject.transform, Point, moventSpeed, init, callback));
     }
 
 
 
     public void RotatePlayerAtPoint(Vector3 Point, Action callback = null)
     {
+        Vector3 target = new Vector3(Point.x, transform.position.y, Point.z);
         stackableAnimations.Add(new StackableAnimation(this, AnimationType.RotateTo, gameObject.transform, Point, rotationSpeed, setRotatingAnimation, callback));
     }
 

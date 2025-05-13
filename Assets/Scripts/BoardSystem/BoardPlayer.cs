@@ -28,11 +28,11 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     public CharacterData SelectedCharacter { get => selectedCharacter; set => selectedCharacter = value; }
     public TileBoard HomeTile { get => homeTile; set => homeTile = value; }
     public TileBoard CurrentTilePosition { get => currentTilePosition; set => currentTilePosition = value; }
-    public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
 
     public PlayerGraphics PlayerGraphics { get => _playerGraphics; set => _playerGraphics = value; }
     public PlayerRules PlayerRules { get => _playerRules; set => _playerRules = value; }
     public PlayerInventory PlayerInventory { get => _playerInventory; set => _playerInventory = value; }
+    public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
 
     private void Awake()
     {
@@ -60,7 +60,11 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     public void MoveNextTile()
     {
         int numOfRoutes = currentTilePosition.NextTiles.Count;
-        if (numOfRoutes == 0) return;
+        if (numOfRoutes == 0)
+        {
+            Debug.LogWarning("ADVERTENCIA: Movimiento sin salida");
+            return;
+        }
         if (numOfRoutes == 1)
         {
             _nextTile = currentTilePosition.NextTiles[0];
@@ -68,15 +72,51 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
         }
         if (numOfRoutes > 1) {
             //A elecci�n del jugador
+            _nextTile = currentTilePosition.NextTiles[0];
+            DisplaceToTile(_nextTile);
         }
     }
 
+    public void MoveLastTile()
+    {
+        int numOfRoutes = currentTilePosition.NextTiles.Count;
+        if (numOfRoutes == 0)
+        {
+            Debug.LogWarning("ADVERTENCIA: Movimiento sin salida");
+            return;
+        }
+        if (numOfRoutes == 1)
+        {
+            _nextTile = currentTilePosition.NextTiles[0];
+            DisplaceToStandTile(_nextTile);
+        }
+        if (numOfRoutes > 1)
+        {
+            //A elecci�n del jugador
+            _nextTile = currentTilePosition.NextTiles[0];
+            DisplaceToStandTile(_nextTile);
+        }
+    }
+
+
     private void DisplaceToTile(TileBoard tileTarget)
     {
-        Vector3 newPos = new Vector3(tileTarget.transform.position.x, transform.position.y, tileTarget.transform.position.z);
         if (tileTarget != null)
         {
+            Vector3 newPos = new Vector3(tileTarget.transform.position.x, transform.position.y, tileTarget.transform.position.z);
             _playerGraphics.MovePlayerAtPoint(newPos, true, finishMove);
+        }
+    }
+
+    private void DisplaceToStandTile(TileBoard tileTarget)
+    {
+        if (tileTarget != null)
+        {
+            Vector3 iteractionPosition = tileTarget.BehaviorScript.GetInteractionPosition();
+            Debug.Log(iteractionPosition);
+            Vector3 newPos = new Vector3(iteractionPosition.x, transform.position.y, iteractionPosition.z);
+            _playerGraphics.MovePlayerAtPoint(newPos, true, finishMove);
+            _playerGraphics.RotatePlayerAtPoint(tileTarget.BehaviorScript.GetIteractionViewPoint(), _playerGraphics.ClearAnimationStatus);
         }
     }
 
@@ -84,7 +124,6 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     {
         currentTilePosition = _nextTile;
         _nextTile = null;
-        //isMoving = false;
         EventManager.TriggerEvent("EndPlayerMovent", true);
     }
 
