@@ -1,5 +1,6 @@
 
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,10 +16,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("UI References")]
     [SerializeField] private TurnOrderUi turnOrderUi;
-    [SerializeField] private GameObject playerActionPanel;
+    [SerializeField] private ActionPanelUI playerActionPanel;
     [SerializeField] private GameObject cardPanel;
     [SerializeField] private GameObject playerInfoPanel;
     [SerializeField] private RoundInfoUI roundInfoPanel;
+    [SerializeField] private DicePanelUI dicePanelUI;
+
 
     [Header("Game Config")]
     [SerializeField] private Vector3 playerSpawnPoint;
@@ -26,9 +29,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private float gameSpeed = 2f;
 
 
+
     [Header("Check Values")]
 
     [SerializeField] private int playerIndex = 0;
+    [SerializeField] private PlayerDiceAction diceAction;
     [SerializeField] private bool isHostPlayer = false;
     [SerializeField] private BoardPlayer playerReference;
     [SerializeField] private int gameRound = 0;
@@ -51,6 +56,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private HostManager _hostManager;
     private GuestManager _guestManager;
 
+    private Player _hostPlayer;
 
     public static GameManager Instance { get => _instance; }
     public GameBoardManager BoardManager { get => boardManager; }
@@ -71,6 +77,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     public CameramanScript Cameraman { get => cameraman; set => cameraman = value; }
     public int GameRound { get => gameRound; set => gameRound = value; }
 
+
+
+    public RoundInfoUI RoundInfoPanel { get => roundInfoPanel; set => roundInfoPanel = value; }
+    public ActionPanelUI PlayerActionPanel { get => playerActionPanel; set => playerActionPanel = value; }
+    public DiceManager DiceManager { get => diceManager; set => diceManager = value; }
+    public DicePanelUI DicePanelUI { get => dicePanelUI; set => dicePanelUI = value; }
+    public int DiceResult { get => diceResult; set => diceResult = value; }
+    public Player HostPlayer { get => _hostPlayer; set => _hostPlayer = value; }
+    public PlayerDiceAction DiceAction { get => diceAction; set => diceAction = value; }
+
     private void Awake()
     {
         if (_instance == null) _instance = this;
@@ -80,6 +96,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         _gmView = GetComponent<PhotonView>();
         _hostManager = GetComponent<HostManager>();
         _guestManager = GetComponent<GuestManager>();
+
+        _hostPlayer = NetworkRoomsManager.HostPlayer;
     }
 
 
@@ -100,7 +118,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             _guestManager.Init();
         }
 
-        EventManager.StartListening("DiceManagerFinish", SetDiceResults);
         EventManager.StartListening("CameraFocusComplete", EndCameraFocus);
         EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
 
@@ -120,63 +137,22 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    public void playerSyncData(int playerIndex)
-    {
-        _gmView.RPC("SyncPlayerData", RpcTarget.Others, i,
-                BoardPlayers[playerIndex].PlayerRules.Life,
-                BoardPlayers[playerIndex].PlayerInventory.CoinsQuantity,
-                BoardPlayers[playerIndex].PlayerInventory.GemItems.Count,
-                BoardPlayers[playerIndex].PlayerInventory.CardItems.Count,
-                BoardPlayers[playerIndex].PlayerInventory.SafeRelicsQuantity,
-                BoardPlayers[playerIndex].PlayerInventory.HasRelicItem);
-    }*/
-
-
-
     //---------------- MOMENTOS GENERALES ----------------
 
-    //MOMENTO DE USO DE DADOS
-    public void OpenDicePanel()
+    public void btnMovePlayer()
     {
-        diceResult = 0;
-        diceManager.UseDice(2);
-        isWaitingForEvent = true;
+        GmView.RPC("btnOpenDice", HostPlayer, 0);
+    }
+    public void btnCardPlayer()
+    {
+        GmView.RPC("btnOpenCard", HostPlayer);
     }
 
-    public void SetDiceResults()
+
+    public void SendDiceResults(int result)
     {
-        diceResult = diceManager.ResultValue;
-        isWaitingForEvent = false;
+        GmView.RPC("SentDiceResults", RpcTarget.All, result);
+        //diceResult = diceManager.ResultValue;
     }
 
 
@@ -215,83 +191,63 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //---------------- CICLO COMÚN ----------------
 
     //Preparando el juego
 
     //INICIO DEL CICLO
-    private void NewRound()
-    {
-        gameRound++;
-        //Comprobamos si hay jugadores suficientes en juego
-        int activePlayersCount = 0;
-        for (int i = 0; i < boardPlayers.Length; i++) {
-            if (boardPlayers[i] != null) activePlayersCount++;
-        }
-        //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
-        if (activePlayersCount > 0) momentList.Insert(0, new GameMoment(NewTurn));
-        else Debug.LogError("No hay jugadores disponibles");
-    }
-
-
-    private void NewTurn()
-    {
-        currentPlayerTurnIndex++;
-        if (currentPlayerTurnIndex < boardPlayers.Length)
-        {
-            //En caso el jugador haya salido del juego, saltamos el turno
-            if (boardPlayers[currentPlayerTurnIndex] != null)
-            {
-                momentList.Insert(0, new GameMoment(PlayerCheckStatus));
-                momentList.Insert(0, new GameMoment(CameraFocusPlayer));
-            }
-            else
-            {
-                momentList.Insert(0, new GameMoment(NewTurn));
-            }
-        }
-        else
-        {
-            currentPlayerTurnIndex = -1;
-            momentList.Insert(0, new GameMoment(NewRound));
-        }
-    }
-
-
-
 
 
 
     private void PlayerCheckStatus()
     {
-        //SE REVISA LA DISPONIBILIDAD DEL PLAYER (Desmayado, retenido, bloqueado, etc)
         momentList.Insert(0, new GameMoment(OpenPlayerActionPanel));
     }
 
     private void OpenPlayerActionPanel()
     {
         //HABILITAR SOLO LAS ACCIONES QUE TIENE DISPONIBLES REALIZAR
-        playerActionPanel.SetActive(true);
+        //playerActionPanel.SetActive(true);
         isWaitingForEvent = true;
     }
 
     public void BtnOpenCardPanel()
     {
-        playerActionPanel.SetActive(false);
-        cardPanel.SetActive(true);
     }
 
     public void BtnMovePlayer()
     {
-        OpenDicePanel();
-        playerActionPanel.SetActive(false);
-        EventManager.StartListening("DiceManagerFinish", SetPlayerNumberMoves, 1);
     }
 
     private void EndTurn()
     {
         momentList.Clear();
-        momentList.Insert(0, new GameMoment(NewTurn));
+        //momentList.Insert(0, new GameMoment(NewTurn));
     }
 }
 

@@ -1,7 +1,5 @@
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.TimeZoneInfo;
 
 public class RoundInfoUI : MonoBehaviour
 {
@@ -14,18 +12,22 @@ public class RoundInfoUI : MonoBehaviour
 
     private Image viewPanelImage;
     private Color _currentColorCanvas;
+    string defaultTxt;
 
 
     public void StartPresentation()
     {
+        viewPanelImage = transform.GetChild(0).GetComponent<Image>();
         _currentColorCanvas = viewPanelImage.color;
+        viewPanelImage.color = new Color(_currentColorCanvas.r, _currentColorCanvas.g, _currentColorCanvas.b, 0f);
         StartCoroutine(CinematicAnimation.ImageAlphaLerp(viewPanelImage, _currentColorCanvas.a, transicionTime, showTittle));
+
+        defaultTxt = "RONDA: " + GameManager.Instance.GameRound;
+        roundTittle.text = "";
     }
 
     private void showTittle()
     {
-        string defaultTxt = roundTittle.text;
-        roundTittle.text = "";
         StartCoroutine(CinematicAnimation.TextTypewriter(roundTittle, defaultTxt, timeBetweenWrite));
         StartCoroutine(CinematicAnimation.WaitTime(animationEndTime, exitAnimation));
     }

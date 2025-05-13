@@ -1,11 +1,13 @@
 
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 
 [System.Serializable]
-public class DiceScript : MonoBehaviour
+public class DiceScript : MonoBehaviourPunCallbacks
 {
     [Header("Config Values")]
     [SerializeField] private LayerMask sideLayer;
@@ -20,6 +22,9 @@ public class DiceScript : MonoBehaviour
     [SerializeField] private bool isSelected = false;
     [SerializeField] private bool isItStill = false;
     [SerializeField] private List<BoxCollider> sideColliders;
+    //[SerializeField] private bool isInteractuable = false;
+
+    private PhotonView _diceView;
     private Vector2 LaunchDirection;
     private Vector3 staticPosition;
 
@@ -28,9 +33,11 @@ public class DiceScript : MonoBehaviour
     public int DiceValue { get => diceValue; set => diceValue = value; }
     public bool HasBeenRolled { get => hasBeenRolled; set => hasBeenRolled = value; }
     public bool IsItStill { get => isItStill; set => isItStill = value; }
+    public PhotonView DiceView { get => _diceView; set => _diceView = value; }
 
     void Awake()
     {
+        _diceView = GetComponent<PhotonView>();
         _rb = GetComponent<Rigidbody>();
         sideColliders = new List<BoxCollider>();
         for (int i = 0; i < transform.childCount; i++)
@@ -42,6 +49,8 @@ public class DiceScript : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine) return;
+
         if (hasBeenRolled)
         {
             isItStill = _rb.IsSleeping();
@@ -89,13 +98,28 @@ public class DiceScript : MonoBehaviour
         diceValue = 0;
     }
 
+    public void ChangeOwner(int playerTargetIndex)
+    {
+        Debug.Log("Nuevo Propietario de dados: " + playerTargetIndex);
+        photonView.RPC("TransferOwner", photonView.Owner, playerTargetIndex);
+    }
+
+    [PunRPC]
+    private void TransferOwner(int newOwnerIndex)
+    {
+        Debug.Log("Nuevo Propietario de dados: " + GameManager.Instance.BoardPlayers[newOwnerIndex].Player.NickName);
+        photonView.TransferOwnership(GameManager.Instance.BoardPlayers[newOwnerIndex].Player);
+    }
+
     private void OnMouseDown()
     {
+        if (!photonView.IsMine) return;
         isSelected = true;
     }
 
     private void OnMouseDrag()
     {
+        if (!photonView.IsMine) return;
         Vector2 cursorPosition = GameController.Instance.GameControls.Player.CursorPoint.ReadValue<Vector2>();
         Vector2 centerScreen = new Vector2(Screen.width / 2, Screen.height / 2);
         if (cursorPosition != centerScreen)

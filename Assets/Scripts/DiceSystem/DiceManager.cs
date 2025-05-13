@@ -2,6 +2,8 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Realtime;
+using Photon.Pun;
 
 public class DiceManager : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class DiceManager : MonoBehaviour
     [SerializeField] float fieldViewToResults = 30f;
     [SerializeField] float transicionTime = 0.3f;
     [SerializeField] float waitViewResultsTime = 1.5f;
+    [SerializeField, HideInInspector] List<int> dicesQuantityForAction = new List<int>();
+    [SerializeField] UiDicePanel dicePanel;
 
     [Header("Check Values")]
     [SerializeField] private float fieldViewCamBase;
@@ -28,6 +32,8 @@ public class DiceManager : MonoBehaviour
     //ORDENAR LOS DADOS DE MANERA CIRCULAR
 
     public int ResultValue { get => resultValue; set => resultValue = value; }
+    public List<int> DicesQuantityForAction { get => dicesQuantityForAction; set => dicesQuantityForAction = value; }
+    public UiDicePanel DicePanel { get => dicePanel; set => dicePanel = value; }
 
     void Awake()
     {
@@ -35,6 +41,7 @@ public class DiceManager : MonoBehaviour
         for (int i = 0; i < dicePool.childCount; i++)
         {
             diceList.Add(dicePool.GetChild(i).GetComponent<DiceScript>());
+            dicePool.GetChild(i).gameObject.SetActive(false);
         }
         fieldViewCamBase = diceCamera.fieldOfView;
     }
@@ -62,14 +69,18 @@ public class DiceManager : MonoBehaviour
         if (checkTimer >= timeToCheck)
         {
             isCheckingResults = true;
-            StartCoroutine(CinematicAnimation.FieldViewLerp(diceCamera, fieldViewToResults, transicionTime, TransicionFinish));
+            resultValue = GetDiceValues();
+            GameManager.Instance.SendDiceResults(resultValue);
         }
+    }
+
+    public void EndAnimationCamera()
+    {
+        StartCoroutine(CinematicAnimation.FieldViewLerp(diceCamera, fieldViewToResults, transicionTime, TransicionFinish));
     }
 
     private void TransicionFinish()
     {
-        //Debug.Log("Resultado es: " + GetDiceValues());
-        resultValue = GetDiceValues();
         StartCoroutine(CinematicAnimation.WaitTime(waitViewResultsTime, HideDices));
     }
 
@@ -111,16 +122,18 @@ public class DiceManager : MonoBehaviour
             }
             chosenDice.Clear();
         }
-        EventManager.TriggerEvent("DiceManagerFinish", true);
+        EventManager.TriggerEvent("EndEvent");
     }
 
-    public void UseDice(int quantity = 1)
+    public void UseDice(int playerTargetIndex, int quantity = 1)
     {
+        if (quantity < 1) quantity = 1;
         diceCamera.gameObject.SetActive(true);
         diceCamera.fieldOfView = fieldViewCamBase;
         isCheckingResults = false;
         resultValue = 0;
-        diceList = diceList.OrderBy(x => Random.value).ToList();
+
+        //diceList = diceList.OrderBy(x => Random.value).ToList();
         chosenDice = diceList.Take(quantity).ToList();
 
         int Rows = Mathf.CeilToInt((float)chosenDice.Count / 3f);
@@ -133,6 +146,22 @@ public class DiceManager : MonoBehaviour
             if (chosenDice[i] == null) continue;
             chosenDice[i].gameObject.SetActive(true);
             chosenDice[i].resetDice(new Vector3(separationSpace * (i - (currentRow * 3)), 0, currentRow * separationSpace));
+            chosenDice[i].ChangeOwner(playerTargetIndex);
+            /*
+            if(playerTargetIndex == GameManager.Instance.PlayerIndex)
+            {
+                for (int j = 0; j < chosenDice[i].transform.childCount; j++)
+                {
+                    chosenDice[i].transform.GetChild(j).gameObject.SetActive(true);
+                } 
+            }
+            else
+            {
+                for (int j = 0; j < chosenDice[i].transform.childCount; j++)
+                {
+                    chosenDice[i].transform.GetChild(j).gameObject.SetActive(false);
+                }
+            }*/
         }
 
         int Columns = quantity > 3 ? 3 : quantity;

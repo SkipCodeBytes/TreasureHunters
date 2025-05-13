@@ -6,11 +6,6 @@ using UnityGameBoard.Tiles;
 [CustomEditor(typeof(GameBoardManager))]
 public class GameBoardManagerEditor : Editor
 {
-    void OnEnable()
-    {
-
-    }
-
     public override void OnInspectorGUI()
     {
         GameBoardManager _myGameBoard = (GameBoardManager)target;

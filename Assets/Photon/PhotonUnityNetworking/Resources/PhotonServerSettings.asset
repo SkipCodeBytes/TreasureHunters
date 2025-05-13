@@ -61,6 +61,13 @@ MonoBehaviour:
   - SetPlayersDefaultValues
   - CamFocusTarget
   - NewRoundInfoUI
+  - NewRound
+  - NewTurn
+  - OpenPlayerActionPanel
+  - OpenDicePanel
+  - SentDiceResults
+  - btnOpenDice
+  - TransferOwner
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -14,13 +14,14 @@ public class CameramanScript : MonoBehaviour
         if (_followTarget)
         {
             if(_currentTarget != null) transform.position = _currentTarget.transform.position;
-            else transform.position = Vector3.zero;
+            else transform.position = panoramicViewPosition;
         }
     }
 
     public void FocusPanoramicView(bool isInmediate = false)
     {
         _followTarget = false;
+        _currentTarget = null;
         if (_moveCoorutine != null)
         {
             StopCoroutine(_moveCoorutine);

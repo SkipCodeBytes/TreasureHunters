@@ -10,7 +10,15 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 
     [Header("Player Info")]
     [SerializeField] private int life = 0;
-    //[SerializeField]
+    /*
+    [SerializeField] private int movDices = 1;
+    [SerializeField] private int atkDices = 1;
+    [SerializeField] private int defDices = 1;
+    [SerializeField] private int evaDices = 1;
+    [SerializeField] private int revDices = 1;
+
+    [SerializeField] private int chestDices = 1;
+    [SerializeField] private int trampDices = 1;*/
 
     //Lista de efectos
     //Lista de gemas

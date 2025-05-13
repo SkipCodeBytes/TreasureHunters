@@ -270,8 +270,10 @@ public class HostManager : MonoBehaviourPunCallbacks
         }
 
         //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
-        if (activePlayersCount > 0) { 
-            momentList.Insert(0, new GameMoment(NewTurn));
+        if (activePlayersCount > 0) 
+        {
+            _gm.GmView.RPC("NewRound", RpcTarget.All);
+            momentList.Add(new GameMoment(NewTurn));
             /*
             _gm.RoundInfoPanel.SetActive(true);
             _gm.RoundInfoPanel.Star*/
@@ -282,26 +284,66 @@ public class HostManager : MonoBehaviourPunCallbacks
 
     private void NewTurn()
     {
-        _gm.CurrentPlayerTurnIndex++;
-        if (_gm.CurrentPlayerTurnIndex < _gm.BoardPlayers.Length)
-        {
-            //En caso el jugador haya salido del juego, saltamos el turno
-            if (_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex] != null)
-            {
-                //momentList.Insert(0, new GameMoment(PlayerCheckStatus));
-                //momentList.Insert(0, new GameMoment(CameraFocusPlayer));
-            }
-            else
-            {
-                momentList.Insert(0, new GameMoment(NewTurn));
-            }
-        }
-        else
-        {
-            _gm.CurrentPlayerTurnIndex = -1;
-            momentList.Insert(0, new GameMoment(NewRound));
-        }
+        WaitForEvent();
+        WaitForSyncro();
+        _gm.GmView.RPC("NewTurn", RpcTarget.All);
+        momentList.Add(new GameMoment(CheckTurnStatus));
     }
 
 
+    private void CheckTurnStatus()
+    {
+        //SE REVISA LA DISPONIBILIDAD DEL PLAYER (Desmayado, retenido, bloqueado, etc)
+
+        if (_gm.CurrentPlayerTurnIndex == -1)
+        {
+            momentList.Add(new GameMoment(NewRound));
+        } else
+        {
+            momentList.Add(new GameMoment(OpenPlayerActionPanel));
+        }
+
+    }
+
+    private void OpenPlayerActionPanel()
+    {
+        WaitForEvent();
+        //WaitForSyncro();
+        _gm.GmView.RPC("OpenPlayerActionPanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        //momentList.Add(new GameMoment(CheckTurnStatus));
+
+        //HABILITAR SOLO LAS ACCIONES QUE TIENE DISPONIBLES REALIZAR
+        //playerActionPanel.SetActive(true);
+        //isWaitingForEvent = true;
+    }
+
+    public void Ply_UseCardAction()
+    {
+
+    }
+
+    public void Ply_ThrowDicesAction()
+    {
+        momentList.Add(new GameMoment(OpenDicePanel));
+        isWaitingForEvent = false;
+    }
+
+    private void OpenDicePanel()
+    {
+        WaitForSyncro();
+        WaitForEvent();
+        switch (_gm.DiceAction)
+        {
+            case PlayerDiceAction.Move:
+                momentList.Add(new GameMoment(MovePlayer));
+                break;
+        }
+        
+        _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.DiceManager.DicesQuantityForAction[(int)_gm.DiceAction]);
+    }
+
+    private void MovePlayer()
+    {
+        Debug.Log("El jugador" + _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].Player.NickName + ", se moverá " + _gm.DiceResult + " casillas");
+    }
 }

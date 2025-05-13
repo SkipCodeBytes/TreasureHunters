@@ -1,5 +1,4 @@
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
@@ -91,10 +90,77 @@ public class GameRPC : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void NewRoundInfoUI()
+    public void NewRound()
     {
         _gm.GameRound++;
-
+        _gm.RoundInfoPanel.gameObject.SetActive(true);
+        _gm.RoundInfoPanel.StartPresentation();
     }
+
+    [PunRPC]
+    public void NewTurn()
+    {
+        while (true)
+        {
+            _gm.CurrentPlayerTurnIndex++;
+            if (_gm.CurrentPlayerTurnIndex >= _gm.BoardPlayers.Length) { 
+                _gm.CurrentPlayerTurnIndex = -1;
+                return;
+            }
+            
+            if (_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex] != null) break;
+        }
+        CamFocusTarget(_gm.CurrentPlayerTurnIndex);
+    }
+
+    [PunRPC]
+    public void OpenPlayerActionPanel(int playerIndex)
+    {
+        _gm.PlayerActionPanel.gameObject.SetActive(true);
+        if (playerIndex == _gm.PlayerIndex)
+        {
+            _gm.PlayerActionPanel.OpenActionPanel();
+        } else
+        {
+            _gm.PlayerActionPanel.OpenInfoPanel();
+        }
+    }
+
+    [PunRPC]
+    public void btnOpenDice(int actionDice)
+    {
+        /* Id | Action      | Default dices quantity
+         * 0    Move            1
+         * 
+         */
+        _gm.DiceAction = (PlayerDiceAction)actionDice;
+        _gm.HostManager.Ply_ThrowDicesAction();
+    }
+
+    [PunRPC]
+    public void OpenDicePanel(int playerIndex, int dicesQuantity) 
+    {
+        _gm.PlayerActionPanel.CloseAll();
+        _gm.DicePanelUI.gameObject.SetActive(true);
+        _gm.DiceResult = 0;
+        _gm.DiceManager.UseDice(playerIndex, dicesQuantity);
+
+        if (playerIndex == _gm.PlayerIndex)
+        {
+            _gm.DiceManager.DicePanel.OpenTurnPanel();
+        }
+        else
+        {
+            _gm.DiceManager.DicePanel.OpenNoTurnPanel();
+        }
+    }
+
+    [PunRPC]
+    public void SentDiceResults(int result) 
+    {
+        _gm.DiceResult = result;
+        _gm.DiceManager.EndAnimationCamera();
+    }
+
 
 }
