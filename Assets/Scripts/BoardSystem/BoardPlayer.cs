@@ -46,8 +46,17 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     public void SetPlayerInfo(int tileOrderX, int tileOrderY)
     {
         TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
+        //Debug.Log("Current Tile Set Info: " + CurrentTilePosition.Order);
         SetTilePosition(tile);
         homeTile = tile;
+    }
+
+
+    public void SetNewCurrentTilePosition(int tileOrderX, int tileOrderY)
+    {
+        TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
+        CurrentTilePosition = tile;
+        Debug.Log("Current Tile: " + CurrentTilePosition.Order);
     }
 
 
@@ -89,12 +98,14 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
         {
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToStandTile(_nextTile);
+            view.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
         }
         if (numOfRoutes > 1)
         {
             //A elecci�n del jugador
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToStandTile(_nextTile);
+            view.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
         }
     }
 

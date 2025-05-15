@@ -21,6 +21,10 @@ public class TileBehaviorScript : MonoBehaviour
     protected virtual void Awake()
     {
         _tileBoard = transform.parent.GetComponent<TileBoard>();
+        for (int i = 0; i < _restPoints.Count; i++)
+        {
+            _restPointDicc[_restPoints[i]] = null;
+        }
     }
 
     protected virtual void Start()
@@ -55,7 +59,7 @@ public class TileBehaviorScript : MonoBehaviour
         return transform.position + _interactionPositionOffset;
     }
 
-    public Vector3 TakeUpFreeSpace(BoardPlayer boardPlayer)
+    public int TakeUpFreeSpaceIndex(BoardPlayer boardPlayer)
     {
         for(int i = 0; i < _restPoints.Count; i++)
         {
@@ -74,18 +78,17 @@ public class TileBehaviorScript : MonoBehaviour
                         }
                     }
                     _restPointDicc[_restPoints[i]] = boardPlayer;
-                    return _restPoints[i];
+                    return i;
                 }
                 //En caso de que el diccionario indique que está ocupado por un jugador, pero se encuentra en otro tile
                 else if (_tileBoard != _restPointDicc[_restPoints[i]].CurrentTilePosition) {
                     _restPointDicc[_restPoints[i]] = boardPlayer;
-                    return _restPoints[i];
+                    return i;
                 } else continue;
-            } else
+            } /*else
             {
-                //En caso de que no exista este key, crea un nuevo (Armando el diccionario)
-                _restPointDicc[_restPoints[i]] = null;
-
+                
+                
                 //Eliminamos si existe este jugador registrado en este tile
                 for (int j = 0; j < _restPoints.Count; j++)
                 {
@@ -95,26 +98,36 @@ public class TileBehaviorScript : MonoBehaviour
                         _restPointDicc[_restPoints[j]] = null;
                     }
                 }
+                //En caso de que no exista este key, crea un nuevo (Armando el diccionario)
+                _restPointDicc[_restPoints[i]] = boardPlayer;
 
-                return _restPoints[i];
-            }
+                return i;
+            }*/
         }
         Debug.LogWarning("No hay espacios libres");
-        return Vector3.zero;
+        return -1;
+    }
+
+    public void SetSpace(BoardPlayer boardPlayer, int spaceIndex)
+    {
+        if (spaceIndex == -1) return;
+        _restPointDicc[_restPoints[spaceIndex]] = boardPlayer;
     }
 
     public void LeaveFreeSpace(BoardPlayer boardPlayer)
     {
+        bool hideProps = true;
         for (int i = 0; i < _restPoints.Count; i++)
         {
             if (_restPointDicc[_restPoints[i]] == boardPlayer)
             {
                 _restPointDicc[_restPoints[i]] = null;
-                return;
+                continue;
             }
+            if (_restPointDicc[_restPoints[i]] != null) hideProps = false;
         }
 
-        Debug.Log("No existe este personaje en descanso");
+        if (hideProps) HideProps();
     }
 
     public Vector3 GetIteractionViewPoint()

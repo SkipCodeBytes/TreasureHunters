@@ -111,6 +111,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
             if (_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex] != null) break;
         }
         _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].IsPlayerTurn = true;
+        //_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].CurrentTilePosition.BehaviorScript.LeaveFreeSpace(_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex]);
         CamFocusTarget(_gm.CurrentPlayerTurnIndex);
     }
 
@@ -180,8 +181,16 @@ public class GameRPC : MonoBehaviourPunCallbacks
         {
             EventManager.TriggerEvent("EndEvent");
         }
-        
     }
 
 
+
+
+    /*
+
+    [PunRPC]
+    public void SyncroPlayerInTilePos(int playerIndex, int tileOrderX, int tileOrderY)
+    {
+
+    }*/
 }

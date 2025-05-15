@@ -110,13 +110,36 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     private void GoToRestInCurrentTile()
     {
         if (_boardPlayer.CurrentTilePosition == null) return;
-        Vector3 restPosition = _boardPlayer.CurrentTilePosition.BehaviorScript.TakeUpFreeSpace(_boardPlayer) + _boardPlayer.CurrentTilePosition.transform.position;
+        int restPosIndex = _boardPlayer.CurrentTilePosition.BehaviorScript.TakeUpFreeSpaceIndex(_boardPlayer);
+        Debug.Log("Lugar " + restPosIndex);
+        Vector3 restPosition = _boardPlayer.CurrentTilePosition.BehaviorScript.RestPoints[restPosIndex] + _boardPlayer.CurrentTilePosition.transform.position;
+        _view.RPC("SyncroEnterRestSpace", RpcTarget.Others, _gm.PlayerIndex, restPosIndex);
         MovePlayerAtPoint(restPosition, false);
         RotatePlayerAtPoint(_boardPlayer.CurrentTilePosition.transform.position, setRestingAnimation);
     }
 
+    [PunRPC]
+    public void SyncroEnterRestSpace(int playerIndex, int restPosIndex)
+    {
+        Debug.Log("Player sincro enter space " + playerIndex);
+        //_boardPlayer.SetPlayerInfo(playerIndex, restPosIndex);
+        if (_gm.BoardPlayers[playerIndex] == null) return;
+        _boardPlayer.CurrentTilePosition.BehaviorScript.SetSpace(_gm.BoardPlayers[playerIndex], restPosIndex);
+    }
 
+    [PunRPC]
+    public void SyncroLeaveRestSpace(int playerIndex)
+    {
+        Debug.Log("Player sincro leave space " + playerIndex);
+        _boardPlayer.CurrentTilePosition.BehaviorScript.LeaveFreeSpace(_gm.BoardPlayers[playerIndex]);
+    }
 
+    [PunRPC]
+    public void SyncroEnterInTile(int tileOrderX, int tileOrderY)
+    {
+        _boardPlayer.SetNewCurrentTilePosition(tileOrderX, tileOrderY);
+        _gm.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)].BehaviorScript.UnhideProps();
+    }
 
 
 

@@ -173,6 +173,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void InitMoventPlayer()
     {
+        boardPlayers[currentPlayerTurnIndex].View.RPC("SyncroLeaveRestSpace", RpcTarget.All, currentPlayerTurnIndex);
         for (int i = 0; i < diceResult; i++)
         {
             if(i == diceResult - 1)

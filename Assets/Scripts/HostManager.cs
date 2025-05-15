@@ -117,7 +117,7 @@ public class HostManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < _gm.BoardPlayers.Length; i++)
             {
                 if (_gm.BoardPlayers[i] == null) continue;
-                _gm.BoardPlayers[i].View.RPC("SetPlayerInfo", _gm.BoardPlayers[i].Player, _gm.HomeTileList[i].Order.x, _gm.HomeTileList[i].Order.y);
+                _gm.BoardPlayers[i].View.RPC("SetPlayerInfo", RpcTarget.All, _gm.HomeTileList[i].Order.x, _gm.HomeTileList[i].Order.y);
                 _gm.BoardPlayers[i].CurrentTilePosition = _gm.HomeTileList[i];
                 _gm.BoardPlayers[i].HomeTile = _gm.HomeTileList[i];
             }
