@@ -5,68 +5,25 @@ using UnityEngine;
 
 public class PlayerRules : MonoBehaviourPunCallbacks
 {
+    [Header("Player Info")]
+    [SerializeField] private int life = 0;
+
     [Header("Config Values")]
     [SerializeField] private List<CharacterData> availableCharacters;
 
-    [Header("Player Info")]
-    [SerializeField] private int life = 0;
-    /*
-    [SerializeField] private int movDices = 1;
-    [SerializeField] private int atkDices = 1;
-    [SerializeField] private int defDices = 1;
-    [SerializeField] private int evaDices = 1;
-    [SerializeField] private int revDices = 1;
-
-    [SerializeField] private int chestDices = 1;
-    [SerializeField] private int trampDices = 1;*/
-
     //Lista de efectos
-    //Lista de gemas
-    //Lista de cartas
-    private BoardPlayer _boardPlayer;
-    private PlayerGraphics _playerGraphics;
+
+    private PlayerManager _pm;
 
     public int Life { get => life; set => life = value; }
 
     private void Awake()
     {
-        _boardPlayer = GetComponent<BoardPlayer>();
-        _playerGraphics = GetComponent<PlayerGraphics>();
+        _pm = GetComponent<PlayerManager>();
     }
 
-    void Start()
-    {
-        if (photonView.IsMine)
-        {
-            photonView.RPC("AssingPlayer", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
-        }
-    }
 
-    [PunRPC]
-    public void AssingPlayer(Player player) {
-        for (int i = 0; i < GameManager.Instance.BoardPlayers.Length; i++) {
-            if (GameManager.Instance.BoardPlayers[i] == null){ 
-                GameManager.Instance.BoardPlayers[i] = _boardPlayer;
-                break;
-            }
-        }
-        _boardPlayer.Player = player;
-        _boardPlayer.SelectedCharacter = findCharacterData(player);
-
-        if (_boardPlayer.SelectedCharacter == null) {
-            Debug.Log("Personaje no registrado");
-            return;
-        }
-        else
-        {
-            _playerGraphics.GeneratePlayerModel();
-            life = _boardPlayer.SelectedCharacter.lifeStat;
-        }
-
-        Debug.Log("Jugador " + player.NickName + " listo");
-    }
-
-    private CharacterData findCharacterData(Player player)
+    public CharacterData FindCharacterData(Player player)
     {
         string selectedCharacter = (string)player.CustomProperties["characterSelected"];
         for (int i = 0; i < availableCharacters.Count; i++)

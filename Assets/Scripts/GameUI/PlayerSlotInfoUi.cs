@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerSlotInfoUi : MonoBehaviour
 {
     [SerializeField] private int playerIndexReference = 0;
-    private BoardPlayer _playerReference;
+    private PlayerManager _playerReference;
     private PlayerRules _playerRules;
     private PlayerInventory _playerInventory;
 
@@ -23,7 +23,7 @@ public class PlayerSlotInfoUi : MonoBehaviour
 
     public void StartChargingPlayerInfo()
     {
-        _playerReference = GameManager.Instance.BoardPlayers[playerIndexReference];
+        _playerReference = GameManager.Instance.PlayersArray[playerIndexReference];
         if (_playerReference == null) return;
         iconCharacterReference.sprite = _playerReference.SelectedCharacter.characterSprite;
 

@@ -1,42 +1,35 @@
-using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Photon.Realtime;
 using Photon.Pun;
 
 public class DiceManager : MonoBehaviour
 {
     [Header("Config Values")]
     [SerializeField] private Camera diceCamera;
+    [SerializeField] private UiDicePanel diceCanvas;
     [SerializeField] private Transform dicePool;
-    [SerializeField] private float separationSpace = 0.5f;
+    [SerializeField] private float separationRadiusBase = 0.5f;
     [SerializeField] private float timeToCheck = 1.2f;
     [SerializeField] float fieldViewToResults = 30f;
     [SerializeField] float transicionTime = 0.3f;
     [SerializeField] float waitViewResultsTime = 1.5f;
-    [SerializeField, HideInInspector] List<int> dicesQuantityForAction = new List<int>();
-    [SerializeField] UiDicePanel dicePanel;
 
     [Header("Check Values")]
     [SerializeField] private float fieldViewCamBase;
     [SerializeField] private float checkTimer = 0;
     [SerializeField] private List<DiceScript> diceList;
-    [SerializeField] List<DiceScript> chosenDice;
+    [SerializeField] List<DiceScript> chosenDiceList;
     [SerializeField] private bool isCheckingResults = false;
     [SerializeField] private int resultValue = 0;
+    [SerializeField] private int ownerPlayerIndex = 0;
 
-    [Header("Test Values")]
-    [SerializeField] int diceQuantityProbe = 1;
-
-    //ORDENAR LOS DADOS DE MANERA CIRCULAR
-
-    public int ResultValue { get => resultValue; set => resultValue = value; }
-    public List<int> DicesQuantityForAction { get => dicesQuantityForAction; set => dicesQuantityForAction = value; }
-    public UiDicePanel DicePanel { get => dicePanel; set => dicePanel = value; }
+    private GameManager _gm;
+    public UiDicePanel DiceCanvas { get => diceCanvas; set => diceCanvas = value; }
 
     void Awake()
     {
+        _gm = GameManager.Instance;
         List<DiceScript> chosenDice = new List<DiceScript>();
         for (int i = 0; i < dicePool.childCount; i++)
         {
@@ -48,14 +41,8 @@ public class DiceManager : MonoBehaviour
 
     private void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            HideDices();
-            UseDice(diceQuantityProbe);
-        }*/
-
-        if (chosenDice.Count > 0 && !isCheckingResults)
+        if (ownerPlayerIndex != _gm.PlayerIndex) return;
+        if (chosenDiceList.Count > 0 && !isCheckingResults)
         {
             CheckDiceStatus();
         }
@@ -70,11 +57,11 @@ public class DiceManager : MonoBehaviour
         {
             isCheckingResults = true;
             resultValue = GetDiceValues();
-            GameManager.Instance.SendDiceResults(resultValue);
+            _gm.GmView.RPC("SentDiceResults", RpcTarget.All, resultValue);
         }
     }
 
-    public void EndAnimationCamera()
+    public void EndAnimationFocusDices()
     {
         StartCoroutine(CinematicAnimation.FieldViewLerp(diceCamera, fieldViewToResults, transicionTime, TransicionFinish));
     }
@@ -88,9 +75,9 @@ public class DiceManager : MonoBehaviour
     private bool AreAllDiceStill()
     {
         bool areAllDiceStill = true;
-        for (int i = 0; i < chosenDice.Count; i++)
+        for (int i = 0; i < chosenDiceList.Count; i++)
         {
-            if (!chosenDice[i].IsItStill || !chosenDice[i].HasBeenRolled)
+            if (!chosenDiceList[i].IsItStill || !chosenDiceList[i].HasBeenRolled)
             {
                 areAllDiceStill = false;
                 break;
@@ -102,9 +89,9 @@ public class DiceManager : MonoBehaviour
     private int GetDiceValues()
     {
         int resultValue = 0;
-        for (int i = 0; i < chosenDice.Count; i++)
+        for (int i = 0; i < chosenDiceList.Count; i++)
         {
-            resultValue += chosenDice[i].DiceValue;
+            resultValue += chosenDiceList[i].DiceValue;
         }
         return resultValue;
     }
@@ -113,59 +100,43 @@ public class DiceManager : MonoBehaviour
     public void HideDices()
     {
         diceCamera.gameObject.SetActive(false);
-        if (chosenDice.Count > 0)
+        if (chosenDiceList.Count > 0)
         {
-            for (int i = 0; i < chosenDice.Count; i++)
+            for (int i = 0; i < chosenDiceList.Count; i++)
             {
-                if (chosenDice[i] == null) return;
-                chosenDice[i].gameObject.SetActive(false);
+                if (chosenDiceList[i] == null) return;
+                chosenDiceList[i].gameObject.SetActive(false);
             }
-            chosenDice.Clear();
+            chosenDiceList.Clear();
         }
         EventManager.TriggerEvent("EndEvent");
     }
 
     public void UseDice(int playerTargetIndex, int quantity = 1)
     {
+        ownerPlayerIndex = playerTargetIndex;
         if (quantity < 1) quantity = 1;
         diceCamera.gameObject.SetActive(true);
         diceCamera.fieldOfView = fieldViewCamBase;
         isCheckingResults = false;
         resultValue = 0;
 
-        //diceList = diceList.OrderBy(x => Random.value).ToList();
-        chosenDice = diceList.Take(quantity).ToList();
+        chosenDiceList = diceList.Take(quantity).ToList();
 
-        int Rows = Mathf.CeilToInt((float)chosenDice.Count / 3f);
-        int currentRow = 0;
-
-        Vector3 dicePosition = Vector3.zero;
-        for (int i = 0; i < chosenDice.Count; i++)
+        float angleSeparation = 360.0f / quantity;
+        float radius = separationRadiusBase + 0.02f * quantity;
+        for (int i = 0; i < chosenDiceList.Count; i++)
         {
-            if ((i % 3 == 0) && (i != 0)) currentRow++;
-            if (chosenDice[i] == null) continue;
-            chosenDice[i].gameObject.SetActive(true);
-            chosenDice[i].resetDice(new Vector3(separationSpace * (i - (currentRow * 3)), 0, currentRow * separationSpace));
-            chosenDice[i].ChangeOwner(playerTargetIndex);
-            /*
-            if(playerTargetIndex == GameManager.Instance.PlayerIndex)
-            {
-                for (int j = 0; j < chosenDice[i].transform.childCount; j++)
-                {
-                    chosenDice[i].transform.GetChild(j).gameObject.SetActive(true);
-                } 
-            }
-            else
-            {
-                for (int j = 0; j < chosenDice[i].transform.childCount; j++)
-                {
-                    chosenDice[i].transform.GetChild(j).gameObject.SetActive(false);
-                }
-            }*/
-        }
+            if (chosenDiceList[i] == null) continue;
 
-        int Columns = quantity > 3 ? 3 : quantity;
-        dicePool.localPosition = new Vector3(-(Columns - 1) * separationSpace / 2, dicePool.localPosition.y, (-(Rows - 1) * separationSpace / 2) - 0.1f);
+            float angleDeg = angleSeparation * i;
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+
+            Vector3 position = new Vector3(Mathf.Cos(angleRad) * radius, 0f, Mathf.Sin(angleRad) * radius);
+            chosenDiceList[i].gameObject.SetActive(true);
+            chosenDiceList[i].ResetDice(position);
+            chosenDiceList[i].ChangeOwner(playerTargetIndex);
+        }
     }
 
 }

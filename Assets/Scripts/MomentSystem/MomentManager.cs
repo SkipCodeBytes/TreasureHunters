@@ -4,8 +4,8 @@ using UnityEngine;
 public class MomentManager : MonoBehaviour
 {
     [Header("Moment Systems")]
-    [SerializeField] private GameMoment currentMoment;
-    [SerializeField] private List<GameMoment> momentList;
+    [SerializeField] private Moment currentMoment;
+    [SerializeField] private List<Moment> momentList;
 
     [SerializeField] private bool isMomentRunnning = false;
     [SerializeField] private bool isWaitingForEvent = false;
@@ -16,8 +16,8 @@ public class MomentManager : MonoBehaviour
     [Header("Debug and Testing options")]
     [SerializeField] private bool stepMomentMode = false;
 
-    public GameMoment CurrentMoment { get => currentMoment; set => currentMoment = value; }
-    public List<GameMoment> MomentList { get => momentList; set => momentList = value; }
+    public Moment CurrentMoment { get => currentMoment; set => currentMoment = value; }
+    public List<Moment> MomentList { get => momentList; set => momentList = value; }
     public bool IsMomentRunnning { get => isMomentRunnning; set => isMomentRunnning = value; }
     public bool IsWaitingForEvent { get => isWaitingForEvent; set => isWaitingForEvent = value; }
     public bool IsWaitingForSyncro { get => isWaitingForSyncro; set => isWaitingForSyncro = value; }
@@ -55,7 +55,7 @@ public class MomentManager : MonoBehaviour
     }
 
     //Cancela un momento para ir por otro
-    public void ReplaceCurrentMoment(GameMoment gameMoment)
+    public void ReplaceCurrentMoment(Moment gameMoment)
     {
         isMomentRunnning = false;
         momentList.Insert(0, gameMoment);
@@ -63,7 +63,7 @@ public class MomentManager : MonoBehaviour
     }
 
     //Pospone el momento actual para ir por otro
-    public void InterveneCurrentMoment(GameMoment gameMoment)
+    public void InterveneCurrentMoment(Moment gameMoment)
     {
         isMomentRunnning = false;
         momentList.Insert(0, currentMoment);

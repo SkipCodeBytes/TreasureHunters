@@ -23,21 +23,18 @@ public class GameBoardManager : MonoBehaviour
         recoverGameBoard();
     }
 
+#if UNITY_EDITOR
     public void DeleteAllTiles()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
-#if UNITY_EDITOR
             DestroyImmediate(transform.GetChild(0).gameObject);
-#else
-            Destroy(transform.GetChild(0).gameObject);
-#endif
         }
     }
+#endif
 
     public void recoverGameBoard()
     {
-        Debug.Log("Recuperando Datos");
         //Reposicionamos tiles, eliminamos posibles duplicados y elementos que no pertenecen a la lógica del GameBoard
         _tileDicc.Clear();
         foreach (Transform child in transform)

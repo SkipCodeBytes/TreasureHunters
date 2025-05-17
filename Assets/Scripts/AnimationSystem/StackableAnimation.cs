@@ -1,8 +1,5 @@
 using System;
-using System.Drawing;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [System.Serializable]
 public class StackableAnimation
@@ -30,7 +27,7 @@ public class StackableAnimation
     public Action InitCallback { get => _initCallback; set => _initCallback = value; }
     public Action EndCallback { get => _endCallback; set => _endCallback = value; }
 
-    public StackableAnimation(MonoBehaviour runnerScript,AnimationType type, Transform affected, Vector3 target, float speed, Action initCallback = null, Action endCallback = null)
+    public StackableAnimation(MonoBehaviour runnerScript, AnimationType type, Transform affected, Vector3 target, float speed, Action initCallback = null, Action endCallback = null)
     {
         _runnerScript = runnerScript;
         _animationType = type;
@@ -39,8 +36,6 @@ public class StackableAnimation
         _speed = speed;
         _initCallback = initCallback;
         _endCallback = endCallback;
-
-        //initCallback solo se va a activar cuando se hayan cumplido las condiciones mínimas para realizar el movimiento (Rotaciones Extremadamente corta, movimiento en la misma posición, omite este callaback)
     }
 
     public void LaunchAnimation()
@@ -51,34 +46,52 @@ public class StackableAnimation
         switch (_animationType)
         {
             case AnimationType.RotateTo:
+
+                //Comprobamos si hay rotación mínima, de lo contrario, se omite el _initCallback
                 Vector3 direction = (_target - _affectedTransform.position).normalized;
                 if (direction != Vector3.zero)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
                     float angleDifference = Quaternion.Angle(_affectedTransform.rotation, targetRotation);
-                    if (angleDifference > 0.1f)
+                    if (angleDifference > 0.1f) { 
+                        _initCallback?.Invoke();
+                        _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.RotateToWorldPoint(_affectedTransform, _target, _speed, FinishAnimation));
+                    } else
                     {
-                        if (_initCallback != null) { _initCallback?.Invoke(); }
+                        FinishAnimation();
                     }
+                } else
+                {
+                    FinishAnimation();
                 }
-                _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.RotateToPoint(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
+
 
             case AnimationType.MoveTo:
+
+                //Comprobamos si hay distancia mínima, de lo contrario, se omite el _initCallback
                 float distance = Vector3.Distance(_affectedTransform.position, _target);
-                if(distance > 0.1f) { if (_initCallback != null) { _initCallback?.Invoke(); } }
-                _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.Move(_affectedTransform, _target, _speed, FinishAnimation));
+                if(distance > 0.1f) { 
+                    _initCallback?.Invoke();
+                    _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.MoveTowardTheTargetAt(_affectedTransform, _target, _speed, FinishAnimation));
+                } else
+                {
+                    FinishAnimation();
+                }
                 break;
 
+
             case AnimationType.ParabolicMotion:
-                if (_initCallback != null) { _initCallback?.Invoke(); }
+                _initCallback?.Invoke();
                 _coroutineReference = _runnerScript.StartCoroutine(CinematicAnimation.ParabolicMotion(_affectedTransform, _target, _speed, FinishAnimation));
                 break;
+
 
             default:
                 break;
         }
     }
+
 
     private void FinishAnimation()
     {

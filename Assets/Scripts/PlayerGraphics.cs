@@ -1,25 +1,24 @@
 using Photon.Pun;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Splines;
 
 public class PlayerGraphics : MonoBehaviourPunCallbacks
 {
     private GameManager _gm;
-    private BoardPlayer _boardPlayer;
+    private PlayerManager _pm;
     private Animator _animator;
+
+    [Header("Player Config")]
 
     [SerializeField] private float walkSpeed = 0.5f;
     [SerializeField] private float runSpeed = 1f;
     [SerializeField] private float rotationSpeed = 1f;
 
-    //[SerializeField] private 
+    [Header("Player Values - ReadOnly")]
 
-    private int animStatus = 0;
-    private int previusAnimation = 0;
+    [SerializeField] private int animStatus = 0;
+    [SerializeField] private int previusAnimation = 0;
 
     [SerializeField] private bool isResting = false;
     [SerializeField] private bool isWalking = false;
@@ -28,8 +27,8 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
     [SerializeField] private List<StackableAnimation> stackableAnimations = new List<StackableAnimation>();
 
-    //private Coroutine _currentAnimationCourutine;
-    private PhotonView _view;
+    public int AnimStatus { get => animStatus; set => animStatus = value; }
+
     /*
      * 0 - Idle
      * 1 - Walk
@@ -44,109 +43,77 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        _boardPlayer = GetComponent<BoardPlayer>();
-        _view = GetComponent<PhotonView>();
+        _pm = GetComponent<PlayerManager>();
         _gm = GameManager.Instance;
     }
 
     private void Update()
     {
-        if (_view.IsMine)
+        if (_pm.View.IsMine)
         {
-            //Stackeable Animation Cycle
-
-            if (stackableAnimations.Count > 0)
-            {
-                if (!stackableAnimations[0].IsInProgress)
-                {
-                    if (stackableAnimations[0].IsUsed)
-                    {
-                        stackableAnimations.RemoveAt(0);
-                        return;
-                    }
-                    else
-                    {
-                        stackableAnimations[0].LaunchAnimation();
-                    }
-                }
-            }
-
-
-            if (_boardPlayer.IsPlayerTurn)
-            {
-                isResting = false;
-            }
-            else //if (stackableAnimations.Count == 0)
-            {
-                if (!isWalking)
-                {
-                    if (!isRotating)
-                    {
-                        if (!isResting)
-                        {
-                            GoToRestInCurrentTile();
-                        }
-                    }
-                }
-            }
-
+            StackeableAnimationCycle();
+            AnimationLogic();
+            GenerateAnimStatus();
         }
 
-        animatePlayer();
+        if (_animator != null) _animator.SetInteger("State", animStatus);
     }
 
 
 
     public GameObject GeneratePlayerModel()
     {
-        GameObject character = Instantiate(_boardPlayer.SelectedCharacter.characterPrefab, transform.position, transform.rotation, transform);
+        GameObject character = Instantiate(_pm.SelectedCharacter.characterPrefab, transform.position, transform.rotation, transform);
         _animator = character.GetComponent<Animator>();
         return character;
     }
 
 
-
-
-    private void GoToRestInCurrentTile()
+    private void StackeableAnimationCycle()
     {
-        if (_boardPlayer.CurrentTilePosition == null) return;
-        int restPosIndex = _boardPlayer.CurrentTilePosition.BehaviorScript.TakeUpFreeSpaceIndex(_boardPlayer);
-        Debug.Log("Lugar " + restPosIndex);
-        Vector3 restPosition = _boardPlayer.CurrentTilePosition.BehaviorScript.RestPoints[restPosIndex] + _boardPlayer.CurrentTilePosition.transform.position;
-        _view.RPC("SyncroEnterRestSpace", RpcTarget.Others, _gm.PlayerIndex, restPosIndex);
-        MovePlayerAtPoint(restPosition, false);
-        RotatePlayerAtPoint(_boardPlayer.CurrentTilePosition.transform.position, setRestingAnimation);
+        if (stackableAnimations.Count > 0)
+        {
+            if (!stackableAnimations[0].IsInProgress)
+            {
+                if (stackableAnimations[0].IsUsed)
+                {
+                    stackableAnimations.RemoveAt(0);
+                    return;
+                }
+                else
+                {
+                    stackableAnimations[0].LaunchAnimation();
+                }
+            }
+        }
     }
 
-    [PunRPC]
-    public void SyncroEnterRestSpace(int playerIndex, int restPosIndex)
+    private void AnimationLogic()
     {
-        Debug.Log("Player sincro enter space " + playerIndex);
-        //_boardPlayer.SetPlayerInfo(playerIndex, restPosIndex);
-        if (_gm.BoardPlayers[playerIndex] == null) return;
-        _boardPlayer.CurrentTilePosition.BehaviorScript.SetSpace(_gm.BoardPlayers[playerIndex], restPosIndex);
+
+        if (_pm.IsPlayerTurn)
+        {
+            isResting = false;
+        }
+        else 
+        {
+            if (!isWalking)
+            {
+                if (!isRotating)
+                {
+                    if (!isResting)
+                    {
+                        GoToRestInCurrentTile();
+                    }
+                }
+            }
+        }
     }
 
-    [PunRPC]
-    public void SyncroLeaveRestSpace(int playerIndex)
-    {
-        Debug.Log("Player sincro leave space " + playerIndex);
-        _boardPlayer.CurrentTilePosition.BehaviorScript.LeaveFreeSpace(_gm.BoardPlayers[playerIndex]);
-    }
-
-    [PunRPC]
-    public void SyncroEnterInTile(int tileOrderX, int tileOrderY)
-    {
-        _boardPlayer.SetNewCurrentTilePosition(tileOrderX, tileOrderY);
-        _gm.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)].BehaviorScript.UnhideProps();
-    }
-
-
-
-    private void animatePlayer()
+    private void GenerateAnimStatus()
     {
         if (_animator == null) return;
-        if (_view.IsMine)
+        if (_pm.View.IsMine)
         {
             animStatus = 0;
             if (isWalking) animStatus = 1;
@@ -154,23 +121,33 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
             if (isResting) animStatus = 3;
             if (isRotating) animStatus = 8;
 
-            if(previusAnimation != animStatus)
+            if (previusAnimation != animStatus)
             {
                 previusAnimation = animStatus;
-                _view.RPC("SyncAnimation", RpcTarget.Others, animStatus);
+                _pm.View.RPC("SyncroAnimStatus", RpcTarget.Others, animStatus);
             }
         }
-
-        _animator.SetInteger("State", animStatus);
     }
 
 
 
 
+    //Comportamiento automático:
+
+    private void GoToRestInCurrentTile()
+    {
+        if (_pm.BoardPlayer.CurrentTilePosition == null) return;
+        int restPosIndex = _pm.BoardPlayer.CurrentTilePosition.TileBehavior.TakeUpFreeSpaceIndex(_pm.BoardPlayer);
+        Debug.Log("Lugar " + restPosIndex);
+        Vector3 restPosition = _pm.BoardPlayer.CurrentTilePosition.TileBehavior.RestPoints[restPosIndex] + _pm.BoardPlayer.CurrentTilePosition.transform.position;
+        _pm.View.RPC("SyncroEnterRestSpace", RpcTarget.Others, _gm.PlayerIndex, restPosIndex);
+        MovePlayerAtPoint(restPosition, false);
+        RotatePlayerAtPoint(_pm.BoardPlayer.CurrentTilePosition.transform.position, setRestingAnimation);
+    }
+    
 
 
-
-
+    //Asignar estados
 
     public void ClearAnimationStatus()
     {
@@ -178,7 +155,6 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         isResting = false;
         isRunning = false;
         isRotating = false;
-        //if (_currentAnimationCourutine != null) StopCoroutine(_currentAnimationCourutine);
     }
 
     private void setWalkingAnimation()
@@ -208,7 +184,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
 
 
-    //GENERAL TRANSFORM
+    //GENERAL ORDERS - Se pueden dar varias órdenes, se apilarán y ejecutarán en orden
 
     public void MovePlayerAtPoint(Vector3 Point, bool running = true, Action callback = null)
     {
@@ -226,8 +202,6 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         stackableAnimations.Add(new StackableAnimation(this, AnimationType.MoveTo, gameObject.transform, Point, moventSpeed, init, callback));
     }
 
-
-
     public void RotatePlayerAtPoint(Vector3 Point, Action callback = null)
     {
         Vector3 target = new Vector3(Point.x, transform.position.y, Point.z);
@@ -236,6 +210,4 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
 
 
 
-    [PunRPC]
-    private void SyncAnimation(int newAnimStatus) => animStatus = newAnimStatus;
 }

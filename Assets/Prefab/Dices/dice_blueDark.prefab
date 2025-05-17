@@ -327,6 +327,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
       objectReference: {fileID: 0}
@@ -371,6 +383,10 @@ PrefabInstance:
       value: dice_blueDark
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -405,6 +421,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
       insertIndex: -1
       addedObject: {fileID: 536782569845517063}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8664170588158935116}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2674176002029445699}
   m_SourcePrefab: {fileID: 100100000, guid: 59dbd7816e141534e9a1d96029953398, type: 3}
 --- !u!4 &3728272186505526070 stripped
 Transform:
@@ -481,8 +503,66 @@ MonoBehaviour:
     m_Bits: 64
   checkOriginPoint: {x: 0, y: 0.2, z: 0}
   CheckSize: 0.24
-  diceValue: 0
-  _hasBeenRolled: 0
-  sideColliders: []
   force: 1
   torque: 0.02
+  diceValue: 0
+  hasBeenRolled: 0
+  isSelected: 0
+  isItStill: 0
+  sideColliders: []
+--- !u!114 &8664170588158935116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104656541281493388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 2
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 2674176002029445699}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &2674176002029445699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104656541281493388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 0.1
+    InterpolateOption: 3
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 720
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0

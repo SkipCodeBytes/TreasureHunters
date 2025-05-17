@@ -22,7 +22,6 @@ public class DiceScript : MonoBehaviourPunCallbacks
     [SerializeField] private bool isSelected = false;
     [SerializeField] private bool isItStill = false;
     [SerializeField] private List<BoxCollider> sideColliders;
-    //[SerializeField] private bool isInteractuable = false;
 
     private PhotonView _diceView;
     private Vector2 LaunchDirection;
@@ -44,7 +43,7 @@ public class DiceScript : MonoBehaviourPunCallbacks
         {
             sideColliders.Add(transform.GetChild(i).GetComponent<BoxCollider>());
         }
-        resetDice(Vector3.zero);
+        ResetDice(Vector3.zero);
     }
 
     void Update()
@@ -85,7 +84,7 @@ public class DiceScript : MonoBehaviourPunCallbacks
         }
     }
 
-    public void resetDice(Vector3 initPosition)
+    public void ResetDice(Vector3 initPosition) 
     {
         staticPosition = initPosition;
         transform.localPosition = staticPosition;
@@ -107,8 +106,8 @@ public class DiceScript : MonoBehaviourPunCallbacks
     [PunRPC]
     private void TransferOwner(int newOwnerIndex)
     {
-        Debug.Log("Nuevo Propietario de dados: " + GameManager.Instance.BoardPlayers[newOwnerIndex].Player.NickName);
-        photonView.TransferOwnership(GameManager.Instance.BoardPlayers[newOwnerIndex].Player);
+        Debug.Log("Nuevo Propietario de dados: " + GameManager.Instance.PlayersArray[newOwnerIndex].Player.NickName);
+        photonView.TransferOwnership(GameManager.Instance.PlayersArray[newOwnerIndex].Player);
     }
 
     private void OnMouseDown()

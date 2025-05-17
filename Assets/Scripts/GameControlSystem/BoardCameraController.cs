@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CameramanScript : MonoBehaviour
+public class BoardCameraController : MonoBehaviour
 {
     [SerializeField] private float timeToFocus = 0.8f;
     [SerializeField] private Vector3 panoramicViewPosition = Vector3.zero;
@@ -28,7 +28,7 @@ public class CameramanScript : MonoBehaviour
             _moveCoorutine = null;
         }
         if (isInmediate) gameObject.transform.position = panoramicViewPosition;
-        else _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTo(gameObject, panoramicViewPosition, timeToFocus, focusComplete));
+        else _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, panoramicViewPosition, timeToFocus, focusComplete));
     }
 
     public void FocusTarget(GameObject target)
@@ -40,7 +40,7 @@ public class CameramanScript : MonoBehaviour
             StopCoroutine(_moveCoorutine);
             _moveCoorutine = null;
         }
-        _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTo(gameObject, target.transform.position, timeToFocus, focusComplete));
+        _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, target.transform.position, timeToFocus, focusComplete));
     }
 
     private void focusComplete()

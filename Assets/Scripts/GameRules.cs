@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameRules : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    
-    // Update is called once per frame
+    [SerializeField, HideInInspector] List<int> dicesQuantityForAction = new List<int>();
+    public List<int> DicesQuantityForAction { get => dicesQuantityForAction; set => dicesQuantityForAction = value; }
+
     void Update()
     {
         

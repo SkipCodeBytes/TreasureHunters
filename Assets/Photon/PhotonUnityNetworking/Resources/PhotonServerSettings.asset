@@ -73,6 +73,15 @@ MonoBehaviour:
   - SyncroEnterRestSpace
   - SyncroLeaveRestSpace
   - SyncroEnterInTile
+  - OpenTileEvent
+  - OpenCurrentTileEvent
+  - SentItemsIDs
+  - SetPlayerHomeTile
+  - SharePlayerReady
+  - SyncAnimStatus
+  - SyncroCurrentTilePos
+  - OpenDiceForAction
+  - SyncroAnimStatus
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

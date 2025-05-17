@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class TrampTile : TileBehaviorScript
+public class TrampTile : TileBehavior
 {
     protected override void Start()
     {
         base.Start();
     }
-    public override void ApplyTileEffect()
+    public override void StartTileEvent()
     {
-        base.ApplyTileEffect();
+        base.StartTileEvent();
     }
 }

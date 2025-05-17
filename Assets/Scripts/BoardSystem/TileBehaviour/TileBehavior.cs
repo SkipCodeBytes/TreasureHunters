@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class TileBehaviorScript : MonoBehaviour
+public class TileBehavior : MonoBehaviour
 {
     [SerializeField] private Vector3 _interactionPositionOffset = Vector3.zero;
     [SerializeField] private float _interactionViewRotation = 0f;
@@ -21,10 +21,7 @@ public class TileBehaviorScript : MonoBehaviour
     protected virtual void Awake()
     {
         _tileBoard = transform.parent.GetComponent<TileBoard>();
-        for (int i = 0; i < _restPoints.Count; i++)
-        {
-            _restPointDicc[_restPoints[i]] = null;
-        }
+        for (int i = 0; i < _restPoints.Count; i++) _restPointDicc[_restPoints[i]] = null;
     }
 
     protected virtual void Start()
@@ -32,15 +29,10 @@ public class TileBehaviorScript : MonoBehaviour
         HideProps();
     }
 
-    public virtual void ApplyTileEffect()
-    {
-        UnhideProps();
-        Debug.Log("Aplicando efecto");
-    }
 
     public void HideProps()
     {
-        for(int i = 0; i < _hideableProps.Count; i++)
+        for (int i = 0; i < _hideableProps.Count; i++)
         {
             _hideableProps[i].SetActive(false);
         }
@@ -54,18 +46,29 @@ public class TileBehaviorScript : MonoBehaviour
         }
     }
 
-    public Vector3 GetInteractionPosition()
+
+
+
+    //Se llama cuando el jugador llega a un tile / Ejemplo: El jugador llega al ChestTile
+    public virtual void StartTileEvent()
     {
-        return transform.position + _interactionPositionOffset;
+        UnhideProps();
     }
 
+    //Se llama cuando el tile aplica el efecto / Ejemplo: El ChestTile responde luego de lanzar dados
+    public virtual void ApplyTileEvent()
+    {
+        Debug.Log("Aplicando efecto");
+    }
+
+    //Asigna y devuelve el index del espacio libre que ocupa
     public int TakeUpFreeSpaceIndex(BoardPlayer boardPlayer)
     {
         for(int i = 0; i < _restPoints.Count; i++)
         {
             if (_restPointDicc.ContainsKey(_restPoints[i]))
             {
-                //Buscamos un espcio libre
+                //Buscamos un espacio libre
                 if (_restPointDicc[_restPoints[i]] == null) {
 
                     //Eliminamos si existe este jugador registrado en este tile
@@ -85,35 +88,20 @@ public class TileBehaviorScript : MonoBehaviour
                     _restPointDicc[_restPoints[i]] = boardPlayer;
                     return i;
                 } else continue;
-            } /*else
-            {
-                
-                
-                //Eliminamos si existe este jugador registrado en este tile
-                for (int j = 0; j < _restPoints.Count; j++)
-                {
-                    if (!_restPointDicc.ContainsKey(_restPoints[j])) continue;
-                    if (_restPointDicc[_restPoints[j]] == boardPlayer)
-                    {
-                        _restPointDicc[_restPoints[j]] = null;
-                    }
-                }
-                //En caso de que no exista este key, crea un nuevo (Armando el diccionario)
-                _restPointDicc[_restPoints[i]] = boardPlayer;
-
-                return i;
-            }*/
+            }
         }
         Debug.LogWarning("No hay espacios libres");
         return -1;
     }
 
+    //Solo asigna, se usa solo en el momento de sincronizar este dato
     public void SetSpace(BoardPlayer boardPlayer, int spaceIndex)
     {
         if (spaceIndex == -1) return;
         _restPointDicc[_restPoints[spaceIndex]] = boardPlayer;
     }
 
+    //Deja libre el espacio de descanso
     public void LeaveFreeSpace(BoardPlayer boardPlayer)
     {
         bool hideProps = true;
@@ -128,6 +116,14 @@ public class TileBehaviorScript : MonoBehaviour
         }
 
         if (hideProps) HideProps();
+    }
+
+
+
+
+    public Vector3 GetInteractionPosition()
+    {
+        return transform.position + _interactionPositionOffset;
     }
 
     public Vector3 GetIteractionViewPoint()

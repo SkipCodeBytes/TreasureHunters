@@ -1,13 +1,12 @@
-using UnityEngine;
 using UnityEditor;
-using UnityGameBoard.Tiles;
+using UnityEngine;
 
-[CustomEditor(typeof(DiceManager))]
-public class DiceManagerEditor : Editor
+[CustomEditor(typeof(GameRules))]
+public class GameRulesEditor : Editor
 {
     public override void OnInspectorGUI()
-    { 
-        DiceManager _myDiceManager = (DiceManager)target;
+    {
+        GameRules _myGameRules = (GameRules)target;
         base.OnInspectorGUI();
 
         GUILayout.Space(10);
@@ -19,13 +18,13 @@ public class DiceManagerEditor : Editor
             GUILayout.Space(15);
             GUILayout.Label(System.Enum.GetNames(typeof(PlayerDiceAction))[i]);
             GUILayout.FlexibleSpace();
-            if (_myDiceManager.DicesQuantityForAction.Count < i + 1) _myDiceManager.DicesQuantityForAction.Add(0);
-            _myDiceManager.DicesQuantityForAction[i] = EditorGUILayout.IntField(_myDiceManager.DicesQuantityForAction[i]);
+            if (_myGameRules.DicesQuantityForAction.Count < i + 1) _myGameRules.DicesQuantityForAction.Add(0);
+            _myGameRules.DicesQuantityForAction[i] = EditorGUILayout.IntField(_myGameRules.DicesQuantityForAction[i]);
             GUILayout.EndHorizontal();
 
             if (GUI.changed)
             {
-                EditorUtility.SetDirty(_myDiceManager);
+                EditorUtility.SetDirty(_myGameRules);
             }
         }
     }

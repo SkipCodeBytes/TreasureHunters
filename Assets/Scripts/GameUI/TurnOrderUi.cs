@@ -20,7 +20,7 @@ public class TurnOrderUi : MonoBehaviour
 
     [SerializeField] private float timeToClosePanel;
 
-    private List<BoardPlayer> playerOrder = new List<BoardPlayer>();
+    private List<PlayerManager> playerOrder = new List<PlayerManager>();
 
     private Image viewPanelImage;
     private Color _currentColorCanvas;
@@ -38,20 +38,20 @@ public class TurnOrderUi : MonoBehaviour
         _currentColorCanvas = viewPanelImage.color;
         viewPanelImage.color = new Color(_currentColorCanvas.r, _currentColorCanvas.g, _currentColorCanvas.b, 0f);
         viewPanel.SetActive(true);
-        StartCoroutine(CinematicAnimation.ImageAlphaLerp(viewPanelImage, _currentColorCanvas.a, transicionTime, showTittle));
+        StartCoroutine(CinematicAnimation.UiImageAlphaLerp(viewPanelImage, _currentColorCanvas.a, transicionTime, showTittle));
         setSlotValues();
     }
 
     private void setSlotValues()
     {
-        for(int i = 0; i < GameManager.Instance.BoardPlayers.Length; i++)
+        for(int i = 0; i < GameManager.Instance.PlayersArray.Length; i++)
         {
-            if (GameManager.Instance.BoardPlayers[i] != null)
+            if (GameManager.Instance.PlayersArray[i] != null)
             {
-                playerOrder.Add(GameManager.Instance.BoardPlayers[i]);
+                playerOrder.Add(GameManager.Instance.PlayersArray[i]);
             }
         }
-        Debug.Log("Players: " + GameManager.Instance.BoardPlayers.Length);
+        Debug.Log("Players: " + GameManager.Instance.PlayersArray.Length);
         Debug.Log("Players: " + playerOrder.Count);
     }
 
@@ -60,7 +60,7 @@ public class TurnOrderUi : MonoBehaviour
         string defaultTxt = tittle.text;
         tittle.text = "";
         tittlePanel.SetActive(true);
-        StartCoroutine(CinematicAnimation.TextTypewriter(tittle, defaultTxt, timeBetweenWrite, showPlayerSlot));
+        StartCoroutine(CinematicAnimation.UiTextTypewriter(tittle, defaultTxt, timeBetweenWrite, showPlayerSlot));
     }
 
     private void showPlayerSlot()
@@ -72,7 +72,7 @@ public class TurnOrderUi : MonoBehaviour
         playerSlots[_indexView].SetActive(true);
 
         StartCoroutine(CinematicAnimation.WaitTime(playerSlotsTransicionTime / 2f, setTextPlayerOrder));
-        StartCoroutine(CinematicAnimation.EulerRotation(playerSlots[_indexView].transform, eulerRotationAnim, playerSlotsTransicionTime, showPlayerSlot));
+        StartCoroutine(CinematicAnimation.EulerRotationFor(playerSlots[_indexView].transform, eulerRotationAnim, playerSlotsTransicionTime, showPlayerSlot));
         _indexView++;
     }
 
@@ -87,12 +87,12 @@ public class TurnOrderUi : MonoBehaviour
     private void displacePanel()
     {
         Vector2 displacePoint = new Vector2(Screen.width * 2, 0f);
-        StartCoroutine(CinematicAnimation.MoveTo(desplazablePanel, displacePoint, displaceTime, hidePanel));
+        StartCoroutine(CinematicAnimation.UiMoveTo(desplazablePanel, displacePoint, displaceTime, hidePanel));
     }
 
     private void hidePanel()
     {
-        StartCoroutine(CinematicAnimation.ImageAlphaLerp(viewPanelImage, 0f, transicionTime, closeCanvas));
+        StartCoroutine(CinematicAnimation.UiImageAlphaLerp(viewPanelImage, 0f, transicionTime, closeCanvas));
     }
 
     private void closeCanvas()

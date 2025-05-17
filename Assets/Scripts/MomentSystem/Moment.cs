@@ -2,25 +2,19 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class GameMoment
+public class Moment
 {
-    static private int autoIncrementId = 0;
-
-    //[SerializeField] private int _momentId;
     [SerializeField] private string _momentName;
     private Action _momentAction;
     private bool _continueAction = true;
 
-    //public int MomentId { get => _momentId; }
     public string MomentName { get => _momentName; }
     public Action MomentAction { get => _momentAction; }
 
-    public GameMoment(Action action)
+    public Moment(Action action)
     {
         this._momentName = action.Method.Name;
         this._momentAction = action;
-        //this._momentId = autoIncrementId++;
-        //Peligro de desborde
     }
 
     public void PlayMoment()

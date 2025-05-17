@@ -54,6 +54,15 @@ MonoBehaviour:
   - {x: 0.75, y: 0, z: -0.75}
   - {x: -0.75, y: 0, z: 0.75}
   - {x: -0.75, y: 0, z: -0.75}
+  _Rewards:
+  - _probabilityRange: {x: 0, y: 5}
+    _rewards: 00000000
+  - _probabilityRange: {x: 6, y: 9}
+    _rewards: 0000000002000000
+  - _probabilityRange: {x: 10, y: 11}
+    _rewards: 000000000200000003000000
+  - _probabilityRange: {x: 12, y: 30}
+    _rewards: 00000000020000000300000001000000
 --- !u!1001 &4133407100724661447
 PrefabInstance:
   m_ObjectHideFlags: 0

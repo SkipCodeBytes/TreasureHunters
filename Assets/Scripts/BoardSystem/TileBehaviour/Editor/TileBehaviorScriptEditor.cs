@@ -4,10 +4,10 @@ using UnityEditor;
 //[CustomEditor(typeof(BasicTileScript))]
 public class TileBehaviorScriptEditor : Editor
 {
-    private TileBehaviorScript _basicTileScript;
+    private TileBehavior _basicTileScript;
     public override void OnInspectorGUI()
     {
-        _basicTileScript = (TileBehaviorScript)target;
+        _basicTileScript = (TileBehavior)target;
         DrawDefaultInspector();
 
         if (GUILayout.Button("Generate default lists"))

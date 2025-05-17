@@ -7,7 +7,7 @@ public class GuestManager : MonoBehaviourPunCallbacks
     private GameManager _gm;
 
     [Header("Check Values")]
-    [SerializeField] private bool isCicleEnabled = true;
+    [SerializeField] private bool isCicleEnabled = false;
 
     private void Awake()
     {
@@ -17,6 +17,7 @@ public class GuestManager : MonoBehaviourPunCallbacks
     public void Init()
     {
         ConfigEventListeners();
+        isCicleEnabled = true;
     }
 
     private void Update()

@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class CardTile : TileBehaviorScript
+public class CardTile : TileBehavior
 {
     protected override void Start()
     {
         base.Start();
     }
 
-    public override void ApplyTileEffect()
+    public override void StartTileEvent()
     {
-        base.ApplyTileEffect();
+        base.StartTileEvent();
     }
 }

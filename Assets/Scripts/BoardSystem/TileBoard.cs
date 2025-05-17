@@ -13,50 +13,38 @@ public class TileBoard : MonoBehaviour
     [SerializeField] private List<TileBoard> previusTiles = new List<TileBoard>();
     [SerializeField] private List<TileBoard> nextTiles = new List<TileBoard>();
 
-    private TileBehaviorScript _behaviorScript;
+    private TileBehavior _tileBehavior;
 
     public Vector2Int Order { get => _order; set => _order = value; }
     public TileType Type { get => _type; set => _type = value; }
     public List<TileBoard> PreviusTiles { get => previusTiles; set => previusTiles = value; }
     public List<TileBoard> NextTiles { get => nextTiles; set => nextTiles = value; }
-    public TileBehaviorScript BehaviorScript { get => _behaviorScript; set => _behaviorScript = value; }
+    public TileBehavior TileBehavior { get => _tileBehavior; set => _tileBehavior = value; }
 
     private void Awake()
     {
-        _behaviorScript = transform.GetComponentInChildren<TileBehaviorScript>();
+        _tileBehavior = transform.GetComponentInChildren<TileBehavior>();
     }
 
-
+#if UNITY_EDITOR
     public void GenerateTileType()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
-#if UNITY_EDITOR
             DestroyImmediate(transform.GetChild(0).gameObject);
-#else
-            Destroy(transform.GetChild(0).gameObject);
-#endif
         }
         GameBoardManager _gameBoard = transform.parent.GetComponent<GameBoardManager>();
-        if (System.Enum.GetValues(typeof(TileType)).Length > 0)
+        if (Enum.GetValues(typeof(TileType)).Length > 0)
         {
             if (_gameBoard.TilesPrefab[(int)Type] != null)
             {
-#if UNITY_EDITOR
                 GameObject newTile = (GameObject)PrefabUtility.InstantiatePrefab(_gameBoard.TilesPrefab[(int)Type], transform);
                 newTile.transform.position = transform.position;
                 newTile.transform.rotation = transform.rotation;
-#else
-                
-                GameObject newTile = Instantiate(_gameBoard.TilesPrefab[(int)Type], transform);
-                newTile.transform.position = transform.position;
-                newTile.transform.rotation = transform.rotation;
-#endif
             }
         }
     }
 
-#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         float arrowSize = 1f;

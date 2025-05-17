@@ -12,8 +12,10 @@ GameObject:
   - component: {fileID: 7607830936461892779}
   - component: {fileID: 2113428303716900330}
   - component: {fileID: 1124870452548808299}
+  - component: {fileID: 273016933617056135}
   - component: {fileID: 4635871722029472553}
   - component: {fileID: 185923615027436741}
+  - component: {fileID: 1950469392152729043}
   - component: {fileID: 1895449674452696092}
   - component: {fileID: 1267731009501999969}
   - component: {fileID: 4791087903368924159}
@@ -114,6 +116,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &273016933617056135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797882284151870367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 119a63835f266394dbf544a47f2a3757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayerTurn: 0
+  selectedCharacter: {fileID: 0}
 --- !u!114 &4635871722029472553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,9 +168,9 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 0.3
-    InterpolateOption: 2
-    InterpolateMoveTowardsSpeed: 1
+    TeleportIfDistanceGreaterThan: 0.35
+    InterpolateOption: 1
+    InterpolateMoveTowardsSpeed: 4
     InterpolateLerpSpeed: 2
     ExtrapolateOption: 0
     ExtrapolateSpeed: 1
@@ -170,6 +186,18 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &1950469392152729043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797882284151870367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c1d00c867b043438d32570957664f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1895449674452696092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,12 +210,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4972777d333bca4a8311720a83de5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.5
-  view: {fileID: 0}
-  selectedCharacter: {fileID: 0}
   homeTile: {fileID: 0}
+  previusTilePosition: {fileID: 0}
   currentTilePosition: {fileID: 0}
-  isPlayerTurn: 0
 --- !u!114 &1267731009501999969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,13 +225,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13604a80a281a1b4eb723aa71afd17c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  life: 0
   availableCharacters:
   - {fileID: 11400000, guid: 6ffa6a153448f0c4987b5fbab11a55ad, type: 2}
   - {fileID: 11400000, guid: 25ce572acfc3557439af2c90f5b1a7f4, type: 2}
   - {fileID: 11400000, guid: 5011e90e0c2609543b3df784845ee976, type: 2}
   - {fileID: 11400000, guid: d5c19186c2cd9e44ea9b109fb4a1cb15, type: 2}
   - {fileID: 11400000, guid: cbf68ee87f6beb54d804edad08296c0d, type: 2}
-  life: 0
 --- !u!114 &4791087903368924159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,6 +247,8 @@ MonoBehaviour:
   walkSpeed: 0.5
   runSpeed: 3
   rotationSpeed: 100
+  animStatus: 0
+  previusAnimation: 0
   isResting: 0
   isWalking: 0
   isRunning: 0

@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class BattleTile : TileBehaviorScript
+public class BattleTile : TileBehavior
 {
     protected override void Start()
     {
         base.Start();
     }
-    public override void ApplyTileEffect()
+    public override void StartTileEvent()
     {
-        base.ApplyTileEffect();
+        base.StartTileEvent();
     }
 }

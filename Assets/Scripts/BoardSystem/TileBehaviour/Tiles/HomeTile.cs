@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class HomeTile : TileBehaviorScript
+public class HomeTile : TileBehavior
 {
     protected override void Start()
     {
 
     }
-    public override void ApplyTileEffect()
+    public override void StartTileEvent()
     {
-        base.ApplyTileEffect();
+        base.StartTileEvent();
     }
 }

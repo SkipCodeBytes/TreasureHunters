@@ -3,68 +3,40 @@ using Photon.Realtime;
 using UnityEngine;
 
 [System.Serializable]
-public class BoardPlayer : MonoBehaviourPunCallbacks
+public class BoardPlayer : MonoBehaviour
 {
     [Header("Config")]
-    [SerializeField] private float speed = 0.5f;
     private TileBoard _nextTile = null;
 
-    [Header("General Info")]
-    [SerializeField] private Player player;
-    [SerializeField] private PhotonView view;
-    [SerializeField] private CharacterData selectedCharacter;
+    [Header("Player Values - ReadOnly")]
     [SerializeField] private TileBoard homeTile;
 
-    [Header("Check Values")]
+    [Header("Game Values - ReadOnly")]
+    [SerializeField] private TileBoard previusTilePosition;
     [SerializeField] private TileBoard currentTilePosition;
-    [SerializeField] private bool isPlayerTurn = false;
 
-    private PlayerGraphics _playerGraphics;
-    private PlayerRules _playerRules;
-    private PlayerInventory _playerInventory;
 
-    public Player Player { get => player; set => player = value; }
-    public PhotonView View { get => view; set => view = value; }
-    public CharacterData SelectedCharacter { get => selectedCharacter; set => selectedCharacter = value; }
     public TileBoard HomeTile { get => homeTile; set => homeTile = value; }
     public TileBoard CurrentTilePosition { get => currentTilePosition; set => currentTilePosition = value; }
+    public TileBoard PreviusTilePosition { get => previusTilePosition; set => previusTilePosition = value; }
 
-    public PlayerGraphics PlayerGraphics { get => _playerGraphics; set => _playerGraphics = value; }
-    public PlayerRules PlayerRules { get => _playerRules; set => _playerRules = value; }
-    public PlayerInventory PlayerInventory { get => _playerInventory; set => _playerInventory = value; }
-    public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
+    private PlayerManager _pm;
 
     private void Awake()
     {
-        view = GetComponent<PhotonView>();
-        _playerGraphics = GetComponent<PlayerGraphics>();
-        _playerRules = GetComponent<PlayerRules>();
-        _playerInventory = GetComponent<PlayerInventory>();
+        _pm = GetComponent<PlayerManager>();
     }
 
-    [PunRPC]
-    public void SetPlayerInfo(int tileOrderX, int tileOrderY)
-    {
-        TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
-        //Debug.Log("Current Tile Set Info: " + CurrentTilePosition.Order);
-        SetTilePosition(tile);
-        homeTile = tile;
-    }
-
-
-    public void SetNewCurrentTilePosition(int tileOrderX, int tileOrderY)
-    {
-        TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
-        CurrentTilePosition = tile;
-        Debug.Log("Current Tile: " + CurrentTilePosition.Order);
-    }
-
+    //SOLO SE VA A UTILIZAR UNA SOLA VEZ, AL INICIO
 
     public void SetTilePosition(TileBoard tile)
     {
         currentTilePosition = tile;
         transform.position = tile.transform.position;
     }
+
+
+    //FUNCIONES DE CONTROL DE MOVIMIENTO
 
     public void MoveNextTile()
     {
@@ -79,13 +51,16 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToTile(_nextTile);
         }
-        if (numOfRoutes > 1) {
+        if (numOfRoutes > 1)
+        {
             //A elecci�n del jugador
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToTile(_nextTile);
         }
     }
 
+
+    //Sincroniza la nueva posición mientras se va desplazando al último Tile
     public void MoveLastTile()
     {
         int numOfRoutes = currentTilePosition.NextTiles.Count;
@@ -98,24 +73,23 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
         {
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToStandTile(_nextTile);
-            view.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
+            _pm.View.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
         }
         if (numOfRoutes > 1)
         {
             //A elecci�n del jugador
             _nextTile = currentTilePosition.NextTiles[0];
             DisplaceToStandTile(_nextTile);
-            view.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
+            _pm.View.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
         }
     }
-
 
     private void DisplaceToTile(TileBoard tileTarget)
     {
         if (tileTarget != null)
         {
             Vector3 newPos = new Vector3(tileTarget.transform.position.x, transform.position.y, tileTarget.transform.position.z);
-            _playerGraphics.MovePlayerAtPoint(newPos, true, finishMove);
+            _pm.Graphics.MovePlayerAtPoint(newPos, true, FinishMove);
         }
     }
 
@@ -123,19 +97,25 @@ public class BoardPlayer : MonoBehaviourPunCallbacks
     {
         if (tileTarget != null)
         {
-            Vector3 iteractionPosition = tileTarget.BehaviorScript.GetInteractionPosition();
+            Vector3 iteractionPosition = tileTarget.TileBehavior.GetInteractionPosition();
             Debug.Log(iteractionPosition);
             Vector3 newPos = new Vector3(iteractionPosition.x, transform.position.y, iteractionPosition.z);
-            _playerGraphics.MovePlayerAtPoint(newPos, true, finishMove);
-            _playerGraphics.RotatePlayerAtPoint(tileTarget.BehaviorScript.GetIteractionViewPoint(), _playerGraphics.ClearAnimationStatus);
+            _pm.Graphics.MovePlayerAtPoint(newPos, true, FinishMove);
+            _pm.Graphics.RotatePlayerAtPoint(tileTarget.TileBehavior.GetIteractionViewPoint(), _pm.Graphics.ClearAnimationStatus);
         }
     }
 
-    private void finishMove()
+    private void FinishMove()
     {
         currentTilePosition = _nextTile;
         _nextTile = null;
         EventManager.TriggerEvent("EndPlayerMovent", true);
     }
 
+
+    //Se llamará a través de un RPC para sincronizar 
+    /*
+    public void SetNewCurrentTilePosition(int tileOrderX, int tileOrderY)
+    {
+    }*/
 }
