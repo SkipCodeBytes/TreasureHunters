@@ -70,6 +70,7 @@ public class PlayerRPC : MonoBehaviourPunCallbacks
         TileBoard tile = GameManager.Instance.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
         _pm.BoardPlayer.PreviusTilePosition = _pm.BoardPlayer.CurrentTilePosition;
         _pm.BoardPlayer.CurrentTilePosition = tile;
+        tile.TileBehavior.UnhideProps();
     }
 
     //GameMoments.InitMoventPlayer() / All

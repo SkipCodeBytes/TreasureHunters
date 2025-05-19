@@ -5,8 +5,9 @@ public class GemItemObject : ItemObject
     [SerializeField] private GemItemData gemItemData;
     [SerializeField] private MeshRenderer m_Renderer;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         m_Renderer = GetComponent<MeshRenderer>();
     }
 

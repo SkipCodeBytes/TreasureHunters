@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b74db9579aa2734cb8d6542545d6cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionPositionOffset: {x: -0.25, y: 0, z: -0.25}
+  _interactionPositionOffset: {x: -0.3, y: 0, z: -0.3}
   _interactionViewRotation: 45
   _hideableProps:
   - {fileID: 8049710617943023304}

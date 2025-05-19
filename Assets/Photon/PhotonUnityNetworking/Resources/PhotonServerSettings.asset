@@ -82,6 +82,10 @@ MonoBehaviour:
   - SyncroCurrentTilePos
   - OpenDiceForAction
   - SyncroAnimStatus
+  - SyncroRewardItems
+  - SyncroAddRewardItems
+  - SyncroAddChestReward
+  - SetSyncroPlayerCheck
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

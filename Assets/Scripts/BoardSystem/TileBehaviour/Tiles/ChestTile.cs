@@ -3,50 +3,61 @@ using UnityEngine;
 
 public class ChestTile : TileBehavior
 {
-    private GameManager _gm;
     [SerializeField] private List<RewardGroup> _rewardGroups;
+    [SerializeField] private ChestScript chestObj;
+
+    private GameManager _gm;
 
     protected override void Awake()
     {
         base.Awake();
-        _gm = GameManager.Instance;
     }
 
     protected override void Start()
     {
         base.Start();
+        _gm = GameManager.Instance;
     }
+
+    //Llama al evento inicial de lanzar dado
     public override void StartTileEvent()
     {
-        base.StartTileEvent();
-        _gm.GmView.RPC("btnOpenDice", _gm.HostPlayer, 5);
-        //OpenChest();
+        Debug.Log("Tile Event");
+        Debug.Log(_gm);
+        Debug.Log(_gm.HostPlayer);
+        Debug.Log((int)_gm.DiceAction);
+        _gm.DiceAction = PlayerDiceAction.UseChest;
+        _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, (int)_gm.DiceAction);
     }
 
-    public override void ApplyTileEvent()
+    //Realiza las operaciones y comparte los resultados con todos
+    //Solo lo ejecuta el invitado
+    public override void SettingTileEvent()
     {
-        List<int> rewards = GetRewardList();
-    }
-
-
-
-    public void OpenChest()
-    {
-        //Panel de lanzar dados
-        //Recompensas correspondientes a los dados
-        //Termina el turno
+        int[] rewards = GetRewardList(4);
+        _gm.GmView.RPC("SyncroAddChestReward", Photon.Pun.RpcTarget.All, _gm.PlayerIndex, rewards[0], rewards[1], rewards[2], rewards[3]);
+        //Sincronizar recompensas con los demás jugadores
+        //Sincronizar animación
 
     }
 
-    private List<int> GetRewardList()
+    //Este es un visual para todos los jugadores
+    public override void PlayTileEvent()
     {
-        int diceResult = _gm.DiceResult;
-        List<int> rewardList = new List<int>();
+        chestObj.OpenChestAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
+    }
+
+
+    private int[] GetRewardList(int listSize)
+    {
+        int diceResult = _gm.LastDiceResult;
         //rewardList[0] siempre es la cantidad de monedas, el resto son los IDs de objetos
 
-        for (int i = 0; i < _rewardGroups.Count; i++)
+        int[] rewardArray = new int[4];
+
+        for (int i = 0; i < listSize; i++)
         {
-            int quantity = 0;
+            if (_rewardGroups.Count < i + 1) rewardArray[i] = -1;
 
             if (_rewardGroups[i].ProbabilityRange.x <= diceResult && _rewardGroups[i].ProbabilityRange.y >= diceResult)
             {
@@ -55,26 +66,28 @@ public class ChestTile : TileBehavior
                     switch (_rewardGroups[i].Rewards[j])
                     {
                         case ItemType.Coin:
-                            quantity = (int)(diceResult * (0.25f * (4f - i)) * _gm.GameRound);
-                            rewardList.Add(quantity);
-                            break;
-
-                        case ItemType.Relic:
-                            rewardList.Add(ItemManager.Instance.GetRandomItemIndexOfType<RelicItemData>());
+                            int quantity = (int)(diceResult * (0.25f * (4f - i)) * _gm.GameRound * _gm.GameRules.CoinsBonusScale);
+                            rewardArray[0] = quantity;
                             break;
 
                         case ItemType.Gem:
-                            rewardList.Add(ItemManager.Instance.GetRandomItemIndexOfType<GemItemData>());
+                            rewardArray[1] = (ItemManager.Instance.GetRandomItemIndexOfType<GemItemData>());
                             break;
 
+                        case ItemType.Relic:
+                            rewardArray[3] = (ItemManager.Instance.GetRandomItemIndexOfType<RelicItemData>());
+                            break;
+
+
                         case ItemType.Card:
-                            rewardList.Add(ItemManager.Instance.GetRandomItemIndexOfType<CardItemData>());
+                            rewardArray[2] = (ItemManager.Instance.GetRandomItemIndexOfType<CardItemData>());
                             break;
                     }
                 }
                 break;
             }
         }
-        return rewardList;
+        return rewardArray;
     }
+
 }

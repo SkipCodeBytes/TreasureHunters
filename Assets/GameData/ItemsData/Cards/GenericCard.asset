@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c1c86c0def9d24883808a556cd9dc5, type: 3}
+  m_Name: GenericCard
+  m_EditorClassIdentifier: 
+  itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
+  icon: {fileID: 21300000, guid: 00c85275df5b5754a86b1633ec9cc563, type: 3}
+  price: 10
+  cardName: "Carta gen\xE9rica"
+  cardType: 1
+  cardDescription: Esta carta existe como demo
+  imageCard: {fileID: 21300000, guid: d284e4c5d42554441b910c40ff59a9e8, type: 3}
+  cardLevel: 1

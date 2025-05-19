@@ -26,7 +26,11 @@ public class GUIManager : MonoBehaviour
         _gm = GameManager.Instance;
     }
 
-    public void btnMovePlayer() => _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, 0);
+    public void btnMovePlayer()
+    {
+        _gm.DiceAction = PlayerDiceAction.Move;
+        _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, (int)_gm.DiceAction);
+    }
     public void btnCardPlayer() => _gm.GmView.RPC("OpenCardPanel", _gm.HostPlayer);
 
 }

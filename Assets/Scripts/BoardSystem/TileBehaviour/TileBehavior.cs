@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class TileBehavior : MonoBehaviour
+public abstract class TileBehavior : MonoBehaviour
 {
     [SerializeField] private Vector3 _interactionPositionOffset = Vector3.zero;
     [SerializeField] private float _interactionViewRotation = 0f;
@@ -49,17 +49,16 @@ public class TileBehavior : MonoBehaviour
 
 
 
-    //Se llama cuando el jugador llega a un tile / Ejemplo: El jugador llega al ChestTile
-    public virtual void StartTileEvent()
-    {
-        UnhideProps();
-    }
+    //Se llama cuando el jugador llega a un tile y se detiene en el Tile
+    public abstract void StartTileEvent();
 
     //Se llama cuando el tile aplica el efecto / Ejemplo: El ChestTile responde luego de lanzar dados
-    public virtual void ApplyTileEvent()
-    {
-        Debug.Log("Aplicando efecto");
-    }
+    public abstract void SettingTileEvent();
+
+
+    public abstract void PlayTileEvent();
+
+
 
     //Asigna y devuelve el index del espacio libre que ocupa
     public int TakeUpFreeSpaceIndex(BoardPlayer boardPlayer)
@@ -132,8 +131,9 @@ public class TileBehavior : MonoBehaviour
         return nuevaPos;
     }
 
+
 #if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position + _interactionPositionOffset, 0.2f);

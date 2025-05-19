@@ -1,6 +1,7 @@
 
 public enum ItemType
 {
+    None,
     Coin,
     Relic,
     Gem,

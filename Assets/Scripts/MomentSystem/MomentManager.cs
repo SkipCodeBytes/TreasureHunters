@@ -16,12 +16,19 @@ public class MomentManager : MonoBehaviour
     [Header("Debug and Testing options")]
     [SerializeField] private bool stepMomentMode = false;
 
+    private GameManager _gm;
+
     public Moment CurrentMoment { get => currentMoment; set => currentMoment = value; }
     public List<Moment> MomentList { get => momentList; set => momentList = value; }
     public bool IsMomentRunnning { get => isMomentRunnning; set => isMomentRunnning = value; }
     public bool IsWaitingForEvent { get => isWaitingForEvent; set => isWaitingForEvent = value; }
     public bool IsWaitingForSyncro { get => isWaitingForSyncro; set => isWaitingForSyncro = value; }
     public bool IsMomentManagerFree { get => isMomentManagerFree; set => isMomentManagerFree = value; }
+
+    private void Awake()
+    {
+        _gm = GameManager.Instance;
+    }
 
     public void MomentUpdate()
     {
@@ -38,6 +45,7 @@ public class MomentManager : MonoBehaviour
         else
         {
             isMomentManagerFree = true;
+            if (_gm.IsHostPlayer) _gm.MomentManager.MomentList.Add(new Moment(_gm.HostManager.NewTurn));
         }
     }
 

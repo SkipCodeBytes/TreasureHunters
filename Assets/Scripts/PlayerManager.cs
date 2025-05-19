@@ -25,6 +25,7 @@ public class PlayerManager : MonoBehaviour
     private PlayerGraphics _graphics;
     private PlayerInventory _inventory;
     private BoardPlayer _boardPlayer;
+    private Transform _transform;
 
     public PhotonView View { get => _view; set => _view = value; }
     public PlayerRPC RPCScript { get => _RPCScript; set => _RPCScript = value; }
@@ -32,6 +33,7 @@ public class PlayerManager : MonoBehaviour
     public PlayerGraphics Graphics { get => _graphics; set => _graphics = value; }
     public PlayerInventory Inventory { get => _inventory; set => _inventory = value; }
     public BoardPlayer BoardPlayer { get => _boardPlayer; set => _boardPlayer = value; }
+    public Transform Transform { get => _transform; set => _transform = value; }
 
 
     //Referencias externas

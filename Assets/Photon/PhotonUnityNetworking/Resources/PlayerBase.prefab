@@ -170,7 +170,7 @@ MonoBehaviour:
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 0.35
     InterpolateOption: 1
-    InterpolateMoveTowardsSpeed: 4
+    InterpolateMoveTowardsSpeed: 4.5
     InterpolateLerpSpeed: 2
     ExtrapolateOption: 0
     ExtrapolateSpeed: 1

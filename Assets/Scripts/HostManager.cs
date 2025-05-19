@@ -227,7 +227,7 @@ public class HostManager : MonoBehaviour
         WaitForSyncro();
         WaitForEvent();
         _momentManager.MomentList.Add(new Moment(CloseDicePanel));
-        _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.GameRules.DicesQuantityForAction[(int)_gm.DiceAction]);
+        _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.GameRules.GetDiceQuantityUse((int)_gm.DiceAction));
     }
 
     private void CloseDicePanel()
@@ -277,11 +277,23 @@ public class HostManager : MonoBehaviour
     }
 
 
-    private void NewTurn()
+    public void NewTurn()
     {
         WaitForEvent();
         WaitForSyncro();
-        _gm.GmView.RPC("NewTurn", RpcTarget.All);
+        while (true)
+        {
+            _gm.CurrentPlayerTurnIndex++;
+            if (_gm.CurrentPlayerTurnIndex >= _gm.PlayersArray.Length) 
+            { 
+                _gm.CurrentPlayerTurnIndex = -1;
+                _momentManager.MomentList.Add(new Moment(NewRound));
+                GenericEndEvent();
+                return;
+            }
+            if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex] != null) break;
+        }
+        _gm.GmView.RPC("NewTurn", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
         _momentManager.MomentList.Add(new Moment(CheckTurnStatus));
     }
 
@@ -289,9 +301,10 @@ public class HostManager : MonoBehaviour
     private void CheckTurnStatus()
     {
         //SE REVISA LA DISPONIBILIDAD DEL PLAYER (Desmayado, retenido, bloqueado, etc)
-
+        _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel));
+        /*
         if (_gm.CurrentPlayerTurnIndex == -1) { _momentManager.MomentList.Add(new Moment(NewRound)); }
-        else { _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel)); }
+        else { _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel)); }*/
     }
 
     private void OpenPlayerActionPanel()

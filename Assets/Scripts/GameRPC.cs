@@ -20,26 +20,26 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
 
     //[PunRPC]
-    public void CamFocusTarget(int playerIndex)
+    public void CamFocusTarget(int playerIndex, bool endFocusEvent = true)
     {
         if (playerIndex < 0 || playerIndex >= 4)
         {
-            _gm.CameraController.FocusPanoramicView();
+            _gm.CameraController.FocusPanoramicView(false, endFocusEvent);
             return;
         }
         if (_gm.PlayersArray[playerIndex] == null)
         {
-            _gm.CameraController.FocusPanoramicView();
+            _gm.CameraController.FocusPanoramicView(false, endFocusEvent);
             return;
         }
-        _gm.CameraController.FocusTarget(_gm.PlayersArray[playerIndex].gameObject);
+        _gm.CameraController.FocusTarget(_gm.PlayersArray[playerIndex].gameObject, endFocusEvent);
     }
 
 
 
     //GuestManager.GenericEndTask() / Host
     [PunRPC]
-    public void SetSyncroPlayer(int playerIndex)
+    public void SetSyncroPlayerCheck(int playerIndex)
     {
         _gm.HostManager.SetSyncroPlayer(playerIndex);
     }
@@ -98,14 +98,16 @@ public class GameRPC : MonoBehaviourPunCallbacks
             _gm.GuiManager.SlotInfoUIList.Add(plySlotInfo);
         }
         _gm.GuiManager.PlayerInfoPanel.SetActive(true);
-
-        CamFocusTarget(-1);
+        EventManager.TriggerEvent("EndEvent");
     }
 
 
 
 
+
+
     //GUIManager.btnMovePlayer() / HostPlayer
+    //ChestTile.StartTileEvent() / HostPlayer
     [PunRPC]
     public void OpenDiceForAction(int actionDice)
     {
@@ -126,17 +128,11 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.GuiManager.PlayerActionPanel.CloseAll();
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(true);
-        _gm.DiceResult = 0;
+        _gm.LastDiceResult = 0;
         _gm.DiceManager.UseDice(playerIndex, dicesQuantity);
 
-        if (playerIndex == _gm.PlayerIndex)
-        {
-            _gm.DiceManager.DiceCanvas.OpenTurnPanel();
-        }
-        else
-        {
-            _gm.DiceManager.DiceCanvas.OpenNoTurnPanel();
-        }
+        if (playerIndex == _gm.PlayerIndex) _gm.DiceManager.DiceCanvas.OpenTurnPanel();
+        else _gm.DiceManager.DiceCanvas.OpenNoTurnPanel();
     }
 
 
@@ -145,6 +141,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     public void CloseDicePanel(int playerIndex)
     {
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
+
         if (playerIndex == _gm.PlayerIndex)
         {
             _gm.MomentManager.IsWaitingForEvent = false;
@@ -154,7 +151,8 @@ public class GameRPC : MonoBehaviourPunCallbacks
                     _gm.GameMoments.InitMoventPlayer();
                     break;
                 case PlayerDiceAction.UseChest:
-                    //_gm.BoardPlayers[_gm.CurrentPlayerTurnIndex]
+                    _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.SettingTileEvent();
+                    //_gm.MomentManager.MomentList.Add(new Moment(_gm.GameMoments.OpenChestEvent));
                     //EXPULSAR RECOMPENSAS
                     break;
                 default:
@@ -172,12 +170,22 @@ public class GameRPC : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SentDiceResults(int result)
     {
-        _gm.DiceResult = result;
+        _gm.LastDiceResult = result;
         _gm.DiceManager.EndAnimationFocusDices();
     }
 
-
-
+    //ChestTile.SettingTileEvent() / All
+    [PunRPC]
+    public void SyncroAddChestReward(int playerId, int coins, int gem, int card, int relic)
+    {
+        int[] rewards = { coins, gem, card, relic };
+        if(coins > 0) _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCoins(coins);
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddGem(gem);
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCard(card);
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddRelic(relic);
+        _gm.LastRewards = rewards;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+    }
 
 
 
@@ -199,6 +207,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     [PunRPC]
     public void NewRound()
     {
+        CamFocusTarget(-1, false);
         _gm.GameRound++;
         _gm.GuiManager.RoundInfoPanel.gameObject.SetActive(true);
         _gm.GuiManager.RoundInfoPanel.StartPresentation();
@@ -206,20 +215,16 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     //HostManager.NewTurn() / All
     [PunRPC]
-    public void NewTurn()
+    public void NewTurn(int playerIndex)
     {
-        while (true)
-        {
-            _gm.CurrentPlayerTurnIndex++;
-            if (_gm.CurrentPlayerTurnIndex >= _gm.PlayersArray.Length)
-            {
-                _gm.CurrentPlayerTurnIndex = -1;
-                return;
-            }
+        _gm.CurrentPlayerTurnIndex = playerIndex;
 
-            if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex] != null) break;
+        for(int i  = 0; i < _gm.PlayersArray.Length; i++)
+        {
+            if(i == playerIndex) _gm.PlayersArray[i].IsPlayerTurn = true;
+            else if (_gm.PlayersArray[i] != null) _gm.PlayersArray[i].IsPlayerTurn = false;
         }
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].IsPlayerTurn = true;
+        
         _gm.CameraController.FocusTarget(_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].gameObject);
     }
 

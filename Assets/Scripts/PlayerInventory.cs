@@ -17,6 +17,80 @@ public class PlayerInventory : MonoBehaviour
     public bool HasRelicItem { get => hasRelicItem; set => hasRelicItem = value; }
     public RelicItemData RelicItemData { get => relicItemData; set => relicItemData = value; }
 
+    private GameManager _gm;
+    private ItemManager _im;
+
+    private void Awake()
+    {
+        _gm = GameManager.Instance;
+        _im = ItemManager.Instance;
+    }
+
+
+
+    public void AddCoins(int quantity)
+    {
+        coinsQuantity += quantity;
+    }
+
+    public void AddItem(int itemId)
+    {
+        ItemType itemType = _im.GetItemType(itemId);
+        switch (itemType) {
+            case ItemType.Gem:
+                AddGem(itemId);
+                break;
+
+            case ItemType.Card:
+                AddCard(itemId);
+                break;
+
+            case ItemType.Relic:
+                AddRelic(itemId);
+                break;
+
+            default:
+                Debug.LogError("ItemID: " + itemId + " no obtenible por inventario");
+                break;
+        }
+    }
+
+    public void AddGem(int itemId)
+    {
+        if (itemId == -1 || itemId == 0) return;
+        ItemData data = _im.GetItemData(itemId);
+        GemItemData gem = data as GemItemData;
+
+        if (gem != null) gemItems.Add(gem);
+        else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
+        /*
+        if (itemId == -1) return;
+        gemItems.Add((GemItemData)_im.GetItemData(itemId));*/
+    }
+
+    public void AddCard(int itemId)
+    {
+        if (itemId == -1 || itemId == 0) return;
+        ItemData data = _im.GetItemData(itemId);
+        CardItemData card = data as CardItemData;
+
+        if (card != null) cardItems.Add(card);
+        else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
+    }
+
+    public void AddRelic(int itemId)
+    {
+        if (itemId == -1 || itemId == 0) return;
+        if (relicItemData != null) return;
+        //DROP RELIC EN CASO DE QUE TENGA ALGUNO EN POSESIÓN
+
+        ItemData data = _im.GetItemData(itemId);
+        RelicItemData relic = data as RelicItemData;
+
+        if (relic != null) relicItemData = relic;
+        else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
+    }
+
 
     //Drop items
 }

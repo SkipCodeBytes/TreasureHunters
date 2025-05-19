@@ -18,7 +18,7 @@ public class BoardCameraController : MonoBehaviour
         }
     }
 
-    public void FocusPanoramicView(bool isInmediate = false)
+    public void FocusPanoramicView(bool isInmediate = false, bool endFocusEvent = true)
     {
         _followTarget = false;
         _currentTarget = null;
@@ -28,10 +28,11 @@ public class BoardCameraController : MonoBehaviour
             _moveCoorutine = null;
         }
         if (isInmediate) gameObject.transform.position = panoramicViewPosition;
-        else _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, panoramicViewPosition, timeToFocus, focusComplete));
+        else if(endFocusEvent) _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, panoramicViewPosition, timeToFocus, focusComplete));
+        else _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, panoramicViewPosition, timeToFocus));
     }
 
-    public void FocusTarget(GameObject target)
+    public void FocusTarget(GameObject target, bool endFocusEvent = true)
     {
         _followTarget = false;
         _currentTarget = target;
@@ -40,7 +41,9 @@ public class BoardCameraController : MonoBehaviour
             StopCoroutine(_moveCoorutine);
             _moveCoorutine = null;
         }
-        _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, target.transform.position, timeToFocus, focusComplete));
+
+        if (endFocusEvent) _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, target.transform.position, timeToFocus, focusComplete));
+        else _moveCoorutine = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gameObject, target.transform.position, timeToFocus));
     }
 
     private void focusComplete()

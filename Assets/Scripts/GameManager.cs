@@ -33,7 +33,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private List<TileBoard> homeTileList = new List<TileBoard>();
     [SerializeField] private List<int> playersPhotonId = new List<int>();
     [SerializeField] private int gameRound = 0;
-    [SerializeField] private int diceResult = 0;
+    [SerializeField] private int lastDiceResult = 0;
+    [SerializeField] private int[] lastRewards;
     [SerializeField] private int currentPlayerTurnIndex = -1;
     [SerializeField] private PlayerDiceAction diceAction;
 
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameRules GameRules { get => _gameRules; set => _gameRules = value; }
 
 
+    public bool IsHostPlayer { get => isHostPlayer; set => isHostPlayer = value; }
     public PlayerManager PlayerReference { get => playerReference; set => playerReference = value; }
     public int PlayerIndex { get => playerIndex; set => playerIndex = value; }
 
@@ -75,8 +77,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int CurrentPlayerTurnIndex { get => currentPlayerTurnIndex; set => currentPlayerTurnIndex = value; }
     public PlayerManager[] PlayersArray { get => playersArray; set => playersArray = value; }
     public PlayerDiceAction DiceAction { get => diceAction; set => diceAction = value; }
-    public int DiceResult { get => diceResult; set => diceResult = value; }
+    public int LastDiceResult { get => lastDiceResult; set => lastDiceResult = value; }
     public List<int> PlayersPhotonId { get => playersPhotonId; set => playersPhotonId = value; }
+    public int[] LastRewards { get => lastRewards; set => lastRewards = value; }
 
     private void Awake()
     {

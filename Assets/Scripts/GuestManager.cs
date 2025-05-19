@@ -36,7 +36,7 @@ public class GuestManager : MonoBehaviourPunCallbacks
     //Llamada automática después de evento tras finalizar algún momento
     private void GenericEndTask()
     {
-        _gm.GmView.RPC("SetSyncroPlayer", _gm.GameRPC.HostPlayer, _gm.PlayerIndex);
+        _gm.GmView.RPC("SetSyncroPlayerCheck", _gm.GameRPC.HostPlayer, _gm.PlayerIndex);
     }
     private void GenericMomentEnd() => _gm.MomentManager.IsMomentRunnning = false;
 }

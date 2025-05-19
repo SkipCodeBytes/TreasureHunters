@@ -51,8 +51,6 @@ public class TurnOrderUi : MonoBehaviour
                 playerOrder.Add(GameManager.Instance.PlayersArray[i]);
             }
         }
-        Debug.Log("Players: " + GameManager.Instance.PlayersArray.Length);
-        Debug.Log("Players: " + playerOrder.Count);
     }
 
     private void showTittle()

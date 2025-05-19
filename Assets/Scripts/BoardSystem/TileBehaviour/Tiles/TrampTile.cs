@@ -8,6 +8,14 @@ public class TrampTile : TileBehavior
     }
     public override void StartTileEvent()
     {
-        base.StartTileEvent();
+
+    }
+    public override void SettingTileEvent()
+    {
+
+    }
+    public override void PlayTileEvent()
+    {
+        //throw new System.NotImplementedException();
     }
 }

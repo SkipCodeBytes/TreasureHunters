@@ -16,9 +16,11 @@ public class GameMoments : MonoBehaviour
 
     public void SetListener()
     {
-        EventManager.StartListening("EndPlayerMovent", EndMovePlayer);
+        EventManager.StartListening("EndPlayerMovent", EndEvent);
+        EventManager.StartListening("EndChestEvent", EndEvent);
     }
-    private void EndMovePlayer()
+
+    private void EndEvent()
     {
         _gm.MomentManager.IsWaitingForEvent = false;
     }
@@ -35,9 +37,9 @@ public class GameMoments : MonoBehaviour
     public void InitMoventPlayer()
     {
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].View.RPC("SyncroLeaveRestSpace", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
-        for (int i = 0; i < _gm.DiceResult; i++)
+        for (int i = 0; i < _gm.LastDiceResult; i++)
         {
-            if (i == _gm.DiceResult - 1)
+            if (i == _gm.LastDiceResult - 1)
             {
                 _gm.MomentManager.MomentList.Add(new Moment(MovePlayerLastTile));
                 _gm.MomentManager.MomentList.Add(new Moment(OpenTileEvent));
@@ -68,5 +70,6 @@ public class GameMoments : MonoBehaviour
         _gm.MomentManager.IsWaitingForEvent = true;
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.StartTileEvent();
     }
+
 
 }

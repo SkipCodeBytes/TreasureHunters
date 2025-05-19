@@ -16,8 +16,10 @@ public class ItemManager : MonoBehaviour
 
     private void Awake()
     {
-        if(_instance != null) _instance = this;
-        else Destroy(gameObject);
+        if(_instance == null) _instance = this;
+        else { 
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
@@ -89,5 +91,23 @@ public class ItemManager : MonoBehaviour
 
         int randomIndex = UnityEngine.Random.Range(0, list.Count);
         return list[randomIndex];
+    }
+
+    public ItemType GetItemType(int itemId)
+    {
+        ItemData data = GetItemData(itemId);
+        if (data == null)
+        {
+            Debug.LogWarning($"Item no encontrado con ID {itemId}");
+            return default;
+        }
+
+        ItemType? resolvedType = ItemTypeToScriptMap.GetItemTypeFromData(data);
+
+        if (resolvedType.HasValue)
+            return resolvedType.Value;
+
+        Debug.LogWarning($"No se pudo determinar el tipo del item con ID {itemId}");
+        return default;
     }
 }
