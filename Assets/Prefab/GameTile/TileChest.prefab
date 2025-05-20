@@ -253,8 +253,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSpawnPos: {x: 0, y: 0.24, z: 0}
-  itemTimeDrop: 0.2
+  itemTimeDrop: 0.8
   itemDropMaxRadio: 1.15
+  itemDropHeight: 1
+  itemTimeStand: 1
 --- !u!1001 &8473630158317417133
 PrefabInstance:
   m_ObjectHideFlags: 0

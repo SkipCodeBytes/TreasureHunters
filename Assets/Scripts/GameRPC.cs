@@ -151,9 +151,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
                     _gm.GameMoments.InitMoventPlayer();
                     break;
                 case PlayerDiceAction.UseChest:
-                    _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.SettingTileEvent();
-                    //_gm.MomentManager.MomentList.Add(new Moment(_gm.GameMoments.OpenChestEvent));
-                    //EXPULSAR RECOMPENSAS
+                    _gm.GameMoments.InitChestTileReward();
                     break;
                 default:
                     Debug.LogError("No implementado");

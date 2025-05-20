@@ -31,6 +31,11 @@ public class CardItemObject : ItemObject
     private Vector3 _currentDirection = Vector3.left;
     private float _currentSpeed = 0.1f;
 
+    private void OnEnable()
+    {
+        SetInCollectableMode();
+    }
+
     private void Update()
     {
         transform.Rotate(_currentDirection * _currentSpeed * Time.deltaTime);

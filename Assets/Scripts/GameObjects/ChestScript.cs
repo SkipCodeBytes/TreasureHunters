@@ -7,11 +7,16 @@ public class ChestScript : MonoBehaviour
     [SerializeField] private Vector3 itemSpawnPos;
     [SerializeField] private float itemTimeDrop;
     [SerializeField] private float itemDropMaxRadio;
+    [SerializeField] private float itemDropHeight;
+
+    [SerializeField] private float itemTimeStand;
 
     private GameManager _gm;
     private Animator _animator;
     private Transform _transform;
-    private PlayerManager _targetPlayer;
+    private int _targetPlayerIndex;
+
+    private int[] _rewardArray;
     private List<ItemObject> _rewardObjs;
 
     private void Awake()
@@ -32,43 +37,54 @@ public class ChestScript : MonoBehaviour
 
     public void OpenChestAnimation(int playerIndex, int[] rewards)
     {
-        _targetPlayer = _gm.PlayersArray[playerIndex];
-        _animator.SetTrigger("OpenChest");
-        _rewardObjs = new List<ItemObject>();
+        _rewardArray = rewards;
+        _targetPlayerIndex = playerIndex;
+        _animator.SetTrigger("Open");
+    }
 
-        for (int i = 0; i < rewards.Length; i++) {
+    //Referencia desde animación
+    public void SpawnObjectsAnimation()
+    {
+        _rewardObjs = new List<ItemObject>();
+        for (int i = 0; i < _rewardArray.Length; i++)
+        {
             if (i == 0)
             {
-                for (int j = 0; j < rewards[0]; j++)
+                for (int j = 0; j < _rewardArray[0]; j++)
                 {
                     _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(0));
                 }
-            } else
+            }
+            else
             {
-                _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(rewards[i]));
+                _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(_rewardArray[i]));
             }
         }
 
-        for (int i = 0; i < _rewardObjs.Count; i++) {
-            _rewardObjs[i].DropAnimation(_transform.position + itemSpawnPos, _transform.position, itemDropMaxRadio, itemTimeDrop);
-        }
-        StartCoroutine(CinematicAnimation.WaitTime(itemTimeDrop * 2, CloseChestAnimation));
-
-    }
-
-    public void CloseChestAnimation()
-    {
-        _animator.SetTrigger("CloseChest");
         for (int i = 0; i < _rewardObjs.Count; i++)
         {
-            _rewardObjs[i].TakeObjectAnimation(_targetPlayer.transform.position, itemTimeDrop);
+            _rewardObjs[i].DropAnimation(_transform.position + itemSpawnPos, _transform.position, itemDropHeight, itemDropMaxRadio, itemTimeDrop);
         }
-        StartCoroutine(CinematicAnimation.WaitTime(itemTimeDrop * 2, () => EventManager.TriggerEvent("EndChestEvent")));
+        StartCoroutine(CinematicAnimation.WaitTime(itemTimeDrop + itemTimeStand, CloseChestAnimation));
     }
 
+    //All
+    public void CloseChestAnimation()
+    {
+        _animator.SetTrigger("Close");
+        for (int i = 0; i < _rewardObjs.Count; i++)
+        {
+            _rewardObjs[i].TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+        }
+        
+    }
+
+    //Referencia desde animación
     public void HideChest()
     {
+        EventManager.TriggerEvent("EndEvent", true);
         gameObject.SetActive(false);
+        _gm.GuiManager.SlotInfoUIList[_targetPlayerIndex].SetPlayerInfo();
     }
 
 

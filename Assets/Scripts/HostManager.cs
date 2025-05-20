@@ -104,13 +104,24 @@ public class HostManager : MonoBehaviour
         EventManager.StartListening("EndEvent", GenericEndEvent);
     }
 
-    private void WaitForSyncro()
+    private void WaitForSyncro(bool state = true)
     {
-        for (int i = 0; i < syncronisedPlayers.Length; i++)
+        if (state)
         {
-            syncronisedPlayers[i] = false;
+            for (int i = 0; i < syncronisedPlayers.Length; i++)
+            {
+                syncronisedPlayers[i] = false;
+            }
+            _momentManager.IsWaitingForSyncro = true;
         }
-        _momentManager.IsWaitingForSyncro = true;
+        else
+        {
+            for (int i = 0; i < syncronisedPlayers.Length; i++)
+            {
+                syncronisedPlayers[i] = true;
+            }
+            _momentManager.IsWaitingForSyncro = false;
+        }
     }
 
     private void WaitForEvent()
@@ -220,6 +231,7 @@ public class HostManager : MonoBehaviour
     {
         _momentManager.MomentList.Add(new Moment(OpenDicePanel));
         GenericEndEvent();
+        WaitForSyncro(false);
     }
 
     private void OpenDicePanel()
@@ -280,7 +292,6 @@ public class HostManager : MonoBehaviour
     public void NewTurn()
     {
         WaitForEvent();
-        WaitForSyncro();
         while (true)
         {
             _gm.CurrentPlayerTurnIndex++;
@@ -293,6 +304,7 @@ public class HostManager : MonoBehaviour
             }
             if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex] != null) break;
         }
+        WaitForSyncro();
         _gm.GmView.RPC("NewTurn", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
         _momentManager.MomentList.Add(new Moment(CheckTurnStatus));
     }

@@ -12,11 +12,12 @@ public class ItemObject: MonoBehaviour
 
     virtual public void SetItemObjectValues(ItemData gameItemData) { }
 
-    public void DropAnimation(Vector3 initPosition, Vector3 targetPosition, float maxRadius, float animTime)
+    public void DropAnimation(Vector3 initPosition, Vector3 targetPosition, float height, float maxRadius, float animTime)
     {
+        _transform.position = initPosition;
         Vector2 offset = UnityEngine.Random.insideUnitCircle * maxRadius;
-        Vector3 punto = _transform.position + new Vector3(offset.x, 0f, offset.y);
-        StartCoroutine(CinematicAnimation.ParabolicMotion(_transform, punto, animTime));
+        Vector3 punto = targetPosition + new Vector3(offset.x, 0f, offset.y);
+        StartCoroutine(CinematicAnimation.ParabolicMotion(_transform, punto, animTime, height));
     }
 
     public void TakeObjectAnimation(Vector3 target, float animTime)

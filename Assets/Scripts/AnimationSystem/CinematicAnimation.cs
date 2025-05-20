@@ -171,7 +171,7 @@ public class CinematicAnimation : MonoBehaviour
     static public IEnumerator WaitTime(float time, Action callback)
     {
         yield return new WaitForSeconds(time);
-        if (callback != null) { callback?.Invoke(); }
+        callback?.Invoke();
     }
 
 

@@ -17,7 +17,7 @@ public class GameMoments : MonoBehaviour
     public void SetListener()
     {
         EventManager.StartListening("EndPlayerMovent", EndEvent);
-        EventManager.StartListening("EndChestEvent", EndEvent);
+        //EventManager.StartListening("TestEndTileEvent", EndEvent);
     }
 
     private void EndEvent()
@@ -72,4 +72,15 @@ public class GameMoments : MonoBehaviour
     }
 
 
+    //Para el Tile de Cofre
+    public void InitChestTileReward()
+    {
+        _gm.MomentManager.MomentList.Add(new Moment(OpenChest));
+    }
+
+    private void OpenChest()
+    {
+        _gm.MomentManager.IsWaitingForEvent = true;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.SettingTileEvent();
+    }
 }

@@ -22,12 +22,9 @@ public class ChestTile : TileBehavior
     //Llama al evento inicial de lanzar dado
     public override void StartTileEvent()
     {
-        Debug.Log("Tile Event");
-        Debug.Log(_gm);
-        Debug.Log(_gm.HostPlayer);
-        Debug.Log((int)_gm.DiceAction);
         _gm.DiceAction = PlayerDiceAction.UseChest;
         _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, (int)_gm.DiceAction);
+        //EventManager.TriggerEvent("EndEvent");
     }
 
     //Realiza las operaciones y comparte los resultados con todos
@@ -66,7 +63,7 @@ public class ChestTile : TileBehavior
                     switch (_rewardGroups[i].Rewards[j])
                     {
                         case ItemType.Coin:
-                            int quantity = (int)(diceResult * (0.25f * (4f - i)) * _gm.GameRound * _gm.GameRules.CoinsBonusScale);
+                            int quantity = (int)(diceResult * (0.25f * (4f - i)) * _gm.GameRules.CoinsBonusScale);
                             rewardArray[0] = quantity;
                             break;
 

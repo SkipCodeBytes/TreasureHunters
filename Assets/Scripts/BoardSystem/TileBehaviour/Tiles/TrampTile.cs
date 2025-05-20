@@ -8,7 +8,7 @@ public class TrampTile : TileBehavior
     }
     public override void StartTileEvent()
     {
-
+        StartCoroutine(CinematicAnimation.WaitTime(1f, () => EventManager.TriggerEvent("EndEvent")));
     }
     public override void SettingTileEvent()
     {
