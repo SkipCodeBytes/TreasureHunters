@@ -15,7 +15,10 @@ public class TileBoard : MonoBehaviour
 
     private GameBoardManager _gameBoardManager;
     private TileBehavior _tileBehavior;
-    private Light _activeHighligh;
+
+    private Light _activeHighlighGuide;
+    private MeshRenderer _activeSignGuide;
+    private bool _isQuestionGuide = false;
 
     public Vector2Int Order { get => _order; set => _order = value; }
     public TileType Type { get => _type; set => _type = value; }
@@ -31,42 +34,64 @@ public class TileBoard : MonoBehaviour
     }
 
 
-    public void HighlightTile(Color highlightColor)
+    public void TurnOnGuide(Color highlightColor)
     {
-        if (_activeHighligh != null) return;
+        if (_activeHighlighGuide != null) return;
         GameObject highlighter = InstanceManager.Instance.GetObject(_gameBoardManager.TileHighlighter);
-        _activeHighligh = highlighter.GetComponent<Light>();
-        _activeHighligh.color = highlightColor;
-        HighlightBase();
+        _activeHighlighGuide = highlighter.GetComponent<Light>();
+        _activeHighlighGuide.color = highlightColor;
         highlighter.transform.position = transform.position + _gameBoardManager.TileHighlighterOffset;
         _gameBoardManager.ActiveHighlighsTiles.Add(this);
+
+        GameObject arrowGuide;
+
+        _isQuestionGuide = false;
+        if (nextTiles.Count == 1) { arrowGuide = InstanceManager.Instance.GetObject(_gameBoardManager.DirectionArrow); }
+        else { 
+            arrowGuide = InstanceManager.Instance.GetObject(_gameBoardManager.DirectionQuestion);
+            _isQuestionGuide = true;
+        }
+
+        _activeSignGuide = arrowGuide.GetComponent<MeshRenderer>();
+        arrowGuide.transform.position = transform.position + _gameBoardManager.DirectionGuideOffset;
+        Vector3 direction = nextTiles[0].transform.position - _activeSignGuide.transform.position;
+        Quaternion rotation = Quaternion.LookRotation(-direction, Vector3.up);
+        _activeSignGuide.transform.rotation = rotation * Quaternion.Euler(_gameBoardManager.RotationGuideOffset);
+
+        GuideBasicView();
     }
 
-    public void HighlightFocus()
+    public void GuideFocusView()
     {
-        if (_activeHighligh == null) return;
-        _activeHighligh.intensity = _gameBoardManager.HighlighterFocusIntensity;
+        if (_activeSignGuide == null) return;
+        _activeHighlighGuide.intensity = _gameBoardManager.HighlighterFocusIntensity;
+        if(!_isQuestionGuide) { _activeSignGuide.material = _gameBoardManager.DirectionGuideFocusMaterial; }
+        else { _activeSignGuide.material = _gameBoardManager.QuestionGuideFocusMaterial; }
     }
 
-    public void HighlightBase()
+    public void GuideBasicView()
     {
-        if (_activeHighligh == null) return;
-        _activeHighligh.intensity = _gameBoardManager.HighlighterBaseIntensity; 
+        if (_activeSignGuide == null) return;
+        _activeHighlighGuide.intensity = _gameBoardManager.HighlighterBaseIntensity;
+        if (!_isQuestionGuide) { _activeSignGuide.material = _gameBoardManager.DirectionGuideBaseMaterial; }
+        else { _activeSignGuide.material = _gameBoardManager.QuestionGuideBaseMaterial; }
     }
 
-
-    public void TurnOffHighlight()
+    //TurnOffGuide
+    public void TurnOffGuide()
     {
         _gameBoardManager.ActiveHighlighsTiles.Remove(this);
-        if (_activeHighligh == null) return;
-        _activeHighligh.gameObject.SetActive(false);
-        _activeHighligh = null;
+        if (_activeHighlighGuide != null)
+        {
+            _activeHighlighGuide.gameObject.SetActive(false);
+            _activeHighlighGuide = null;
+        }
+        if (_activeSignGuide != null)
+        {
+            _activeSignGuide.gameObject.SetActive(false);
+            _activeSignGuide = null;
+        }
     }
-
-
-
-
-
 
 
 #if UNITY_EDITOR

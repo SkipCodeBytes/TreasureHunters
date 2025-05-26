@@ -40,7 +40,7 @@ public class BoardPlayer : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            currentTilePosition.GameBoardManager.BaseAllHighlight();
+            GameManager.Instance.BoardManager.BaseAllHighlight();
             bool selectedList = false;
 
             if (Physics.Raycast(ray, out hit))
@@ -54,7 +54,7 @@ public class BoardPlayer : MonoBehaviour
                         if (observedList.Contains(tile) && !selectedList)
                         {
                             selectedList = true;
-                            for (int i = 0; i < observedList.Count; i++) observedList[i].HighlightFocus();
+                            for (int i = 0; i < observedList.Count; i++) observedList[i].GuideFocusView();
 
                             if (Input.GetMouseButtonDown(0))
                             {
@@ -62,6 +62,7 @@ public class BoardPlayer : MonoBehaviour
                                 _pm.Graphics.StopWaitAction();
                                 _isWaitingForElection = false;
                                 _nextTile.GameBoardManager.TurnOffAllHighlight();
+                                GameManager.Instance.GlobalLight.TurnOnLight();
 
                                 if (_isGoingLastTile)
                                 {
@@ -110,24 +111,25 @@ public class BoardPlayer : MonoBehaviour
             _isWaitingForElection = true;
             _nextTiles.Clear();
             _pm.Graphics.WaitForAction();
+            GameManager.Instance.GlobalLight.TurnOffLight();
             for (int i = 0; i < numOfRoutes; i++)
             {
                 _nextTiles.Add(new List<TileBoard>());
                 TileBoard observedTile = currentTilePosition.NextTiles[i];
                 _nextTiles[i].Add(observedTile);
-                observedTile.HighlightTile(Color.white);
+                observedTile.TurnOnGuide(Color.white);
                 for (int j = 0; j < _numOfMovements - 1; j++)
                 {
                     if (observedTile.NextTiles.Count == 1) 
                     { 
                         observedTile = observedTile.NextTiles[0];
                         _nextTiles[i].Add(observedTile);
-                        observedTile.HighlightTile(Color.white);
+                        observedTile.TurnOnGuide(Color.white);
                     }
                     else
                     {
                         _nextTiles[i].Add(observedTile);
-                        observedTile.HighlightTile(Color.cyan);
+                        observedTile.TurnOnGuide(Color.cyan);
                         break;
                     }
                 }
@@ -157,13 +159,14 @@ public class BoardPlayer : MonoBehaviour
             _isGoingLastTile = true;
             _isWaitingForElection = true;
             _pm.Graphics.WaitForAction();
+            GameManager.Instance.GlobalLight.TurnOffLight();
             for (int i = 0; i < numOfRoutes; i++)
             {
                 TileBoard observedTile = currentTilePosition.NextTiles[i];
                 _nextTiles.Add(new List<TileBoard>());
                 _nextTiles[i].Add(observedTile);
-                if(observedTile.NextTiles.Count == 1) observedTile.HighlightTile(Color.white); 
-                else observedTile.HighlightTile(Color.cyan);
+                if(observedTile.NextTiles.Count == 1) observedTile.TurnOnGuide(Color.white); 
+                else observedTile.TurnOnGuide(Color.cyan);
             }
         }
     }
@@ -196,12 +199,5 @@ public class BoardPlayer : MonoBehaviour
         _nextTile = null;
         EventManager.TriggerEvent("EndPlayerMovent", true);
     }
-
-
-    //Se llamará a través de un RPC para sincronizar 
-    /*
-    public void SetNewCurrentTilePosition(int tileOrderX, int tileOrderY)
-    {
-    }*/
 
 }

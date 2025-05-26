@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GUIManager guiManager;
 
     [SerializeField] private BoardCameraController cameraController;
+    [SerializeField] private GlobalLightScript globalLight;
 
 
 
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int LastDiceResult { get => lastDiceResult; set => lastDiceResult = value; }
     public List<int> PlayersPhotonId { get => playersPhotonId; set => playersPhotonId = value; }
     public int[] LastRewards { get => lastRewards; set => lastRewards = value; }
+    public GlobalLightScript GlobalLight { get => globalLight; set => globalLight = value; }
 
     private void Awake()
     {

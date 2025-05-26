@@ -8,12 +8,23 @@ public class GameBoardManager : MonoBehaviour
 {
     [SerializeField] private TileBoard _baseTilePrefab;
     [SerializeField] private Vector2 _separationOffset = new Vector2(2.5f,2.5f);
-    
-    [Header("Highlighter")]
+
+    [Header("Direction Guides")]
+    [SerializeField] private GameObject directionArrow;
+    [SerializeField] private GameObject directionQuestion;
+    [SerializeField] private Vector3 directionGuideOffset = new Vector3(0f,0.1f,0f);
+    [SerializeField] private Vector3 rotationGuideOffset = new Vector3(90f,90f,0f);
+    [SerializeField] private Material directionGuideBaseMaterial;
+    [SerializeField] private Material directionGuideFocusMaterial;
+    [SerializeField] private Material questionGuideBaseMaterial;
+    [SerializeField] private Material questionGuideFocusMaterial;
+
+    [Header("Highlighter Guides")]
     [SerializeField] private GameObject tileHighlighter;
     [SerializeField] private Vector3 tileHighlighterOffset;
-    [SerializeField] private float highlighterBaseIntensity = 20f;
-    [SerializeField] private float highlighterFocusIntensity = 60f;
+    [SerializeField] private float highlighterBaseIntensity = 0f;
+    [SerializeField] private float highlighterFocusIntensity = 30f;
+
     private List<TileBoard> _activeHighlighsTiles = new List<TileBoard>();
 
     private Dictionary<Vector2Int, TileBoard> _tileDicc = new Dictionary<Vector2Int, TileBoard>();
@@ -28,12 +39,20 @@ public class GameBoardManager : MonoBehaviour
     public GameObject TileHighlighter { get => tileHighlighter; set => tileHighlighter = value; }
     public Vector3 TileHighlighterOffset { get => tileHighlighterOffset; set => tileHighlighterOffset = value; }
     public List<TileBoard> ActiveHighlighsTiles { get => _activeHighlighsTiles; set => _activeHighlighsTiles = value; }
+    public GameObject DirectionArrow { get => directionArrow; set => directionArrow = value; }
+    public Vector3 DirectionGuideOffset { get => directionGuideOffset; set => directionGuideOffset = value; }
+    public GameObject DirectionQuestion { get => directionQuestion; set => directionQuestion = value; }
+    public Vector3 RotationGuideOffset { get => rotationGuideOffset; set => rotationGuideOffset = value; }
+    public Material DirectionGuideBaseMaterial { get => directionGuideBaseMaterial; set => directionGuideBaseMaterial = value; }
+    public Material DirectionGuideFocusMaterial { get => directionGuideFocusMaterial; set => directionGuideFocusMaterial = value; }
+    public Material QuestionGuideBaseMaterial { get => questionGuideBaseMaterial; set => questionGuideBaseMaterial = value; }
+    public Material QuestionGuideFocusMaterial { get => questionGuideFocusMaterial; set => questionGuideFocusMaterial = value; }
     public float HighlighterBaseIntensity { get => highlighterBaseIntensity; set => highlighterBaseIntensity = value; }
     public float HighlighterFocusIntensity { get => highlighterFocusIntensity; set => highlighterFocusIntensity = value; }
 
     private void Awake()
     {
-        recoverGameBoard();
+        RecoverGameBoard();
     }
 
 #if UNITY_EDITOR
@@ -46,7 +65,7 @@ public class GameBoardManager : MonoBehaviour
     }
 #endif
 
-    public void recoverGameBoard()
+    public void RecoverGameBoard()
     {
         //Reposicionamos tiles, eliminamos posibles duplicados y elementos que no pertenecen a la lógica del GameBoard
         _tileDicc.Clear();
@@ -93,7 +112,7 @@ public class GameBoardManager : MonoBehaviour
         List<TileBoard> tiles = new List<TileBoard>(_activeHighlighsTiles);
         for (int i = 0; i < tiles.Count; i++)
         {
-            tiles[i].TurnOffHighlight();
+            tiles[i].TurnOffGuide();
         }
         _activeHighlighsTiles.Clear();
     }
@@ -102,7 +121,7 @@ public class GameBoardManager : MonoBehaviour
     {
         for (int i = 0; i < _activeHighlighsTiles.Count; i++)
         {
-            _activeHighlighsTiles[i].HighlightBase();
+            _activeHighlighsTiles[i].GuideBasicView();
         }
     }
 }

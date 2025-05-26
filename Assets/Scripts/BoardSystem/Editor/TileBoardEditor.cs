@@ -27,7 +27,7 @@ public class TileBoardEditor : Editor
 
         if (GUILayout.Button("Delete", GUILayout.Width(60), GUILayout.Height(40))) {
             GameBoardManager _gameBoard = _currentTile.transform.parent.GetComponent<GameBoardManager>();
-            if (_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.recoverGameBoard();
+            if (_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.RecoverGameBoard();
 
             Undo.RecordObject(_gameBoard, "Eliminar tile del diccionario");
 
@@ -99,7 +99,7 @@ public class TileBoardEditor : Editor
     {
         GameBoardManager _gameBoard = _currentTile.transform.parent.GetComponent<GameBoardManager>();
 
-        if(_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.recoverGameBoard();
+        if(_gameBoard.transform.childCount != _gameBoard.TileDicc.Count) _gameBoard.RecoverGameBoard();
 
         if (_gameBoard.BaseTilePrefab == null) return;
         if (_gameBoard.TileDicc.ContainsKey(order))

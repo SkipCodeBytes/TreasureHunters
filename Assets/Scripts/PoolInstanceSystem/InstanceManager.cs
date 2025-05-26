@@ -17,7 +17,7 @@ public class InstanceManager : MonoBehaviour
                 return pool.GetAvailableInstance();
             }
         }
-        return null;
+        throw new System.Exception("Object not found in instance manager");
     }
 }
 

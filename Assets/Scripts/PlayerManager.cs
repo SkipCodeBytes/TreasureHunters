@@ -41,7 +41,6 @@ public class PlayerManager : MonoBehaviour
 
     private void Awake()
     {
-        _gm = GameManager.Instance;
 
         _view = GetComponent<PhotonView>();
         _RPCScript = GetComponent<PlayerRPC>();
@@ -54,6 +53,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
+        _gm = GameManager.Instance;
         if (_view.IsMine)
         {
             _view.RPC("SharePlayerReady", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);

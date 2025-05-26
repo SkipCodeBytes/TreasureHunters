@@ -4564,10 +4564,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseTilePrefab: {fileID: 1792056256406571202, guid: da9f64a00015d014b87c8f6f7324662f, type: 3}
   _separationOffset: {x: 2.75, y: 2.75}
+  directionArrow: {fileID: 7193402949885696086, guid: 9ef773b52cf33c74b891db8ec215a4a3, type: 3}
+  directionQuestion: {fileID: 3872899761161944290, guid: 9aecb2ffbd7f71948b48265393d521bd, type: 3}
+  directionGuideOffset: {x: 0, y: 0.13, z: 0}
+  rotationGuideOffset: {x: 90, y: 90, z: 0}
+  directionGuideBaseMaterial: {fileID: 2100000, guid: a9b7fdc789788d741a4fb3ae0633af78, type: 2}
+  directionGuideFocusMaterial: {fileID: 2100000, guid: bd53ef4675d4e824ea1da6e56fc628ac, type: 2}
+  questionGuideBaseMaterial: {fileID: 2100000, guid: 14a17ca77b788764d9c02fda0941235f, type: 2}
+  questionGuideFocusMaterial: {fileID: 2100000, guid: c4d257b12bf15c448ba7a14bc907ee80, type: 2}
   tileHighlighter: {fileID: 5659100969862257281, guid: ed34647616ba12043a9b158ad1ee5680, type: 3}
   tileHighlighterOffset: {x: 0, y: 3.5, z: 0}
-  highlighterBaseIntensity: 20
-  highlighterFocusIntensity: 60
+  highlighterBaseIntensity: 5
+  highlighterFocusIntensity: 30
   _tilesPrefab:
   - {fileID: 8714900007131163002, guid: 6ddb726383694f24384a18d654dc5daf, type: 3}
   - {fileID: 1965353870830607860, guid: dd60297e1465d0b4f8c3f564e1ceb7cb, type: 3}
@@ -4856,6 +4864,7 @@ GameObject:
   - component: {fileID: 410087041}
   - component: {fileID: 410087040}
   - component: {fileID: 410087042}
+  - component: {fileID: 410087043}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -4874,7 +4883,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4936,13 +4945,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.039744735, y: 0.38925606, z: -0.913557, w: -0.11096747}
+  m_LocalRotation: {x: 0.45044428, y: 0.03397166, z: 0.05264054, w: 0.89060366}
   m_LocalPosition: {x: 0, y: 7.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 46.057, y: -1.137, z: -194.335}
+  m_LocalEulerAnglesHint: {x: 53.012, y: 10.335, z: 11.93}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4966,6 +4975,19 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 3
+--- !u!114 &410087043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410087039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87ea2dd4fc15e84facce17489f3d62e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  intensityTransicionDuration: 0.6
 --- !u!1 &411641168
 GameObject:
   m_ObjectHideFlags: 0
@@ -5416,6 +5438,12 @@ MonoBehaviour:
     isExpandible: 1
   - prefab: {fileID: 6208315405265727749, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
     poolSize: 5
+    isExpandible: 1
+  - prefab: {fileID: 3872899761161944290, guid: 9aecb2ffbd7f71948b48265393d521bd, type: 3}
+    poolSize: 10
+    isExpandible: 1
+  - prefab: {fileID: 7193402949885696086, guid: 9ef773b52cf33c74b891db8ec215a4a3, type: 3}
+    poolSize: 10
     isExpandible: 1
   - prefab: {fileID: 5659100969862257281, guid: ed34647616ba12043a9b158ad1ee5680, type: 3}
     poolSize: 10
@@ -7427,6 +7455,7 @@ MonoBehaviour:
   diceManager: {fileID: 1681904448}
   guiManager: {fileID: 1661433858}
   cameraController: {fileID: 1418997440}
+  globalLight: {fileID: 410087043}
   playerSpawnPoint: {x: 5.5, y: 0, z: 5.5}
   isHostPlayer: 0
   playerIndex: 0
@@ -10873,7 +10902,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0

@@ -43,7 +43,7 @@ public class GameBoardManagerEditor : Editor
                 return; 
             }
 
-            _myGameBoard.recoverGameBoard();
+            _myGameBoard.RecoverGameBoard();
 
             if (_myGameBoard.transform.childCount > 0) {
                 Selection.activeGameObject = _myGameBoard.transform.GetChild(0).gameObject;
@@ -71,7 +71,7 @@ public class GameBoardManagerEditor : Editor
 
         if (GUILayout.Button("Refresh Data", GUILayout.Width(200), GUILayout.Height(40)))
         {
-            _myGameBoard.recoverGameBoard();
+            _myGameBoard.RecoverGameBoard();
         }
 
         GUILayout.FlexibleSpace();
