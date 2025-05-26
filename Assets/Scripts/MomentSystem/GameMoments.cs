@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameMoments : MonoBehaviour
 {
     private GameManager _gm;
+
     private void Awake()
     {
         _gm = GameManager.Instance;
@@ -37,6 +38,7 @@ public class GameMoments : MonoBehaviour
     public void InitMoventPlayer()
     {
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].View.RPC("SyncroLeaveRestSpace", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.NumOfMovements = _gm.LastDiceResult;
         for (int i = 0; i < _gm.LastDiceResult; i++)
         {
             if (i == _gm.LastDiceResult - 1)

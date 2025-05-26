@@ -253,6 +253,7 @@ MonoBehaviour:
   isWalking: 0
   isRunning: 0
   isRotating: 0
+  isWaiting: 0
   stackableAnimations: []
 --- !u!114 &6890984425498750945
 MonoBehaviour:

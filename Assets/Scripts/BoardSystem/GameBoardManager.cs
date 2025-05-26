@@ -8,8 +8,16 @@ public class GameBoardManager : MonoBehaviour
 {
     [SerializeField] private TileBoard _baseTilePrefab;
     [SerializeField] private Vector2 _separationOffset = new Vector2(2.5f,2.5f);
+    
+    [Header("Highlighter")]
+    [SerializeField] private GameObject tileHighlighter;
+    [SerializeField] private Vector3 tileHighlighterOffset;
+    [SerializeField] private float highlighterBaseIntensity = 20f;
+    [SerializeField] private float highlighterFocusIntensity = 60f;
+    private List<TileBoard> _activeHighlighsTiles = new List<TileBoard>();
 
     private Dictionary<Vector2Int, TileBoard> _tileDicc = new Dictionary<Vector2Int, TileBoard>();
+    
 
     [SerializeField, HideInInspector] private List<GameObject> _tilesPrefab = new List<GameObject>();
 
@@ -17,6 +25,11 @@ public class GameBoardManager : MonoBehaviour
     public Vector2 SeparationOffset { get => _separationOffset; set => _separationOffset = value; }
     public Dictionary<Vector2Int, TileBoard> TileDicc { get => _tileDicc; set => _tileDicc = value; }
     public List<GameObject> TilesPrefab { get => _tilesPrefab; set => _tilesPrefab = value; }
+    public GameObject TileHighlighter { get => tileHighlighter; set => tileHighlighter = value; }
+    public Vector3 TileHighlighterOffset { get => tileHighlighterOffset; set => tileHighlighterOffset = value; }
+    public List<TileBoard> ActiveHighlighsTiles { get => _activeHighlighsTiles; set => _activeHighlighsTiles = value; }
+    public float HighlighterBaseIntensity { get => highlighterBaseIntensity; set => highlighterBaseIntensity = value; }
+    public float HighlighterFocusIntensity { get => highlighterFocusIntensity; set => highlighterFocusIntensity = value; }
 
     private void Awake()
     {
@@ -72,5 +85,24 @@ public class GameBoardManager : MonoBehaviour
             }
         }
         return tileList;
+    }
+    
+
+    public void TurnOffAllHighlight()
+    {
+        List<TileBoard> tiles = new List<TileBoard>(_activeHighlighsTiles);
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            tiles[i].TurnOffHighlight();
+        }
+        _activeHighlighsTiles.Clear();
+    }
+
+    public void BaseAllHighlight()
+    {
+        for (int i = 0; i < _activeHighlighsTiles.Count; i++)
+        {
+            _activeHighlighsTiles[i].HighlightBase();
+        }
     }
 }

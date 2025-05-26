@@ -13,18 +13,61 @@ public class TileBoard : MonoBehaviour
     [SerializeField] private List<TileBoard> previusTiles = new List<TileBoard>();
     [SerializeField] private List<TileBoard> nextTiles = new List<TileBoard>();
 
+    private GameBoardManager _gameBoardManager;
     private TileBehavior _tileBehavior;
+    private Light _activeHighligh;
 
     public Vector2Int Order { get => _order; set => _order = value; }
     public TileType Type { get => _type; set => _type = value; }
     public List<TileBoard> PreviusTiles { get => previusTiles; set => previusTiles = value; }
     public List<TileBoard> NextTiles { get => nextTiles; set => nextTiles = value; }
     public TileBehavior TileBehavior { get => _tileBehavior; set => _tileBehavior = value; }
+    public GameBoardManager GameBoardManager { get => _gameBoardManager; set => _gameBoardManager = value; }
 
     private void Awake()
     {
         _tileBehavior = transform.GetComponentInChildren<TileBehavior>();
+        _gameBoardManager = transform.GetComponentInParent<GameBoardManager>();
     }
+
+
+    public void HighlightTile(Color highlightColor)
+    {
+        if (_activeHighligh != null) return;
+        GameObject highlighter = InstanceManager.Instance.GetObject(_gameBoardManager.TileHighlighter);
+        _activeHighligh = highlighter.GetComponent<Light>();
+        _activeHighligh.color = highlightColor;
+        HighlightBase();
+        highlighter.transform.position = transform.position + _gameBoardManager.TileHighlighterOffset;
+        _gameBoardManager.ActiveHighlighsTiles.Add(this);
+    }
+
+    public void HighlightFocus()
+    {
+        if (_activeHighligh == null) return;
+        _activeHighligh.intensity = _gameBoardManager.HighlighterFocusIntensity;
+    }
+
+    public void HighlightBase()
+    {
+        if (_activeHighligh == null) return;
+        _activeHighligh.intensity = _gameBoardManager.HighlighterBaseIntensity; 
+    }
+
+
+    public void TurnOffHighlight()
+    {
+        _gameBoardManager.ActiveHighlighsTiles.Remove(this);
+        if (_activeHighligh == null) return;
+        _activeHighligh.gameObject.SetActive(false);
+        _activeHighligh = null;
+    }
+
+
+
+
+
+
 
 #if UNITY_EDITOR
     public void GenerateTileType()

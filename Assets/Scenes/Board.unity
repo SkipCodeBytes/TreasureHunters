@@ -4564,6 +4564,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseTilePrefab: {fileID: 1792056256406571202, guid: da9f64a00015d014b87c8f6f7324662f, type: 3}
   _separationOffset: {x: 2.75, y: 2.75}
+  tileHighlighter: {fileID: 5659100969862257281, guid: ed34647616ba12043a9b158ad1ee5680, type: 3}
+  tileHighlighterOffset: {x: 0, y: 3.5, z: 0}
+  highlighterBaseIntensity: 20
+  highlighterFocusIntensity: 60
   _tilesPrefab:
   - {fileID: 8714900007131163002, guid: 6ddb726383694f24384a18d654dc5daf, type: 3}
   - {fileID: 1965353870830607860, guid: dd60297e1465d0b4f8c3f564e1ceb7cb, type: 3}
@@ -4870,7 +4874,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4932,13 +4936,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.8153683, y: 0.13250051, z: 0.28379127, w: -0.4869093}
+  m_LocalRotation: {x: -0.039744735, y: 0.38925606, z: -0.913557, w: -0.11096747}
   m_LocalPosition: {x: 0, y: 7.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 45.957, y: 238.353, z: -134.9}
+  m_LocalEulerAnglesHint: {x: 46.057, y: -1.137, z: -194.335}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5412,6 +5416,9 @@ MonoBehaviour:
     isExpandible: 1
   - prefab: {fileID: 6208315405265727749, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
     poolSize: 5
+    isExpandible: 1
+  - prefab: {fileID: 5659100969862257281, guid: ed34647616ba12043a9b158ad1ee5680, type: 3}
+    poolSize: 10
     isExpandible: 1
 --- !u!4 &437777705
 Transform:
@@ -7402,7 +7409,7 @@ MonoBehaviour:
   adicionalDice: 0
   coinsBonusScale: 1
   lifeInHomeAdded: 1
-  dicesQuantityForAction: 010000000100000001000000010000000200000002000000
+  dicesQuantityForAction: 030000000100000001000000010000000200000002000000
 --- !u!114 &645806018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8500,7 +8507,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711467257}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8508,10 +8515,10 @@ RectTransform:
   - {fileID: 917513008}
   m_Father: {fileID: 552802337}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.43974075}
-  m_AnchorMax: {x: 1, y: 0.8166667}
-  m_AnchoredPosition: {x: -0.5, y: 1.5}
-  m_SizeDelta: {x: 1, y: -7}
+  m_AnchorMin: {x: 0, y: 0.22600001}
+  m_AnchorMax: {x: 1, y: 0.59900004}
+  m_AnchoredPosition: {x: -1, y: -3}
+  m_SizeDelta: {x: 1, y: -3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &711467259
 MonoBehaviour:
@@ -10787,7 +10794,7 @@ GameObject:
   - component: {fileID: 924761134}
   m_Layer: 0
   m_Name: CinematicCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10903,7 +10910,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924761129}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36059666, y: -0.000000030736256, z: 0.000000011882847, w: 0.93272185}
+  m_LocalRotation: {x: 0.2534089, y: 0.000000034006764, z: -0.000000008908394, w: 0.96735924}
   m_LocalPosition: {x: 5.5, y: 10.5, z: -8.940001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17649,10 +17656,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Composition:
-    ScreenPosition: {x: 0, y: 0}
+    ScreenPosition: {x: 0, y: 0.2}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.08, y: 0.1}
+      Size: {x: 0.08, y: 0.15}
     HardLimits:
       Enabled: 1
       Size: {x: 0.8, y: 0.8}
@@ -17779,7 +17786,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1709203369}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36059663, y: -0.000000022667052, z: -0.0000000089890095, w: 0.93272185}
+  m_LocalRotation: {x: 0.2534089, y: 0.000000034006764, z: -0.000000008908394, w: 0.96735924}
   m_LocalPosition: {x: 5.5, y: 10.5, z: -8.940001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20576,7 +20583,7 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.27
-    y: 0.41
+    y: 0.19
     width: 0.45
     height: 0.45
   near clip plane: 0.3

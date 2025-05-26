@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerGraphics : MonoBehaviourPunCallbacks
@@ -24,6 +25,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [SerializeField] private bool isWalking = false;
     [SerializeField] private bool isRunning = false;
     [SerializeField] private bool isRotating = false;
+    [SerializeField] private bool isWaiting = false;
 
     [SerializeField] private List<StackableAnimation> stackableAnimations = new List<StackableAnimation>();
 
@@ -39,6 +41,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
      * 6 - Death
      * 7 - Lie
      * 8 - Rotating
+     * 0 - Waiting
      */
 
     private void Awake()
@@ -118,6 +121,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
             animStatus = 0;
             if (isWalking) animStatus = 1;
             if (isRunning) animStatus = 2;
+            if (isWaiting) animStatus = 0;
             if (isResting) animStatus = 3;
             if (isRotating) animStatus = 8;
 
@@ -208,6 +212,8 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         stackableAnimations.Add(new StackableAnimation(this, AnimationType.RotateTo, gameObject.transform, Point, rotationSpeed, setRotatingAnimation, callback));
     }
 
+    public void WaitForAction() => isWaiting = true;
 
+    public void StopWaitAction() => isWaiting = false;
 
 }

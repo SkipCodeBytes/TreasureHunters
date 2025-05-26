@@ -1,11 +1,11 @@
 using Photon.Pun;
-using Photon.Realtime;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
 public class BoardPlayer : MonoBehaviour
 {
-    [Header("Config")]
     private TileBoard _nextTile = null;
 
     [Header("Player Values - ReadOnly")]
@@ -19,12 +19,66 @@ public class BoardPlayer : MonoBehaviour
     public TileBoard HomeTile { get => homeTile; set => homeTile = value; }
     public TileBoard CurrentTilePosition { get => currentTilePosition; set => currentTilePosition = value; }
     public TileBoard PreviusTilePosition { get => previusTilePosition; set => previusTilePosition = value; }
+    public int NumOfMovements { get => _numOfMovements; set => _numOfMovements = value; }
 
     private PlayerManager _pm;
+
+    //Multi routes selection
+    private int _numOfMovements = 0;
+    private bool _isGoingLastTile = false;
+    private bool _isWaitingForElection = false;
+    [SerializeField] private List<List<TileBoard>> _nextTiles = new List<List<TileBoard>>();
 
     private void Awake()
     {
         _pm = GetComponent<PlayerManager>();
+    }
+
+    private void Update()
+    {
+        if (_isWaitingForElection)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            currentTilePosition.GameBoardManager.BaseAllHighlight();
+            bool selectedList = false;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.TryGetComponent<TileBoard>(out TileBoard tile))
+                {
+                    for(int j = 0; j < _nextTiles.Count; j++)
+                    {
+                        List<TileBoard> observedList = _nextTiles[j];
+
+                        if (observedList.Contains(tile) && !selectedList)
+                        {
+                            selectedList = true;
+                            for (int i = 0; i < observedList.Count; i++) observedList[i].HighlightFocus();
+
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                _nextTile = observedList[0];
+                                _pm.Graphics.StopWaitAction();
+                                _isWaitingForElection = false;
+                                _nextTile.GameBoardManager.TurnOffAllHighlight();
+
+                                if (_isGoingLastTile)
+                                {
+                                    DisplaceToStandTile(_nextTile);
+                                    _pm.View.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
+                                    _isGoingLastTile = false;
+                                } else
+                                {
+                                    DisplaceToTile(_nextTile);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //SOLO SE VA A UTILIZAR UNA SOLA VEZ, AL INICIO
@@ -53,9 +107,31 @@ public class BoardPlayer : MonoBehaviour
         }
         if (numOfRoutes > 1)
         {
-            //A elecci�n del jugador
-            _nextTile = currentTilePosition.NextTiles[0];
-            DisplaceToTile(_nextTile);
+            _isWaitingForElection = true;
+            _nextTiles.Clear();
+            _pm.Graphics.WaitForAction();
+            for (int i = 0; i < numOfRoutes; i++)
+            {
+                _nextTiles.Add(new List<TileBoard>());
+                TileBoard observedTile = currentTilePosition.NextTiles[i];
+                _nextTiles[i].Add(observedTile);
+                observedTile.HighlightTile(Color.white);
+                for (int j = 0; j < _numOfMovements - 1; j++)
+                {
+                    if (observedTile.NextTiles.Count == 1) 
+                    { 
+                        observedTile = observedTile.NextTiles[0];
+                        _nextTiles[i].Add(observedTile);
+                        observedTile.HighlightTile(Color.white);
+                    }
+                    else
+                    {
+                        _nextTiles[i].Add(observedTile);
+                        observedTile.HighlightTile(Color.cyan);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -77,10 +153,18 @@ public class BoardPlayer : MonoBehaviour
         }
         if (numOfRoutes > 1)
         {
-            //A elecci�n del jugador
-            _nextTile = currentTilePosition.NextTiles[0];
-            DisplaceToStandTile(_nextTile);
-            _pm.View.RPC("SyncroEnterInTile", RpcTarget.All, _nextTile.Order.x, _nextTile.Order.y);
+            _nextTiles.Clear();
+            _isGoingLastTile = true;
+            _isWaitingForElection = true;
+            _pm.Graphics.WaitForAction();
+            for (int i = 0; i < numOfRoutes; i++)
+            {
+                TileBoard observedTile = currentTilePosition.NextTiles[i];
+                _nextTiles.Add(new List<TileBoard>());
+                _nextTiles[i].Add(observedTile);
+                if(observedTile.NextTiles.Count == 1) observedTile.HighlightTile(Color.white); 
+                else observedTile.HighlightTile(Color.cyan);
+            }
         }
     }
 
@@ -88,6 +172,7 @@ public class BoardPlayer : MonoBehaviour
     {
         if (tileTarget != null)
         {
+            _numOfMovements--;
             Vector3 newPos = new Vector3(tileTarget.transform.position.x, transform.position.y, tileTarget.transform.position.z);
             _pm.Graphics.MovePlayerAtPoint(newPos, true, FinishMove);
         }
@@ -118,4 +203,5 @@ public class BoardPlayer : MonoBehaviour
     public void SetNewCurrentTilePosition(int tileOrderX, int tileOrderY)
     {
     }*/
+
 }
