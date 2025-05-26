@@ -21,20 +21,20 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: {x: 0, y: -0, z: 10}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 0, y: 0, z: 0}
+        inSlope: {x: 0, y: 0, z: -10.491008}
+        outSlope: {x: 0, y: 0, z: -10.491008}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.13313833}
       - serializedVersion: 3
         time: 1
         value: {x: 0, y: 0, z: 0}
-        inSlope: {x: 0, y: 0, z: -11.518926}
-        outSlope: {x: 0, y: 0, z: -11.518926}
+        inSlope: {x: 0, y: 0, z: -9.567624}
+        outSlope: {x: 0, y: 0, z: -9.567624}
         tangentMode: 0
         weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.16429824}
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.11316335}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -148,20 +148,20 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: 10
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
+        inSlope: -10.491008
+        outSlope: -10.491008
+        tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.13313833
       - serializedVersion: 3
         time: 1
         value: 0
-        inSlope: -11.518926
-        outSlope: -11.518926
+        inSlope: -9.567624
+        outSlope: -9.567624
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.16429824
+        inWeight: 0.11316335
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -174,4 +174,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.98333335
+    functionName: PlayParticles
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

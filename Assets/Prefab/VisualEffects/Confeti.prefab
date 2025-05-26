@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8719701499944135141}
   - component: {fileID: 5157362431273155790}
   - component: {fileID: 56008279704566151}
-  - component: {fileID: -1580635647897135691}
   m_Layer: 0
   m_Name: Confeti
   m_TagString: Untagged
@@ -42,7 +41,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4240636564187837988}
   serializedVersion: 8
-  lengthInSec: 3
+  lengthInSec: 2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -117,7 +116,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 4
+      scalar: 3
       minScalar: 2
       maxCurve:
         serializedVersion: 2
@@ -4892,15 +4891,3 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &-1580635647897135691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4240636564187837988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b91572e0f6cb0344c826f7fd74589d14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

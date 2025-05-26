@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5410164634152141263}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -99,3 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154f9b8d86d4f6443b8a36cab331bf91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levitationHeight: 0.1
+  rotationSpeed: {x: 0, y: 50, z: 0}
+  gemItemData: {fileID: 0}
+  m_Renderer: {fileID: 0}

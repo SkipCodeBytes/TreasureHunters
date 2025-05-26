@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChestScript : MonoBehaviour
 {
     [SerializeField] private Vector3 itemSpawnPos;
+
     [SerializeField] private float itemTimeDrop;
     [SerializeField] private float itemDropMaxRadio;
     [SerializeField] private float itemDropHeight;
@@ -29,6 +30,8 @@ public class ChestScript : MonoBehaviour
     {
         _gm = GameManager.Instance;
     }
+
+
 
     private void OnEnable()
     {
@@ -83,8 +86,8 @@ public class ChestScript : MonoBehaviour
     public void HideChest()
     {
         EventManager.TriggerEvent("EndEvent", true);
-        gameObject.SetActive(false);
         _gm.GuiManager.SlotInfoUIList[_targetPlayerIndex].SetPlayerInfo();
+        gameObject.SetActive(false);
     }
 
 

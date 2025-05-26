@@ -4,7 +4,7 @@ using UnityEngine;
 public class ChestTile : TileBehavior
 {
     [SerializeField] private List<RewardGroup> _rewardGroups;
-    [SerializeField] private ChestScript chestObj;
+    [SerializeField] private ChestScript chestScript;
 
     private GameManager _gm;
 
@@ -19,31 +19,43 @@ public class ChestTile : TileBehavior
         _gm = GameManager.Instance;
     }
 
-    //Llama al evento inicial de lanzar dado
+    //Current Player //El primer método que se llama al llegar al tile
+    //Se busca llamar a un evento especial
     public override void StartTileEvent()
     {
         _gm.DiceAction = PlayerDiceAction.UseChest;
         _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, (int)_gm.DiceAction);
-        //EventManager.TriggerEvent("EndEvent");
+        //Abre panel de dados
+        //Añade un "Momento" para llamar al >>SettingTileEvent()
     }
 
-    //Realiza las operaciones y comparte los resultados con todos
-    //Solo lo ejecuta el invitado
+    //Current Player 
+    //Se busca que aquí se calculen todos los valores obtenidos
     public override void SettingTileEvent()
     {
         int[] rewards = GetRewardList(4);
         _gm.GmView.RPC("SyncroAddChestReward", Photon.Pun.RpcTarget.All, _gm.PlayerIndex, rewards[0], rewards[1], rewards[2], rewards[3]);
-        //Sincronizar recompensas con los demás jugadores
-        //Sincronizar animación
+        //Comparte información de recompensas con los demás jugadores
+        //Aplica los resultados a través del RPC
+        //A través del RPC, llama a >>PlayTileEvent()
 
     }
 
-    //Este es un visual para todos los jugadores
+    //All Players 
+    //Se busca que el tile reproduzca su animación con efecto
+    //Tomar en cuenta que 
+    //  OnEnable -> AninAwake
+    //  PlayTileEvent -> AnimEffect
+    //  Anim -> AnimEnd
+
     public override void PlayTileEvent()
     {
-        chestObj.OpenChestAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
+        chestScript.OpenChestAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
     }
 
+
+
+    //Funciones propias del Tiles
 
     private int[] GetRewardList(int listSize)
     {

@@ -83,4 +83,6 @@ public class GameMoments : MonoBehaviour
         _gm.MomentManager.IsWaitingForEvent = true;
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.SettingTileEvent();
     }
+
+
 }

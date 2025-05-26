@@ -8,7 +8,6 @@ public class ShopScript : MonoBehaviour
     private Transform _transform;
     private int _targetPlayerIndex;
 
-    [SerializeField] private GameObject smokeEffect;
     [SerializeField] private Animator _skeletonAnimator;
 
     private void Awake()
@@ -24,8 +23,8 @@ public class ShopScript : MonoBehaviour
 
     private void InitAnimation()
     {
-        GameObject effectObj = InstanceManager.Instance.GetObject(smokeEffect);
-        effectObj.transform.position = transform.position;
+        //GameObject effectObj = InstanceManager.Instance.GetObject(smokeEffect);
+        //effectObj.transform.position = transform.position;
         _animator.Play("ShopAwake");
     }
 }

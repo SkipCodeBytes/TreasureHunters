@@ -35,4 +35,21 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         }
         return null;
     }
+
+    public void AddLife(int value, bool forceAdd = false)
+    {
+        if (forceAdd)
+        {
+            life += value;
+        }
+        else
+        {
+            if (life >= _pm.SelectedCharacter.lifeStat) return;
+            if(life < _pm.SelectedCharacter.lifeStat)
+            {
+                life += value;
+                if (life > _pm.SelectedCharacter.lifeStat) life = _pm.SelectedCharacter.lifeStat;
+            }
+        }
+    }
 }

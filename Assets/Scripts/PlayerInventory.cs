@@ -91,6 +91,20 @@ public class PlayerInventory : MonoBehaviour
         else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
     }
 
+    public void DropRelic()
+    {
+
+    }
+
+    public void SaveRelic()
+    {
+        if (relicItemData != null)
+        {
+            safeRelicsQuantity++;
+            relicItemData = null;
+        }
+    }
+
 
     //Drop items
 }

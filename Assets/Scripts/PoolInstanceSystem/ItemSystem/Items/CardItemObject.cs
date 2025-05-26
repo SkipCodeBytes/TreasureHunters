@@ -5,66 +5,55 @@ public class CardItemObject : ItemObject
 
     [Header("Board Tramp Mode")]
     [SerializeField] private Vector3 inBoardScale = Vector3.one;
-    [SerializeField] private Vector3 inBoardDirection = Vector3.left;
-    [SerializeField] private float inBoardSpeedRotation = 0.1f;
+    [SerializeField] private Vector3 inBoardRotationSpeed = Vector3.left;
+    [SerializeField] private float inBoardLevitationHeight = 0;
 
-    [Header("Collectable Object Mode")]
-    [SerializeField] private Vector3 inCollectableScale = Vector3.one;
-    [SerializeField] private Vector3 inCollectableDirection = Vector3.left;
-    [SerializeField] private float inCollectableSpeedRotation = 0.1f;
+    [Header("Pickable Object Mode")]
+    [SerializeField] private Vector3 inPickableScale = Vector3.one;
+    [SerializeField] private Vector3 inPickableRotationSpeed = Vector3.left;
+    [SerializeField] private float inPickableLevitationHeight = 0;
+    /*
     [SerializeField] private float dropAndSpawnParabolicTime = 1f;
-    [SerializeField] private float collectTime = 1f;
+    [SerializeField] private float collectTime = 1f;*/
 
     [Header("In use Mode")]
     [SerializeField] private Vector3 inUseScale = Vector3.one;
-    [SerializeField] private Vector3 inUseDirection = Vector3.left;
-    [SerializeField] private float inUseSpeedRotation = 0.1f;
+    [SerializeField] private Vector3 inUseRotationSpeed = Vector3.left;
+    [SerializeField] private float inUseLevitationHeight = 0;
+    /*
     [SerializeField] private float inUseAnimationTargetYOffset = 1f;
-    [SerializeField] private float inUseAnimationTime = 1f;
+    [SerializeField] private float inUseAnimationTime = 1f;*/
 
-    //En tablero aparece grande y girando
-    //Como objeto solo aparece y se persigue al jugador
-    //Como carta en uso, gira sobre la 
-
-    //private int _cardMode = 0;
-
-    private Vector3 _currentDirection = Vector3.left;
-    private float _currentSpeed = 0.1f;
 
     private void OnEnable()
     {
-        SetInCollectableMode();
-    }
-
-    private void Update()
-    {
-        transform.Rotate(_currentDirection * _currentSpeed * Time.deltaTime);
+        SetInPickableMode();
     }
 
     public void SetInBoardMode()
     {
         transform.localScale = inBoardScale;
         transform.rotation = Quaternion.Euler(Vector3.zero);
-        _currentDirection = inBoardDirection;
-        _currentSpeed = inBoardSpeedRotation;
+        rotationSpeed = inBoardRotationSpeed;
+        levitationHeight = inBoardLevitationHeight;
     }
 
-    public void SetInCollectableMode()
+    public void SetInPickableMode()
     {
-        transform.localScale = inCollectableScale;
+        transform.localScale = inPickableScale;
         transform.rotation = Quaternion.Euler(new Vector3(90f, 0f, 0f));
-        _currentDirection = inCollectableDirection;
-        _currentSpeed = inCollectableSpeedRotation;
+        rotationSpeed = inPickableRotationSpeed;
+        levitationHeight = inPickableLevitationHeight;
     }
 
     public void SetInUseMode()
     {
         transform.localScale = inUseScale;
         transform.rotation = Quaternion.Euler(new Vector3(90f, 0f, 0f));
-        _currentDirection = inUseDirection;
-        _currentSpeed = inUseSpeedRotation;
+        rotationSpeed = inUseRotationSpeed;
+        levitationHeight = inUseLevitationHeight;
     }
-
+    /*
     public void PlayBoardAnimation()
     {
         EndAnimation();
@@ -87,7 +76,7 @@ public class CardItemObject : ItemObject
     private void EndAnimation()
     {
         gameObject.SetActive(false);
-    }
+    }*/
 
 
 

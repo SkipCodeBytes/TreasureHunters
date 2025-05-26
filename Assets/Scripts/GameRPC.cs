@@ -186,8 +186,29 @@ public class GameRPC : MonoBehaviourPunCallbacks
     }
 
 
+    //HomeTile.StartTileEvent() / All
+    [PunRPC]
+    public void SyncroHomeTileEffect(int playerId, int addLife)
+    {
+        _gm.PlayersArray[playerId].Rules.AddLife(addLife);
+        _gm.PlayersArray[playerId].Inventory.SaveRelic();
+        _gm.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+
+    }
 
 
+    //CardTile.StartTileEvent() /All
+    [PunRPC]
+    public void SyncroCardTileEffect(int playerId, int cardReward)
+    {
+        int[] rewards = { 0, 0, cardReward, 0 };
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCard(cardReward);
+        _gm.LastRewards = rewards;
+        _gm.LastRewards = new int[] { 0, 0, cardReward, 0 };
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+
+    }
 
 
 

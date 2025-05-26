@@ -63,7 +63,7 @@ MonoBehaviour:
     _rewards: 010000000300000004000000
   - _probabilityRange: {x: 12, y: 50}
     _rewards: 01000000030000000400000002000000
-  chestObj: {fileID: 4947243050300062251}
+  chestScript: {fileID: 4947243050300062251}
 --- !u!1001 &4133407100724661447
 PrefabInstance:
   m_ObjectHideFlags: 0

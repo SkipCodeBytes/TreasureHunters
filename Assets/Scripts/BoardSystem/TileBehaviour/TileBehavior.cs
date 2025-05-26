@@ -30,7 +30,7 @@ public abstract class TileBehavior : MonoBehaviour
     }
 
 
-    public void HideProps()
+    public virtual void HideProps()
     {
         for (int i = 0; i < _hideableProps.Count; i++)
         {
@@ -38,7 +38,7 @@ public abstract class TileBehavior : MonoBehaviour
         }
     }
 
-    public void UnhideProps()
+    public virtual void UnhideProps()
     {
         for (int i = 0; i < _hideableProps.Count; i++)
         {
