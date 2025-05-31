@@ -88,6 +88,23 @@ MonoBehaviour:
   - SetSyncroPlayerCheck
   - SyncroHomeTileEffect
   - SyncroCardTileEffect
+  - SyncroAddShopReward
+  - SyncroAtkReady
+  - SyncroDefReady
+  - SyncroBattleTile
+  - SetDefenseValueForAll
+  - SetEvadeValueForAll
+  - SetOfenseValueForAll
+  - CheckSyncroPlayer
+  - PlaySyncroCallback
+  - RequestSynchro
+  - BattleAttackAction
+  - DefenderElectionAction
+  - EndBattle
+  - OpenCardActions
+  - SetToReverseBattle
+  - ShowBattleResults
+  - ShowDefenderElection
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

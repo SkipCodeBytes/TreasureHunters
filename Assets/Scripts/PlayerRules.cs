@@ -52,4 +52,10 @@ public class PlayerRules : MonoBehaviourPunCallbacks
             }
         }
     }
+
+    public void GetDamage(int value)
+    {
+        life -= value;
+        if(life < 0) life = 0;
+    }
 }

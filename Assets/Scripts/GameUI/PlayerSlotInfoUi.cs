@@ -15,11 +15,17 @@ public class PlayerSlotInfoUi : MonoBehaviour
     [SerializeField] private Text CoinInfoText;
     [SerializeField] private Text GemInfoText;
     [SerializeField] private GameObject ItemContent;
-    [SerializeField] private int itemSlotPoolSize = 5;
 
+    [SerializeField] private int itemSlotPoolSize = 5;
     [SerializeField] private GameObject itemSlotPrefab;
     [SerializeField] private List<GameObject> slotPoolObj;
     [SerializeField] private List<Image> slotPoolImg;
+
+    [SerializeField] private GameObject safeRelicContent;
+    [SerializeField] private GameObject safeRelicIconPrefab;
+    [SerializeField] private List<Image> safeRelicsIcons;
+    [SerializeField] private Color relicIconObtainedColor;
+
 
     public void StartChargingPlayerInfo()
     {
@@ -32,6 +38,7 @@ public class PlayerSlotInfoUi : MonoBehaviour
         SetPlayerInfo();
 
         for (int i = 0; i < itemSlotPoolSize; i++) CreateSlot();
+        for (int i = 0; i < safeRelicContent.transform.childCount; i++) safeRelicsIcons.Add(safeRelicContent.transform.GetChild(i).GetComponent<Image>());
     }
 
     private void CreateSlot()
@@ -44,6 +51,7 @@ public class PlayerSlotInfoUi : MonoBehaviour
 
     public void SetPlayerInfo()
     {
+        if (_playerReference == null) return;
         HpInfoText.text = _playerRules.Life + "/" + _playerReference.SelectedCharacter.lifeStat;
         CoinInfoText.text = "$" + _playerInventory.CoinsQuantity;
         GemInfoText.text = "" + _playerInventory.GemItems.Count;
@@ -71,6 +79,14 @@ public class PlayerSlotInfoUi : MonoBehaviour
             slotPoolObj[_playerInventory.CardItems.Count - 1].SetActive(true);
         }
 
+        for(int i = 0; i < _playerInventory.SafeRelicsQuantity; i++)
+        {
+            if(safeRelicContent.transform.childCount < _playerInventory.SafeRelicsQuantity)
+            {
+                safeRelicsIcons.Add(Instantiate(safeRelicIconPrefab, safeRelicContent.transform).GetComponent<Image>());
+            }
+            safeRelicsIcons[i].color = relicIconObtainedColor;
+        }
     }
 
 }

@@ -26,16 +26,16 @@ public class ChestScript : MonoBehaviour
         _transform = GetComponent<Transform>();
     }
 
-    private void Start()
-    {
-        _gm = GameManager.Instance;
-    }
-
 
 
     private void OnEnable()
     {
         _animator.Play("ChestAwake");
+    }
+
+    private void Start()
+    {
+        _gm = GameManager.Instance;
     }
 
     public void OpenChestAnimation(int playerIndex, int[] rewards)

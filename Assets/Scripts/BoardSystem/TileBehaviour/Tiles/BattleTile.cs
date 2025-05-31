@@ -1,23 +1,63 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleTile : TileBehavior
 {
+    private GameManager _gm;
+
+
+    [SerializeField] private PlayerManager ofensivePlayer;
+    [SerializeField] private PlayerManager defensivePlayer;
+
+
+
     protected override void Start()
     {
         base.Start();
+        _gm = GameManager.Instance;
     }
+
+    
     public override void StartTileEvent()
     {
-        StartCoroutine(CinematicAnimation.WaitTime(1f, () => EventManager.TriggerEvent("EndEvent")));
-
+        SettingTileEvent();
     }
+
+
     public override void SettingTileEvent()
     {
+        List<int> availablePlayersIndex = new List<int>();
+        for (int i = 0; i < _gm.PlayersArray.Length; i++)
+        {
+            if (_gm.PlayersArray[i] != null && _gm.PlayersArray[i] != _gm.PlayersArray[_gm.CurrentPlayerTurnIndex])
+            {
+                availablePlayersIndex.Add(i);
+            }
+        }
+        int randomPlayerIndex = -1;
+        if (availablePlayersIndex.Count > 0)
+        {
+            randomPlayerIndex = availablePlayersIndex[Random.Range(0, availablePlayersIndex.Count)];
 
+            StartCoroutine(CinematicAnimation.WaitTime(1.5f, () => 
+            _gm.GmView.RPC("SyncroBattleTile", Photon.Pun.RpcTarget.All, _gm.CurrentPlayerTurnIndex, randomPlayerIndex)
+            ));
+        }
+        else
+        {
+            StartCoroutine(CinematicAnimation.WaitTime(1.5f, () => EventManager.TriggerEvent("EndEvent")));
+        }
     }
 
     public override void PlayTileEvent()
     {
-        //throw new System.NotImplementedException();
+        ofensivePlayer = _gm.PlayersArray[_gm.CurrentPlayerTurnIndex];
+        defensivePlayer = _gm.PlayersArray[_gm.SecondaryPlayerTurn];
+
+        _gm.OfensivePlayerValue = 0;
+        _gm.DefensivePlayerValue = 0;
+
+        _gm.GuiManager.BattlePanelGui.gameObject.SetActive(true);
+        _gm.GuiManager.BattlePanelGui.OpenPanel(ofensivePlayer, defensivePlayer);
     }
 }

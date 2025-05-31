@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9807d28522b36b4f8e6863816243930, type: 3}
   m_Name: RelicData
   m_EditorClassIdentifier: 
+  itemName: Reliquia
+  itemDescription: Un objeto tan deseado por los jugadores, es mejor ponerlo en un
+    lugar seguro
   itemObjectPrefab: {fileID: 8023321340107356989, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
   icon: {fileID: 21300000, guid: f2cefe89678df0244b526b6ddf6ac5c0, type: 3}
   price: 75

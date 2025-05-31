@@ -239,14 +239,14 @@ public class HostManager : MonoBehaviour
         WaitForSyncro();
         WaitForEvent();
         _momentManager.MomentList.Add(new Moment(CloseDicePanel));
-        _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.GameRules.GetDiceQuantityUse((int)_gm.DiceAction));
+        _gm.GmView.RPC("OpenDicePanel", RpcTarget.All, _gm.CurrentDiceOwnerIndex, _gm.GameRules.GetDiceQuantityUse((int)_gm.DiceAction), (int)_gm.DiceAction);
     }
 
     private void CloseDicePanel()
     {
         WaitForEvent();
         WaitForSyncro();
-        _gm.GmView.RPC("CloseDicePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        _gm.GmView.RPC("CloseDicePanel", RpcTarget.All, _gm.CurrentDiceOwnerIndex);
     }
 
 
@@ -337,25 +337,100 @@ public class HostManager : MonoBehaviour
 
     //---------------- CICLO COMÚN ----------------
 
-    //PREPARANDO INICIO DEL JUEGO
-
-    //INICIO DEL CICLO
-
-    /*
+    //LAS BATALLAS LO MANEJA EL HOST
 
 
-    public void Ply_UseCardAction()
-    {
-
+    //Para el Tile de batalla
+    public void mtBattleUseCardElection() { 
+        _momentManager.MomentList.Add(new Moment(CardElection));
+        _momentManager.MomentList.Add(new Moment(PlayAttaker));
     }
 
+    public void mtDefenderElection()
+    {
+        _momentManager.MomentList.Add(new Moment(DefenderElection));
+    }
 
-    private void MovePlayer()
+    public void mtShowResults()
+    {
+        _momentManager.MomentList.Add(new Moment(ShowBattleResults));
+    }
+
+    public void mtReverseBattle()
+    {
+        _momentManager.MomentList.Add(new Moment(ReverseBattle));
+    }
+
+    private void CardElection()
     {
         WaitForEvent();
         WaitForSyncro();
-        //_gm.InitMoventPlayer();
-        //Aquí el player realizará el movimiento
-        //Debug.Log("El jugador" + _gm.BoardPlayers[_gm.CurrentPlayerTurnIndex].Player.NickName + ", se moverá " + _gm.DiceResult + " casillas");
-    }*/
+        _gm.GmView.RPC("OpenCardActions", RpcTarget.All);
+    }
+
+    private void PlayAttaker()
+    {
+        WaitForEvent();
+        WaitForSyncro();
+        if(_gm.ReverseBattle) _gm.GameRPC.OpenDiceForAction(_gm.SecondaryPlayerTurn, (int)PlayerDiceAction.Attack);
+        else _gm.GameRPC.OpenDiceForAction(_gm.CurrentPlayerTurnIndex, (int)PlayerDiceAction.Attack);
+    }
+
+
+    private void DefenderElection()
+    {
+        WaitForEvent();
+        WaitForSyncro();
+        _gm.GmView.RPC("ShowDefenderElection", RpcTarget.All);
+    }
+
+    private void ShowBattleResults()
+    {
+        WaitForEvent();
+        WaitForSyncro();
+
+        int damage = 0;
+        if (_gm.IsEvadeAction)
+        {
+            if (_gm.OfensivePlayerValue >= _gm.DefensivePlayerValue) damage = _gm.DefensivePlayerValue;
+            else damage = 0;
+        }
+        else
+        {
+            damage = _gm.OfensivePlayerValue - _gm.DefensivePlayerValue;
+            if (damage <= 0) damage = 1;
+        }
+
+        StartCoroutine(CinematicAnimation.WaitTime(1f, () => _gm.GmView.RPC("ShowBattleResults", RpcTarget.All, damage)));
+    }
+
+    private void ReverseBattle()
+    {
+        WaitForEvent();
+        WaitForSyncro();
+        //Verificamos que estén en consiciones
+        //Esperamos unos segundos y cerramos o revertimos
+        if (_gm.ReverseBattle)
+        {
+            Debug.Log("End with reverse");
+            StartCoroutine(CinematicAnimation.WaitTime(1.5f, () => _gm.GmView.RPC("EndBattle", RpcTarget.All)));
+        }
+        else
+        {
+            if (_gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.Life > 0)
+            {
+                _gm.ReverseBattle = true;
+                _momentManager.MomentList.Add(new Moment(PlayAttaker));
+                StartCoroutine(CinematicAnimation.WaitTime(1.5f, () => _gm.GmView.RPC("SetToReverseBattle", RpcTarget.All)));
+                Debug.Log("SetToReverseBattle");
+            }
+            else
+            {
+                Debug.Log("End out reverse");
+                StartCoroutine(CinematicAnimation.WaitTime(1.5f, () => _gm.GmView.RPC("EndBattle", RpcTarget.All)));
+            }
+        }
+
+    }
+
 }

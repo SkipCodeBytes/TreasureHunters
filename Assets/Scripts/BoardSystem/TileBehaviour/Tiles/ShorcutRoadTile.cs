@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class ShorcutRoadTile : TileBehavior
 {
+    [SerializeField] private PortalScript portalScript;
+
+
     protected override void Start()
     {
         base.Start();

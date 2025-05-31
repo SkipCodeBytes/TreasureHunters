@@ -9,6 +9,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private List<CardItemData> cardItems;
     [SerializeField] private bool hasRelicItem;
     [SerializeField] private RelicItemData relicItemData;
+    [SerializeField] private GameObject relicVisual;
 
     public int CoinsQuantity { get => coinsQuantity; set => coinsQuantity = value; }
     public int SafeRelicsQuantity { get => safeRelicsQuantity; set => safeRelicsQuantity = value; }
@@ -87,6 +88,8 @@ public class PlayerInventory : MonoBehaviour
         ItemData data = _im.GetItemData(itemId);
         RelicItemData relic = data as RelicItemData;
 
+        relicVisual.SetActive(true);
+
         if (relic != null) relicItemData = relic;
         else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
     }
@@ -102,6 +105,7 @@ public class PlayerInventory : MonoBehaviour
         {
             safeRelicsQuantity++;
             relicItemData = null;
+            relicVisual.SetActive(false);
         }
     }
 

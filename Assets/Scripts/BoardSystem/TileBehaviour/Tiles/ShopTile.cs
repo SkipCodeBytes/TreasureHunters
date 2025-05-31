@@ -2,23 +2,27 @@ using UnityEngine;
 
 public class ShopTile : TileBehavior
 {
-    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private ShopScript shopScript;
+
+    private GameManager _gm;
 
     protected override void Start()
     {
         base.Start();
+        _gm = GameManager.Instance;
     }
     public override void StartTileEvent()
     {
-        StartCoroutine(CinematicAnimation.WaitTime(1f, () => EventManager.TriggerEvent("EndEvent")));
+        _gm.GuiManager.ShopPanelGUI.gameObject.SetActive(true);
+        _gm.GuiManager.ShopPanelGUI.StartShop();
     }
 
     public override void SettingTileEvent()
     {
-
     }
+
     public override void PlayTileEvent()
     {
-        //throw new System.NotImplementedException();
+        shopScript.PresentAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
     }
 }

@@ -34,10 +34,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private List<TileBoard> homeTileList = new List<TileBoard>();
     [SerializeField] private List<int> playersPhotonId = new List<int>();
     [SerializeField] private int gameRound = 0;
+    [SerializeField] private int currentDiceOwnerIndex;
     [SerializeField] private int lastDiceResult = 0;
     [SerializeField] private int[] lastRewards;
     [SerializeField] private int currentPlayerTurnIndex = -1;
+    [SerializeField] private int secondaryPlayerTurn = -1;
     [SerializeField] private PlayerDiceAction diceAction;
+
+    [Header("Battle System - ReadOnly")]
+    [SerializeField] private bool reverseBattle = false;
+    [SerializeField] private bool isEvadeAction = false;
+    [SerializeField] private int ofensivePlayerValue = 0;
+    [SerializeField] private int defensivePlayerValue = 0;
 
 
     //Componentes de GameManager
@@ -82,6 +90,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     public List<int> PlayersPhotonId { get => playersPhotonId; set => playersPhotonId = value; }
     public int[] LastRewards { get => lastRewards; set => lastRewards = value; }
     public GlobalLightScript GlobalLight { get => globalLight; set => globalLight = value; }
+    public int SecondaryPlayerTurn { get => secondaryPlayerTurn; set => secondaryPlayerTurn = value; }
+    public bool ReverseBattle { get => reverseBattle; set => reverseBattle = value; }
+    public int OfensivePlayerValue { get => ofensivePlayerValue; set => ofensivePlayerValue = value; }
+    public int DefensivePlayerValue { get => defensivePlayerValue; set => defensivePlayerValue = value; }
+    public bool IsEvadeAction { get => isEvadeAction; set => isEvadeAction = value; }
+    public int CurrentDiceOwnerIndex { get => currentDiceOwnerIndex; set => currentDiceOwnerIndex = value; }
 
     private void Awake()
     {

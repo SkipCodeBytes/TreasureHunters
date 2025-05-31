@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9297657d1f5c039418f80b10e687517f, type: 3}
   m_Name: DiamondBlueGemData
   m_EditorClassIdentifier: Assembly-CSharp::GemItemData
+  itemName: Diamante Azul
+  itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -7541860823127592346, guid: d575df3d37eb56d44ab538b8a988c71c, type: 3}
   icon: {fileID: 21300000, guid: 5e1b66b2669b9fc46aa3df6a35856524, type: 3}
   price: 20

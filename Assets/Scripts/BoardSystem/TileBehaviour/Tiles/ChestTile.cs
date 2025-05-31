@@ -24,7 +24,7 @@ public class ChestTile : TileBehavior
     public override void StartTileEvent()
     {
         _gm.DiceAction = PlayerDiceAction.UseChest;
-        _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, (int)_gm.DiceAction);
+        _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, _gm.CurrentPlayerTurnIndex, (int)_gm.DiceAction);
         //Abre panel de dados
         //Añade un "Momento" para llamar al >>SettingTileEvent()
     }

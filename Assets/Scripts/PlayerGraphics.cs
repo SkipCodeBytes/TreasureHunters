@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerGraphics : MonoBehaviourPunCallbacks
@@ -26,6 +25,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [SerializeField] private bool isRunning = false;
     [SerializeField] private bool isRotating = false;
     [SerializeField] private bool isWaiting = false;
+    [SerializeField] private bool isBlocking = false;
 
     [SerializeField] private List<StackableAnimation> stackableAnimations = new List<StackableAnimation>();
 
@@ -94,7 +94,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     private void AnimationLogic()
     {
 
-        if (_pm.IsPlayerTurn)
+        if (_pm.IsPlayerTurn || _pm.IsPlayerSubTurn)
         {
             isResting = false;
         }
@@ -124,6 +124,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
             if (isWaiting) animStatus = 0;
             if (isResting) animStatus = 3;
             if (isRotating) animStatus = 8;
+            if (isBlocking) animStatus = 5;
 
             if (previusAnimation != animStatus)
             {
@@ -159,6 +160,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         isResting = false;
         isRunning = false;
         isRotating = false;
+        isBlocking = false;
     }
 
     private void setWalkingAnimation()
@@ -185,7 +187,12 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         isResting = true;
     }
 
+    
 
+    public void PlayAttackAnim() { _animator.SetTrigger("Attack"); }
+    public void PlayDefenseAnim() { isBlocking = true; }
+    public void PlayEvadeAnim() { _animator.SetTrigger("DodgeA"); }
+    public void PlayHitAnim() { StartCoroutine(CinematicAnimation.WaitTime(0.2f, () => _animator.SetTrigger("Hit"))); }
 
 
     //GENERAL ORDERS - Se pueden dar varias órdenes, se apilarán y ejecutarán en orden

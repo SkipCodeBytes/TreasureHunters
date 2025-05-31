@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Player Values - ReadOnly")]
 
     [SerializeField] private bool isPlayerTurn = false;
+    [SerializeField] private bool isPlayerSubTurn = false;
     [SerializeField] private CharacterData selectedCharacter;
 
     public bool IsPlayerTurn { get => isPlayerTurn; set => isPlayerTurn = value; }
@@ -34,6 +35,7 @@ public class PlayerManager : MonoBehaviour
     public PlayerInventory Inventory { get => _inventory; set => _inventory = value; }
     public BoardPlayer BoardPlayer { get => _boardPlayer; set => _boardPlayer = value; }
     public Transform Transform { get => _transform; set => _transform = value; }
+    public bool IsPlayerSubTurn { get => isPlayerSubTurn; set => isPlayerSubTurn = value; }
 
 
     //Referencias externas

@@ -28,24 +28,28 @@ public class PedestalScript : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
 
-        smokeParticles.Stop();
-        featherParticles.Stop();
-        continousSmokeParticle.Stop();
 
         _defaultLightIntensity = strongLight.intensity;
         strongLight.intensity = 0;
     }
 
-    private void Start()
-    {
-        _gm = GameManager.Instance;
-    }
 
 
 
     private void OnEnable()
     {
         _animator.Play("Spawn");
+    }
+    private void Start()
+    {
+        _gm = GameManager.Instance;
+        _animator.Play("IdlePedestal");
+        smokeParticles.Stop();
+        featherParticles.Stop();
+        continousSmokeParticle.Stop();
+        smokeParticles.Clear();
+        featherParticles.Clear();
+        continousSmokeParticle.Clear();
     }
 
     public void PresentAnimation(int playerIndex, int[] rewards)
@@ -75,8 +79,8 @@ public class PedestalScript : MonoBehaviour
 
     public void StopParticles() {
 
+        strongLight.intensity = 0;
         featherParticles.Stop();
-        StartCoroutine(LerpUtils.LerpFloat(value => strongLight.intensity = value, _defaultLightIntensity, 0f, 0.8f));
     }
 
     public void ContinousSmokeParticles()

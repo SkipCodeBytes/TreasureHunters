@@ -1,6 +1,6 @@
+
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -105,11 +105,12 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
 
 
-
+    //BattlePanelGui.btnEvadeAction() / HostPlayer
+    //BattlePanelGui.btnDefenseAction() / HostPlayer
     //GUIManager.btnMovePlayer() / HostPlayer
     //ChestTile.StartTileEvent() / HostPlayer
     [PunRPC]
-    public void OpenDiceForAction(int actionDice)
+    public void OpenDiceForAction(int newDiceOwner, int actionDice)
     {
         // Id | Action 
         // 0    Move    
@@ -118,18 +119,26 @@ public class GameRPC : MonoBehaviourPunCallbacks
         // 3    Evade
         // 4    UseChest
         // 5    UseTramp
+        _gm.CurrentDiceOwnerIndex = newDiceOwner;
         _gm.DiceAction = (PlayerDiceAction)actionDice;
+
+        Debug.Log("Set to: " + _gm.DiceAction);
         _gm.HostManager.StartDicePanel();
     }
 
     //HostManager.OpenDicePanel() / All
     [PunRPC]
-    public void OpenDicePanel(int playerIndex, int dicesQuantity)
+    public void OpenDicePanel(int playerIndex, int dicesQuantity, int actionDice)
     {
+        _gm.DiceAction = (PlayerDiceAction)actionDice;
         _gm.GuiManager.PlayerActionPanel.CloseAll();
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(true);
         _gm.LastDiceResult = 0;
         _gm.DiceManager.UseDice(playerIndex, dicesQuantity);
+
+        Debug.Log("Dice Action " + _gm.DiceAction);
+        Debug.Log("OpenPanel for playerIndex: " + playerIndex + " -  Current Index " + _gm.PlayerIndex);
+        Debug.Log("Reverse Battle? = " + _gm.ReverseBattle);
 
         if (playerIndex == _gm.PlayerIndex) _gm.DiceManager.DiceCanvas.OpenTurnPanel();
         else _gm.DiceManager.DiceCanvas.OpenNoTurnPanel();
@@ -141,15 +150,32 @@ public class GameRPC : MonoBehaviourPunCallbacks
     public void CloseDicePanel(int playerIndex)
     {
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
-
+        Debug.Log("Jugador " + playerIndex + " con resultado " + _gm.LastDiceResult + " PlyrAction: " + _gm.DiceAction);
+        //Esto lo ejecuta solo el dueño de los dados
         if (playerIndex == _gm.PlayerIndex)
         {
             _gm.MomentManager.IsWaitingForEvent = false;
+
             switch (_gm.DiceAction)
             {
                 case PlayerDiceAction.Move:
                     _gm.GameMoments.InitMoventPlayer();
                     break;
+                case PlayerDiceAction.Attack:
+                    Debug.Log("Attack");
+                    _gm.GmView.RPC("BattleAttackAction", RpcTarget.All, playerIndex, _gm.LastDiceResult);
+                    break;
+
+                case PlayerDiceAction.Defend:
+                    Debug.Log("Defend");
+                    _gm.GmView.RPC("DefenderElectionAction", RpcTarget.All, playerIndex, _gm.LastDiceResult, false);
+                    break;
+
+                case PlayerDiceAction.Evade:
+                    Debug.Log("Evade");
+                    _gm.GmView.RPC("DefenderElectionAction", RpcTarget.All, playerIndex, _gm.LastDiceResult, true);
+                    break;
+
                 case PlayerDiceAction.UseChest:
                     _gm.GameMoments.InitChestTileReward();
                     break;
@@ -210,10 +236,143 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     }
 
+    //ShopPanelGUI.btnBuyItem(); /All
+    [PunRPC]
+    public void SyncroAddShopReward(int playerId, int itemID, int coinCost)
+    {
+        ItemType itemType = ItemManager.Instance.GetItemType(itemID);
+
+        switch (itemType)
+        {
+            case ItemType.Card:
+                _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCard(itemID);
+                _gm.LastRewards = new int[] { 0, 0, itemID, 0 };
+                break;
+
+            case ItemType.Gem:
+                _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddGem(itemID);
+                _gm.LastRewards = new int[] { 0, itemID, 0, 0 };
+                break;
+
+            case ItemType.Relic:
+                _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddRelic(itemID);
+                _gm.LastRewards = new int[] { 0, 0, 0, itemID };
+                break;
+
+            default:
+                _gm.LastRewards = new int[] { 0, 0, 0, 0 };
+                Debug.LogError("Item no asignado");
+                break;
+        }
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.CoinsQuantity -= coinCost;
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+
+    }
 
 
 
 
+    //BattleTile.StartTileEvent() //All
+    [PunRPC]
+    public void SyncroBattleTile(int ofesivePlayerId, int defensiveId)
+    {
+        _gm.SecondaryPlayerTurn = defensiveId;
+        _gm.PlayersArray[defensiveId].IsPlayerSubTurn = true;
+        _gm.ReverseBattle = false;
+        _gm.PlayersArray[ofesivePlayerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+
+        //Añadir un momento de batalla
+        if (_gm.IsHostPlayer)
+        {
+            _gm.HostManager.mtBattleUseCardElection();
+            EventManager.TriggerEvent("EndEvent");
+        }
+    }
+
+    //HostManager.CardElection() // All
+    [PunRPC]
+    public void OpenCardActions() { _gm.GuiManager.BattlePanelGui.OpenCardActions(); }
+
+    //GameRPC.CloseDicePanel() / All
+    [PunRPC]
+    public void BattleAttackAction(int atackerIndex, int ofenseValue)
+    {
+        Debug.Log("Attaker Index " + atackerIndex + "ofenseValue " + ofenseValue);
+        _gm.OfensivePlayerValue = ofenseValue + _gm.GameRules.GetAttackValuePlayer(atackerIndex);
+        _gm.GuiManager.BattlePanelGui.ShowOfenseValue();
+
+        if (_gm.IsHostPlayer)
+        {
+            _gm.HostManager.mtDefenderElection();
+        }
+    }
+
+    //HostManager.DefenderElection() / All
+    [PunRPC]
+    public void ShowDefenderElection() { _gm.GuiManager.BattlePanelGui.ShowDefensiveOptions(); }
+
+
+    //HostManager.DefenderElection() / All
+    [PunRPC]
+    public void DefenderElectionAction(int defenderIndex, int defenseValue, bool isEvade)
+    {
+        Debug.Log("defender Index " + defenderIndex + "defend value: " + defenseValue);
+        _gm.IsEvadeAction = isEvade;
+        if (isEvade)
+        {
+            _gm.DefensivePlayerValue = defenseValue + _gm.GameRules.GetEvasionValuePlayer(defenderIndex);
+        } 
+        else
+        {
+            _gm.DefensivePlayerValue = defenseValue + _gm.GameRules.GetDefenseValuePlayer(defenderIndex);
+        }
+
+        if (_gm.IsHostPlayer)
+        {
+            _gm.HostManager.mtShowResults();
+        }
+
+        _gm.GuiManager.BattlePanelGui.ShowDefenseValue(isEvade);
+    }
+
+    //HostManager.ShowResults() / All
+    [PunRPC]
+    public void ShowBattleResults(int damage)
+    {
+        if (_gm.ReverseBattle)
+        {
+            _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.GetDamage(damage);
+        }
+        else
+        {
+            _gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.GetDamage(damage);
+        }
+        _gm.GuiManager.BattlePanelGui.ShowResults(damage);
+
+
+        if (_gm.IsHostPlayer)
+        {
+            _gm.HostManager.mtReverseBattle();
+        }
+    }
+
+    //HostManager.ReverseBattle() / All
+    [PunRPC]
+    public void SetToReverseBattle()
+    {
+        _gm.ReverseBattle = true;
+        _gm.GuiManager.BattlePanelGui.ResetInfoValues();
+        EventManager.TriggerEvent("EndEvent");
+    }
+
+    [PunRPC]
+    public void EndBattle()
+    {
+        _gm.GuiManager.BattlePanelGui.gameObject.SetActive(false);
+        _gm.PlayersArray[_gm.SecondaryPlayerTurn].IsPlayerSubTurn = false;
+        _gm.SecondaryPlayerTurn = -1;
+        EventManager.TriggerEvent("EndEvent");
+    }
 
 
     //********************************************************************************************************************//
@@ -262,18 +421,4 @@ public class GameRPC : MonoBehaviourPunCallbacks
         }
     }
 
-
-
-
-
-
-
-    /*
-
-
-    [PunRPC]
-    public void SentItemsIDs(int[] ids)
-    {
-        Debug.Log("Recibidos: " + string.Join(", ", ids));
-    }*/
 }

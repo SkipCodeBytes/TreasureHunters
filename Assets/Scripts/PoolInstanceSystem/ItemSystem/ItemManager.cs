@@ -13,6 +13,7 @@ public class ItemManager : MonoBehaviour
     private Dictionary<Type, List<int>> _itemTypeIdMap = new Dictionary<Type, List<int>>();
 
     public static ItemManager Instance { get => _instance; }
+    public List<ItemData> RegisteredItems { get => registeredItems; set => registeredItems = value; }
 
     private void Awake()
     {

@@ -19,6 +19,8 @@ public class BonfireScript : MonoBehaviour
 
     private void Start()
     {
+        fireLight.intensity = _defaultLightIntensity;
+        _animator.Play("BonfireIdle");
     }
 
     private void OnEnable()

@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     private bool isInactiveMode = false;
 
     private float _inactiveTimer = 0;
+    private GameManager _gm;
 
     void Awake()
     {
@@ -20,6 +21,11 @@ public class CameraController : MonoBehaviour
         _inputAxisController = GetComponent<CinemachineInputAxisController>();
 
         _inputAxisController.enabled = false;
+    }
+
+    private void Start()
+    {
+        _gm = GameManager.Instance;
     }
 
     void Update()
@@ -44,21 +50,24 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (!isControlDrag && !isInactiveMode)
+        if(_gm.CurrentPlayerTurnIndex != _gm.PlayerIndex)
         {
-            _inactiveTimer += Time.deltaTime;
-            if (_inactiveTimer > inactiveTime)
+            if (!isControlDrag && !isInactiveMode)
             {
-                isInactiveMode = true;
+                _inactiveTimer += Time.deltaTime;
+                if (_inactiveTimer > inactiveTime)
+                {
+                    isInactiveMode = true;
+                }
             }
-        }
 
-        if (isInactiveMode)
-        {
-            _orbitalFollow.HorizontalAxis.Value += autoRotateSpeed * Time.deltaTime;
-            if(_orbitalFollow.HorizontalAxis.Value > 180)
+            if (isInactiveMode)
             {
-                _orbitalFollow.HorizontalAxis.Value -= 360;
+                _orbitalFollow.HorizontalAxis.Value += autoRotateSpeed * Time.deltaTime;
+                if (_orbitalFollow.HorizontalAxis.Value > 180)
+                {
+                    _orbitalFollow.HorizontalAxis.Value -= 360;
+                }
             }
         }
     }
