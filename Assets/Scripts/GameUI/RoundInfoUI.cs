@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class RoundInfoUI : MonoBehaviour
 {
+    [SerializeField] private GameManager _gm;
     [SerializeField] private RectTransform panelUI;
     [SerializeField] private float transicionTime;
     [SerializeField] private Text roundTittle;
@@ -22,6 +23,10 @@ public class RoundInfoUI : MonoBehaviour
         _currentColorCanvas = viewPanelImage.color;
     }
 
+    private void Start()
+    {
+        _gm = GameManager.Instance;
+    }
 
     public void StartPresentation()
     {
@@ -36,6 +41,7 @@ public class RoundInfoUI : MonoBehaviour
     private void showTittle()
     {
         Debug.Log("Show Tittle");
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.DiceResult);
         StartCoroutine(CinematicAnimation.UiTextTypewriter(roundTittle, defaultTxt, timeBetweenWrite));
         StartCoroutine(CinematicAnimation.WaitTime(animationEndTime, exitAnimation));
     }

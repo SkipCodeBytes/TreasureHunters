@@ -8,5 +8,6 @@ public enum PlayerDiceAction
     Defend,
     Evade,
     UseChest,
-    UseTramp
+    UseTramp,
+    Revive
 }

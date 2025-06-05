@@ -65,6 +65,33 @@ public class GameMoments : MonoBehaviour
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.MoveLastTile();
     }
 
+    //REVIVIR JUGADOR
+    public void CheckToRevivePlayer()
+    {
+        if (_gm.LastDiceResult >= _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.ReviveValue) 
+        {
+            _gm.MomentManager.MomentList.Add(new Moment(RevivePlayer));
+        } else
+        {
+            _gm.MomentManager.MomentList.Add(new Moment(ReviveSkipTurn));
+        }
+    }
+
+    private void RevivePlayer()
+    {
+        _gm.MomentManager.IsWaitingForEvent = true;
+        _gm.GmView.RPC("RevivePlayer", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        StartCoroutine(CinematicAnimation.WaitTime(2.2f, () => EventManager.TriggerEvent("EndEvent")));
+    }
+
+    private void ReviveSkipTurn()
+    {
+        _gm.MomentManager.IsWaitingForEvent = true;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.ReviveValue--;
+        StartCoroutine(CinematicAnimation.WaitTime(1.2f, () => EventManager.TriggerEvent("EndEvent")));
+    }
+
+
 
     //MOMENTO DE EVENTO DE CASILLA
     private void OpenTileEvent()

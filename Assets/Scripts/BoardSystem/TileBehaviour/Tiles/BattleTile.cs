@@ -31,7 +31,7 @@ public class BattleTile : TileBehavior
         {
             if (_gm.PlayersArray[i] != null && _gm.PlayersArray[i] != _gm.PlayersArray[_gm.CurrentPlayerTurnIndex])
             {
-                availablePlayersIndex.Add(i);
+                if(_gm.PlayersArray[i].Rules.Life > 0) availablePlayersIndex.Add(i);
             }
         }
         int randomPlayerIndex = -1;

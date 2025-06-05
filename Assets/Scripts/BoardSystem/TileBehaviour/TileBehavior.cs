@@ -11,7 +11,7 @@ public abstract class TileBehavior : MonoBehaviour
     [SerializeField] private List<Vector3> _restPoints = new List<Vector3>();
 
     private Dictionary<Vector3, BoardPlayer> _restPointDicc = new Dictionary<Vector3, BoardPlayer>();
-    private TileBoard _tileBoard;
+    protected TileBoard _tileBoard;
 
     public List<GameObject> HideableProps { get => _hideableProps; set => _hideableProps = value; }
     public List<Vector3> RestPoints { get => _restPoints; set => _restPoints = value; }

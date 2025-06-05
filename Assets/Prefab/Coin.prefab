@@ -101,3 +101,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levitationHeight: 0.1
   rotationSpeed: {x: 0, y: 50, z: 0}
+  coinClip: {fileID: 8300000, guid: 2facfb1c96bb94646bad9a1ea0c446d4, type: 3}

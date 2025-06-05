@@ -132,16 +132,14 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.DiceAction = (PlayerDiceAction)actionDice;
         _gm.GuiManager.PlayerActionPanel.CloseAll();
+        _gm.GuiManager.RevivePanelUI.ClosePanel();
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(true);
         _gm.LastDiceResult = 0;
         _gm.DiceManager.UseDice(playerIndex, dicesQuantity);
-
-        Debug.Log("Dice Action " + _gm.DiceAction);
-        Debug.Log("OpenPanel for playerIndex: " + playerIndex + " -  Current Index " + _gm.PlayerIndex);
-        Debug.Log("Reverse Battle? = " + _gm.ReverseBattle);
-
         if (playerIndex == _gm.PlayerIndex) _gm.DiceManager.DiceCanvas.OpenTurnPanel();
         else _gm.DiceManager.DiceCanvas.OpenNoTurnPanel();
+
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.OpenPanel);
     }
 
 
@@ -151,6 +149,8 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
         Debug.Log("Jugador " + playerIndex + " con resultado " + _gm.LastDiceResult + " PlyrAction: " + _gm.DiceAction);
+
+
         //Esto lo ejecuta solo el dueño de los dados
         if (playerIndex == _gm.PlayerIndex)
         {
@@ -179,6 +179,11 @@ public class GameRPC : MonoBehaviourPunCallbacks
                 case PlayerDiceAction.UseChest:
                     _gm.GameMoments.InitChestTileReward();
                     break;
+
+                case PlayerDiceAction.Revive:
+                    _gm.GameMoments.CheckToRevivePlayer();
+                    break;  
+
                 default:
                     Debug.LogError("No implementado");
                     break;
@@ -196,6 +201,8 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.LastDiceResult = result;
         _gm.DiceManager.EndAnimationFocusDices();
+
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.DiceResult);
     }
 
     //ChestTile.SettingTileEvent() / All
@@ -285,6 +292,9 @@ public class GameRPC : MonoBehaviourPunCallbacks
         if (_gm.IsHostPlayer)
         {
             _gm.HostManager.mtBattleUseCardElection();
+            EventManager.TriggerEvent("EndEvent");
+        } else if(_gm.CurrentPlayerTurnIndex == _gm.PlayerIndex)
+        {
             EventManager.TriggerEvent("EndEvent");
         }
     }
@@ -389,6 +399,10 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.GameRound++;
         _gm.GuiManager.RoundInfoPanel.gameObject.SetActive(true);
         _gm.GuiManager.RoundInfoPanel.StartPresentation();
+        if(_gm.GameRound % 5 == 0)
+        {
+            _gm.MusicManager.NextMusic();
+        }
     }
 
     //HostManager.NewTurn() / All
@@ -404,6 +418,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         }
         
         _gm.CameraController.FocusTarget(_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].gameObject);
+        SoundController.Instance.PlaySound(_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].SelectedCharacter.turnAudio);
     }
 
     //HostManager.OpenPlayerActionPanel() / All
@@ -419,6 +434,31 @@ public class GameRPC : MonoBehaviourPunCallbacks
         {
             _gm.GuiManager.PlayerActionPanel.OpenInfoPanel();
         }
+    }
+
+
+    //HostManager.OpenPlayerRevivePanel() / All
+    [PunRPC]
+    public void OpenPlayerRevivePanel(int playerIndex)
+    {
+        _gm.GuiManager.RevivePanelUI.gameObject.SetActive(true);
+        if (playerIndex == _gm.PlayerIndex)
+        {
+            _gm.GuiManager.RevivePanelUI.OpenActionPanel();
+            _gm.GuiManager.RevivePanelUI.StartPanel();
+        }
+        else
+        {
+            _gm.GuiManager.RevivePanelUI.OpenInfoPanel();
+        }
+    }
+
+    [PunRPC]
+    public void RevivePlayer(int playerIndex)
+    {
+        _gm.PlayersArray[playerIndex].Rules.Life = _gm.PlayersArray[playerIndex].SelectedCharacter.lifeStat;
+        _gm.PlayersArray[playerIndex].Graphics.reviveAnimation();
+        _gm.GuiManager.SlotInfoUIList[playerIndex].SetPlayerInfo();
     }
 
 }

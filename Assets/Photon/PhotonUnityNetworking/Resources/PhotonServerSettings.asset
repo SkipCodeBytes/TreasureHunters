@@ -105,6 +105,8 @@ MonoBehaviour:
   - SetToReverseBattle
   - ShowBattleResults
   - ShowDefenderElection
+  - OpenPlayerRevivePanel
+  - RevivePlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

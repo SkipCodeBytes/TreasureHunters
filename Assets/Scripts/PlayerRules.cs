@@ -7,6 +7,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 {
     [Header("Player Info")]
     [SerializeField] private int life = 0;
+    [SerializeField] private int reviveValue = 0;
 
     [Header("Config Values")]
     [SerializeField] private List<CharacterData> availableCharacters;
@@ -14,12 +15,15 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     //Lista de efectos
 
     private PlayerManager _pm;
+    private GameManager _gm;
 
     public int Life { get => life; set => life = value; }
+    public int ReviveValue { get => reviveValue; set => reviveValue = value; }
 
     private void Awake()
     {
         _pm = GetComponent<PlayerManager>();
+        _gm = GameManager.Instance;
     }
 
 
@@ -38,6 +42,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 
     public void AddLife(int value, bool forceAdd = false)
     {
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.AddLife);
         if (forceAdd)
         {
             life += value;
@@ -56,6 +61,9 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     public void GetDamage(int value)
     {
         life -= value;
-        if(life < 0) life = 0;
+        if(life <= 0) { 
+            life = 0;
+            reviveValue = _pm.SelectedCharacter.reviveStat;
+        }
     }
 }

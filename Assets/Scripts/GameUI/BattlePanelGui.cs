@@ -69,6 +69,10 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         vitTxt_2.text = target_2.Rules.Life + " / " + target_2.SelectedCharacter.lifeStat;
         actionTxt_2.text = "ATK";
         resultPanel_2.SetActive(false);
+
+
+        target_2.Graphics.StopDefenseAnim();
+        target_2.Graphics.StopDefenseAnim();
     }
 
     public void OpenCardActions()
@@ -189,7 +193,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
             if (isEvade)
             {
                 actionTxt_2.text = "EVA";
-                target_2.Graphics.PlayEvadeAnim();
+                //target_2.Graphics.PlayEvadeAnim();
             }
             else
             {
@@ -209,12 +213,16 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         if (_gm.ReverseBattle)
         {
             target_2.Graphics.PlayAttackAnim();
-            target_1.Graphics.PlayHitAnim();
+            if (target_1.Rules.Life <= 0) target_1.Graphics.setDieAnimation();
+            else if (damage == 0 ) target_1.Graphics.PlayEvadeAnim();
+            else target_1.Graphics.PlayHitAnim();
         }
         else
         {
             target_1.Graphics.PlayAttackAnim();
-            target_2.Graphics.PlayHitAnim();
+            if (target_2.Rules.Life <= 0) target_2.Graphics.setDieAnimation();
+            else if (damage == 0) target_2.Graphics.PlayEvadeAnim();
+            else target_2.Graphics.PlayHitAnim();
         }
         ReloadValues();
         EventManager.TriggerEvent("EndEvent");

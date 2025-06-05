@@ -12,6 +12,7 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private List<PlayerSlotInfoUi> slotInfoUIList = new List<PlayerSlotInfoUi>();
     [SerializeField] private ShopPanelGUI shopPanelGUI;
     [SerializeField] private BattlePanelGui battlePanelGui;
+    [SerializeField] private RevivePanelUI revivePanelUI;
 
 
     public GameObject PlayerInfoPanel { get => playerInfoPanel; set => playerInfoPanel = value; }
@@ -22,6 +23,7 @@ public class GUIManager : MonoBehaviour
     public TurnOrderUi TurnOrderUi { get => turnOrderUi; set => turnOrderUi = value; }
     public ShopPanelGUI ShopPanelGUI { get => shopPanelGUI; set => shopPanelGUI = value; }
     public BattlePanelGui BattlePanelGui { get => battlePanelGui; set => battlePanelGui = value; }
+    public RevivePanelUI RevivePanelUI { get => revivePanelUI; set => revivePanelUI = value; }
 
     private GameManager _gm;
 

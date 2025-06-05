@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameBoardManager boardManager;
     [SerializeField] private DiceManager diceManager;
     [SerializeField] private GUIManager guiManager;
+    [SerializeField] private MusicManager musicManager;
+    [SerializeField] private SoundLibrary soundLibrary;
 
     [SerializeField] private BoardCameraController cameraController;
     [SerializeField] private GlobalLightScript globalLight;
@@ -96,6 +98,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int DefensivePlayerValue { get => defensivePlayerValue; set => defensivePlayerValue = value; }
     public bool IsEvadeAction { get => isEvadeAction; set => isEvadeAction = value; }
     public int CurrentDiceOwnerIndex { get => currentDiceOwnerIndex; set => currentDiceOwnerIndex = value; }
+    public MusicManager MusicManager { get => musicManager; set => musicManager = value; }
+    public SoundLibrary SoundLibrary { get => soundLibrary; set => soundLibrary = value; }
 
     private void Awake()
     {

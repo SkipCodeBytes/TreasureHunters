@@ -12,4 +12,11 @@ public class CharacterData : ScriptableObject
     public int evadeStat;
     public int lifeStat;
     public int reviveStat;
+
+    public AudioClip turnAudio;
+    public AudioClip damageAudio;
+    public AudioClip deathAudio;
+    public AudioClip celebrationAudio;
+    public AudioClip surprisedAudio;
+    public AudioClip attackAudio;
 }

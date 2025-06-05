@@ -74,6 +74,7 @@ public class ChestScript : MonoBehaviour
     //All
     public void CloseChestAnimation()
     {
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.PlayCheerAnim();
         _animator.SetTrigger("Close");
         for (int i = 0; i < _rewardObjs.Count; i++)
         {

@@ -20,3 +20,9 @@ MonoBehaviour:
   evadeStat: 1
   lifeStat: 4
   reviveStat: 4
+  turnAudio: {fileID: 8300000, guid: 780d4bf2a064d18438ca3992a176ef49, type: 3}
+  damageAudio: {fileID: 8300000, guid: 0da29fedd929a09448ecf3a8caf38645, type: 3}
+  deathAudio: {fileID: 8300000, guid: dedea92eb59b83040b0ec5a1c2332bf2, type: 3}
+  celebrationAudio: {fileID: 8300000, guid: 62fc371861494ca4598b1d842d59432f, type: 3}
+  surprisedAudio: {fileID: 8300000, guid: 101265de7bef504459e4b4b2a72fdfa3, type: 3}
+  attackAudio: {fileID: 8300000, guid: a077b7f54bacc0b498ef3fdca747bcff, type: 3}

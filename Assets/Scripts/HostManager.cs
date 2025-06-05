@@ -312,11 +312,15 @@ public class HostManager : MonoBehaviour
 
     private void CheckTurnStatus()
     {
-        //SE REVISA LA DISPONIBILIDAD DEL PLAYER (Desmayado, retenido, bloqueado, etc)
-        _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel));
-        /*
-        if (_gm.CurrentPlayerTurnIndex == -1) { _momentManager.MomentList.Add(new Moment(NewRound)); }
-        else { _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel)); }*/
+        if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.Life <= 0)
+        {
+            //CODIGO PARA REVIVIR
+            _momentManager.MomentList.Add(new Moment(OpenPlayerRevivePanel));
+        }
+        else
+        {
+            _momentManager.MomentList.Add(new Moment(OpenPlayerActionPanel));
+        }
     }
 
     private void OpenPlayerActionPanel()
@@ -326,7 +330,11 @@ public class HostManager : MonoBehaviour
         _gm.GmView.RPC("OpenPlayerActionPanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
     }
 
-
+    private void OpenPlayerRevivePanel()
+    {
+        WaitForEvent();
+        _gm.GmView.RPC("OpenPlayerRevivePanel", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+    }
 
 
 
@@ -392,7 +400,7 @@ public class HostManager : MonoBehaviour
         int damage = 0;
         if (_gm.IsEvadeAction)
         {
-            if (_gm.OfensivePlayerValue >= _gm.DefensivePlayerValue) damage = _gm.DefensivePlayerValue;
+            if (_gm.OfensivePlayerValue >= _gm.DefensivePlayerValue) damage = _gm.OfensivePlayerValue;
             else damage = 0;
         }
         else

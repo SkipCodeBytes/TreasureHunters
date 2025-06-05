@@ -26,6 +26,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [SerializeField] private bool isRotating = false;
     [SerializeField] private bool isWaiting = false;
     [SerializeField] private bool isBlocking = false;
+    [SerializeField] private bool isFainted = false;
 
     [SerializeField] private List<StackableAnimation> stackableAnimations = new List<StackableAnimation>();
 
@@ -49,6 +50,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         _pm = GetComponent<PlayerManager>();
         _gm = GameManager.Instance;
     }
+
 
     private void Update()
     {
@@ -125,6 +127,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
             if (isResting) animStatus = 3;
             if (isRotating) animStatus = 8;
             if (isBlocking) animStatus = 5;
+            if (isFainted) animStatus = 6;
 
             if (previusAnimation != animStatus)
             {
@@ -142,6 +145,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     private void GoToRestInCurrentTile()
     {
         if (_pm.BoardPlayer.CurrentTilePosition == null) return;
+        if (_pm.Rules.Life <= 0) return;
         int restPosIndex = _pm.BoardPlayer.CurrentTilePosition.TileBehavior.TakeUpFreeSpaceIndex(_pm.BoardPlayer);
         Debug.Log("Lugar " + restPosIndex);
         Vector3 restPosition = _pm.BoardPlayer.CurrentTilePosition.TileBehavior.RestPoints[restPosIndex] + _pm.BoardPlayer.CurrentTilePosition.transform.position;
@@ -187,13 +191,38 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         isResting = true;
     }
 
-    
+    public void setDieAnimation()
+    {
+        ClearAnimationStatus();
+        SoundController.Instance.PlaySound(_pm.SelectedCharacter.deathAudio);
+        isFainted = true;
+    }
 
-    public void PlayAttackAnim() { _animator.SetTrigger("Attack"); }
+    public void reviveAnimation()
+    {
+        ClearAnimationStatus();
+        SoundController.Instance.PlaySound(_pm.SelectedCharacter.surprisedAudio);
+        isFainted = false;
+    }
+
+
+    public void PlayAttackAnim() { 
+        _animator.SetTrigger("Attack");
+        SoundController.Instance.PlaySound(_pm.SelectedCharacter.attackAudio);
+    }
     public void PlayDefenseAnim() { isBlocking = true; }
-    public void PlayEvadeAnim() { _animator.SetTrigger("DodgeA"); }
-    public void PlayHitAnim() { StartCoroutine(CinematicAnimation.WaitTime(0.2f, () => _animator.SetTrigger("Hit"))); }
+    public void StopDefenseAnim() { isBlocking = false; }
+    public void PlayEvadeAnim() { StartCoroutine(CinematicAnimation.WaitTime(0.2f, () => _animator.SetTrigger("DodgeA"))); }
+    public void PlayHitAnim() { 
+        StartCoroutine(CinematicAnimation.WaitTime(0.2f, () => _animator.SetTrigger("Hit")));
+        SoundController.Instance.PlaySound(_pm.SelectedCharacter.damageAudio);
+    }
 
+    public void PlayCheerAnim()
+    {
+        _animator.SetTrigger("Cheer");
+        SoundController.Instance.PlaySound(_pm.SelectedCharacter.celebrationAudio);
+    }
 
     //GENERAL ORDERS - Se pueden dar varias órdenes, se apilarán y ejecutarán en orden
 

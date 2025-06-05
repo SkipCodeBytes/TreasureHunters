@@ -89,6 +89,7 @@ public class ShopScript : MonoBehaviour
     public void EndAnimationShop()
     {
         _animator.SetTrigger("Destroy");
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.PlayCheerAnim();
         _rewardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
     }
 
