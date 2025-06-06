@@ -2,15 +2,27 @@ using UnityEngine;
 
 public class PortalScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Animator _animator;
+
+
+    private void Awake()
     {
-        
+        _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void OnEnable()
     {
-        
+        _animator.Play("SpawnPortal");
+    }
+
+    public void DestroyPortal()
+    {
+        _animator.SetTrigger("Destroy");
+    }
+
+    public void HidePortal()
+    {
+        gameObject.SetActive(false);
     }
 }

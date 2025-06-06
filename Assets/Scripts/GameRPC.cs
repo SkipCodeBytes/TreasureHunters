@@ -276,7 +276,24 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     }
 
+    [PunRPC]
+    public void SyncroPortalEffect(int playerId, int tileX, int tileY)
+    {
+        Vector2Int newPosOrder = new Vector2Int(tileX, tileY);
+        ShorcutRoadTile.currentTileOrder = _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.Order;
+        ShorcutRoadTile.nextTileOrder = newPosOrder;
 
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+        //_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition = _gm.BoardManager.TileDicc[newPosOrder];
+
+    }
+
+    [PunRPC]
+    public void SyncroEndPortal(int playerId)
+    {
+        _gm.BoardManager.TileDicc[ShorcutRoadTile.currentTileOrder].TileBehavior.HideProps();
+        _gm.BoardManager.TileDicc[ShorcutRoadTile.nextTileOrder].TileBehavior.HideProps();
+    }
 
 
     //BattleTile.StartTileEvent() //All

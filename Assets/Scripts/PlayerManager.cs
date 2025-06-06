@@ -50,6 +50,7 @@ public class PlayerManager : MonoBehaviour
         _graphics = GetComponent<PlayerGraphics>();
         _inventory = GetComponent<PlayerInventory>();
         _boardPlayer = GetComponent<BoardPlayer>();
+        _transform = transform;
     }
 
 
