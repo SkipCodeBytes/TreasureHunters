@@ -62,7 +62,7 @@ public class ShopScript : MonoBehaviour
         Debug.Log(_rewardArray);
         for (int i = 0; i < _rewardArray.Length; i++)
         {
-            if (i != 0) //_rewardArray[i]
+            if (i != 0 && _rewardArray[i] != 0) //_rewardArray[i]
             {
                 _rewardObj = ItemManager.Instance.GenerateItemInScene(_rewardArray[i]);
                 ItemType itemType = ItemManager.Instance.GetItemType(_rewardArray[i]);
