@@ -99,6 +99,7 @@ public class DiceManager : MonoBehaviour
 
     public void HideDices()
     {
+        _gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
         diceCamera.gameObject.SetActive(false);
         if (chosenDiceList.Count > 0)
         {

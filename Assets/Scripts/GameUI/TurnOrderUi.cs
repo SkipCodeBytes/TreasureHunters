@@ -25,11 +25,13 @@ public class TurnOrderUi : MonoBehaviour
     private Image viewPanelImage;
     private Color _currentColorCanvas;
     private int _indexView = 0;
+    private GameManager _gm;
 
     private void Awake()
     {
         viewPanelImage = viewPanel.GetComponent<Image>();
         tittlePanel.SetActive(false);
+        _gm = GameManager.Instance;
         for (int i = 0; i < playerSlots.Count; i++) { playerSlots[i].SetActive(false); }
     }
 
@@ -80,6 +82,7 @@ public class TurnOrderUi : MonoBehaviour
         if (playerOrder[_indexView-1] == null) return;
         Text playerTxt = playerSlots[_indexView-1].transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
         playerTxt.text = playerOrder[_indexView-1].Player.NickName;
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("PlayerOk"));
     }
 
     private void displacePanel()

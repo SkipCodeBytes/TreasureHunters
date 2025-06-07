@@ -147,7 +147,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     [PunRPC]
     public void CloseDicePanel(int playerIndex)
     {
-        _gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
+        //_gm.GuiManager.DicePanelUI.gameObject.SetActive(false);
         Debug.Log("Jugador " + playerIndex + " con resultado " + _gm.LastDiceResult + " PlyrAction: " + _gm.DiceAction);
 
 

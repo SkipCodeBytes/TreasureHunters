@@ -90,7 +90,7 @@ public class PlayerInventory : MonoBehaviour
         ItemData data = _im.GetItemData(itemId);
         RelicItemData relic = data as RelicItemData;
 
-        StartCoroutine(CinematicAnimation.WaitTime(1f, () => relicVisual.SetActive(true)));
+        StartCoroutine(CinematicAnimation.WaitTime(1.8f, () => relicVisual.SetActive(true)));
 
         if (relic != null) relicItemData = relic;
         else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");

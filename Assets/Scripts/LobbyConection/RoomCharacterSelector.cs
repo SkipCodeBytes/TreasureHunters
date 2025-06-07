@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class RoomCharacterSelector : MonoBehaviour
 {
+    [SerializeField] private float camSpeed = 10f;
     [SerializeField] private int selectedIndex = 0;
     [SerializeField] private Transform charactersContent;
 
@@ -21,6 +22,9 @@ public class RoomCharacterSelector : MonoBehaviour
 
     [SerializeField] private Transform targetCamPreview;
     private List<PlayableCharacter> playableCharacters;
+    private List<Animator> charactersAnimator;
+
+    private Coroutine _camLerp;
 
     public int SelectedIndex { get => selectedIndex; set => selectedIndex = value; }
     public List<PlayableCharacter> PlayableCharacters { get => playableCharacters; set => playableCharacters = value; }
@@ -28,11 +32,17 @@ public class RoomCharacterSelector : MonoBehaviour
     void Start()
     {
         playableCharacters = new List<PlayableCharacter>();
-        for(int i = 0; i < charactersContent.childCount; i++)
+        charactersAnimator = new List<Animator>();
+        for (int i = 0; i < charactersContent.childCount; i++)
         {
             PlayableCharacter playableCharacter = charactersContent.GetChild(i).GetComponent<PlayableCharacter>();
+            Animator anim = charactersContent.GetChild(i).GetComponent<Animator>();
             if (!playableCharacter.gameObject.activeInHierarchy) continue;
-            if(playableCharacter != null) playableCharacters.Add(playableCharacter);
+            if(playableCharacter != null) { 
+                playableCharacters.Add(playableCharacter);
+                charactersAnimator.Add(anim);
+                anim.SetInteger("State", 3);
+            }
         }
         setSelection();
     }
@@ -51,6 +61,7 @@ public class RoomCharacterSelector : MonoBehaviour
 
     public void nextCharacter()
     {
+        charactersAnimator[selectedIndex].SetInteger("State", 3);
         selectedIndex++;
         if(selectedIndex > playableCharacters.Count - 1)
         {
@@ -61,6 +72,7 @@ public class RoomCharacterSelector : MonoBehaviour
 
     public void previusCharacter()
     {
+        charactersAnimator[selectedIndex].SetInteger("State", 3);
         selectedIndex--;
         if (selectedIndex < 0)
         {
@@ -71,7 +83,13 @@ public class RoomCharacterSelector : MonoBehaviour
 
     private void setSelection()
     {
-        targetCamPreview.position = playableCharacters[selectedIndex].transform.position;
+        charactersAnimator[selectedIndex].SetInteger("State", 0);
+        if (_camLerp != null) StopCoroutine(_camLerp);
+        _camLerp = StartCoroutine(CinematicAnimation.MoveTowardTheTargetAt(targetCamPreview, playableCharacters[selectedIndex].transform.position, camSpeed));
+        //targetCamPreview.position = playableCharacters[selectedIndex].transform.position;
+
+        SoundController.Instance.PlaySound(playableCharacters[selectedIndex].CharacterData.turnAudio);
+
         txtCharacterName.text = playableCharacters[selectedIndex].CharacterData.characterName;
         txtCharacterAtk.text = playableCharacters[selectedIndex].CharacterData.attackStat + "";
         txtCharacterDef.text = playableCharacters[selectedIndex].CharacterData.defenseStat + "";

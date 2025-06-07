@@ -11,6 +11,7 @@ public class ChestScript : MonoBehaviour
     [SerializeField] private float itemDropHeight;
 
     [SerializeField] private float itemTimeStand;
+    [SerializeField] private ParticleSystem glowParticle;
 
     private GameManager _gm;
     private Animator _animator;
@@ -24,6 +25,8 @@ public class ChestScript : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _transform = GetComponent<Transform>();
+        glowParticle.Stop();
+        glowParticle.Clear();
     }
 
 
@@ -31,6 +34,7 @@ public class ChestScript : MonoBehaviour
     private void OnEnable()
     {
         _animator.Play("ChestAwake");
+
     }
 
     private void Start()
@@ -43,6 +47,7 @@ public class ChestScript : MonoBehaviour
         _rewardArray = rewards;
         _targetPlayerIndex = playerIndex;
         _animator.SetTrigger("Open");
+        glowParticle.Play();
     }
 
     //Referencia desde animación
