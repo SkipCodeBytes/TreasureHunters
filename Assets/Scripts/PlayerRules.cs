@@ -42,7 +42,8 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 
     public void AddLife(int value, bool forceAdd = false)
     {
-        SoundController.Instance.PlaySound(_gm.SoundLibrary.AddLife);
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("AddLife"));
+        _pm.Graphics.HealingParticle.Play();
         if (forceAdd)
         {
             life += value;

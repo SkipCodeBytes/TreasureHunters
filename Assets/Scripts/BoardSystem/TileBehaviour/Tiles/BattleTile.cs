@@ -8,16 +8,27 @@ public class BattleTile : TileBehavior
 
     [SerializeField] private PlayerManager ofensivePlayer;
     [SerializeField] private PlayerManager defensivePlayer;
-
+    [SerializeField] private BannerScript bannerScript;
 
 
     protected override void Start()
     {
         base.Start();
         _gm = GameManager.Instance;
+
+        for (int i = 0; i < HideableProps.Count; i++)
+        {
+            HideableProps[i].SetActive(false);
+        }
     }
 
-    
+    public override void UnhideProps()
+    {
+        base.UnhideProps();
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("MonsterLaught"));
+    }
+
+
     public override void StartTileEvent()
     {
         SettingTileEvent();
@@ -59,5 +70,11 @@ public class BattleTile : TileBehavior
 
         _gm.GuiManager.BattlePanelGui.gameObject.SetActive(true);
         _gm.GuiManager.BattlePanelGui.OpenPanel(ofensivePlayer, defensivePlayer);
+    }
+
+    public override void HideProps()
+    {
+        //base.HideProps();
+        bannerScript.PlayEnd();
     }
 }

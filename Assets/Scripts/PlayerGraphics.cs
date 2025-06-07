@@ -15,6 +15,10 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [SerializeField] private float runSpeed = 1f;
     [SerializeField] private float rotationSpeed = 1f;
 
+    [Header("Player References")]
+    [SerializeField] private ParticleSystem healingParticle;
+    [SerializeField] private ParticleSystem confetiParticle;
+
     [Header("Player Values - ReadOnly")]
 
     [SerializeField] private int animStatus = 0;
@@ -31,6 +35,8 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [SerializeField] private List<StackableAnimation> stackableAnimations = new List<StackableAnimation>();
 
     public int AnimStatus { get => animStatus; set => animStatus = value; }
+    public ParticleSystem HealingParticle { get => healingParticle; set => healingParticle = value; }
+    public ParticleSystem ConfetiParticle { get => confetiParticle; set => confetiParticle = value; }
 
     /*
      * 0 - Idle
@@ -49,6 +55,10 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     {
         _pm = GetComponent<PlayerManager>();
         _gm = GameManager.Instance;
+        healingParticle.Stop();
+        healingParticle.Clear();
+        confetiParticle.Stop();
+        confetiParticle.Clear();
     }
 
 
@@ -194,7 +204,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     public void setDieAnimation()
     {
         ClearAnimationStatus();
-        SoundController.Instance.PlaySound(_pm.SelectedCharacter.deathAudio);
+        StartCoroutine(CinematicAnimation.WaitTime(0.5f, () => SoundController.Instance.PlaySound(_pm.SelectedCharacter.deathAudio)));
         isFainted = true;
     }
 

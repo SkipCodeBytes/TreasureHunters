@@ -77,6 +77,8 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
 
     public void OpenCardActions()
     {
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("OpenPanel"));
+
         if (target_1 == _gm.PlayersArray[_gm.PlayerIndex] || target_2 == _gm.PlayersArray[_gm.PlayerIndex])
         {
             waitInfo.SetActive(false);
@@ -177,7 +179,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
             if (isEvade)
             {
                 actionTxt_1.text = "EVA";
-                target_1.Graphics.PlayEvadeAnim();
+                //target_1.Graphics.PlayEvadeAnim();
             }
             else
             {

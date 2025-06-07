@@ -21,6 +21,7 @@ public class ShopScript : MonoBehaviour
     private ItemObject _rewardObj;
 
     [SerializeField] private ParticleSystem construcParticle;
+    [SerializeField] private ParticleSystem continousParticle;
 
     [SerializeField] private Animator _skeletonAnimator;
 
@@ -33,6 +34,7 @@ public class ShopScript : MonoBehaviour
     {
         _animator.Play("ShopAwake");
         construcParticle.Play();
+        if(_gm != null) SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Shop"));
     }
 
     private void Start()
@@ -40,6 +42,8 @@ public class ShopScript : MonoBehaviour
         _gm = GameManager.Instance;
         construcParticle.Stop();
         construcParticle.Clear();
+        continousParticle.Stop();
+        continousParticle.Clear();
     }
 
 
@@ -54,14 +58,15 @@ public class ShopScript : MonoBehaviour
     //Llamado desde la animación
     public void DropObjAnimation()
     {
-
+        _skeletonAnimator.SetTrigger("Cheer");
+        Debug.Log(_rewardArray);
         for (int i = 0; i < _rewardArray.Length; i++)
         {
             if (i != 0) //_rewardArray[i]
             {
                 _rewardObj = ItemManager.Instance.GenerateItemInScene(_rewardArray[i]);
                 ItemType itemType = ItemManager.Instance.GetItemType(_rewardArray[i]);
-
+                Debug.Log(_rewardObj);
                 switch (itemType)
                 {
                     case ItemType.Card:
@@ -91,6 +96,7 @@ public class ShopScript : MonoBehaviour
         _animator.SetTrigger("Destroy");
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.PlayCheerAnim();
         _rewardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+        continousParticle.Play();
     }
 
     public void CloseAnimation()

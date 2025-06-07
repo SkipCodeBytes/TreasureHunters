@@ -20,11 +20,13 @@ public class PlayerInventory : MonoBehaviour
 
     private GameManager _gm;
     private ItemManager _im;
+    private PlayerManager _pm;
 
     private void Awake()
     {
         _gm = GameManager.Instance;
         _im = ItemManager.Instance;
+        _pm = GetComponent<PlayerManager>();
     }
 
 
@@ -106,6 +108,9 @@ public class PlayerInventory : MonoBehaviour
             safeRelicsQuantity++;
             relicItemData = null;
             relicVisual.SetActive(false);
+            _pm.Graphics.ConfetiParticle.Play();
+            StartCoroutine(CinematicAnimation.WaitTime(0.4f, () => _pm.Graphics.PlayCheerAnim()));
+            
         }
     }
 

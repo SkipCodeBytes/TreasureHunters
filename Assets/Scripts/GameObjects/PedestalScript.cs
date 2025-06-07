@@ -71,6 +71,7 @@ public class PedestalScript : MonoBehaviour
 
     public void PlayParticles()
     {
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Pedestal"));
         smokeParticles.Play();
         featherParticles.Play();
         StartCoroutine(LerpUtils.LerpFloat(value => strongLight.intensity = value, 0f, _defaultLightIntensity, 0.8f));

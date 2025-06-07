@@ -139,7 +139,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         if (playerIndex == _gm.PlayerIndex) _gm.DiceManager.DiceCanvas.OpenTurnPanel();
         else _gm.DiceManager.DiceCanvas.OpenNoTurnPanel();
 
-        SoundController.Instance.PlaySound(_gm.SoundLibrary.OpenPanel);
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("OpenPanel"));
     }
 
 
@@ -202,7 +202,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.LastDiceResult = result;
         _gm.DiceManager.EndAnimationFocusDices();
 
-        SoundController.Instance.PlaySound(_gm.SoundLibrary.DiceResult);
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("DiceResult"));
     }
 
     //ChestTile.SettingTileEvent() / All
@@ -248,6 +248,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     public void SyncroAddShopReward(int playerId, int itemID, int coinCost)
     {
         ItemType itemType = ItemManager.Instance.GetItemType(itemID);
+        Debug.Log(itemID);
 
         switch (itemType)
         {
@@ -395,6 +396,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     [PunRPC]
     public void EndBattle()
     {
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.HideProps();
         _gm.GuiManager.BattlePanelGui.gameObject.SetActive(false);
         _gm.PlayersArray[_gm.SecondaryPlayerTurn].IsPlayerSubTurn = false;
         _gm.SecondaryPlayerTurn = -1;
@@ -416,7 +418,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.GameRound++;
         _gm.GuiManager.RoundInfoPanel.gameObject.SetActive(true);
         _gm.GuiManager.RoundInfoPanel.StartPresentation();
-        if(_gm.GameRound % 5 == 0)
+        if(_gm.GameRound % 4 == 0)
         {
             _gm.MusicManager.NextMusic();
         }

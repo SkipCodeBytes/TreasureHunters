@@ -2,10 +2,16 @@ using UnityEngine;
 
 public class CoinItemObject : ItemObject
 {
-    [SerializeField] private AudioClip coinClip;
+    private GameManager _gm;
+
+    private void Start()
+    {
+        _gm = GameManager.Instance;
+    }
 
     private void OnEnable()
     {
-        StartCoroutine(CinematicAnimation.WaitTime(Random.Range(0f, 0.15f), () => SoundController.Instance.PlaySound(coinClip)));
+        StartCoroutine(CinematicAnimation.WaitTime(Random.Range(0.08f, 0.2f), () =>
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Coin"))));
     }
 }

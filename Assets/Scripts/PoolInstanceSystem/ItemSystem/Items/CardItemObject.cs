@@ -24,10 +24,19 @@ public class CardItemObject : ItemObject
     [SerializeField] private float inUseAnimationTargetYOffset = 1f;
     [SerializeField] private float inUseAnimationTime = 1f;*/
 
+    private GameManager _gm;
+
+    private void Start()
+    {
+        _gm = GameManager.Instance;
+    }
+
 
     private void OnEnable()
     {
         SetInPickableMode();
+        StartCoroutine(CinematicAnimation.WaitTime(Random.Range(0.08f, 0.2f), () =>
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Card"))));
     }
 
     public void SetInBoardMode()

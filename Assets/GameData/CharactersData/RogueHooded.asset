@@ -25,4 +25,4 @@ MonoBehaviour:
   deathAudio: {fileID: 8300000, guid: dedea92eb59b83040b0ec5a1c2332bf2, type: 3}
   celebrationAudio: {fileID: 8300000, guid: 62fc371861494ca4598b1d842d59432f, type: 3}
   surprisedAudio: {fileID: 8300000, guid: 101265de7bef504459e4b4b2a72fdfa3, type: 3}
-  attackAudio: {fileID: 8300000, guid: a077b7f54bacc0b498ef3fdca747bcff, type: 3}
+  attackAudio: {fileID: 8300000, guid: 44f5d7c85f89f4e4faa350140474dd06, type: 3}

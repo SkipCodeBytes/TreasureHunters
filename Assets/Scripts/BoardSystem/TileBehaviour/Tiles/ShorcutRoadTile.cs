@@ -46,14 +46,17 @@ public class ShorcutRoadTile : TileBehavior
     {
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition = _gm.BoardManager.TileDicc[nextTileOrder];
         _gm.BoardManager.TileDicc[nextTileOrder].TileBehavior.UnhideProps();
+        StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Teleport"))));
     }
 
 
     private void Teleport()
     {
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Transform.position = _gm.BoardManager.TileDicc[nextTileOrder].transform.position;
+        Vector3 iterationPoint = _gm.BoardManager.TileDicc[nextTileOrder].TileBehavior.GetInteractionPosition();
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Transform.LookAt(iterationPoint);
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.MovePlayerAtPoint(
-            _gm.BoardManager.TileDicc[nextTileOrder].TileBehavior.GetInteractionPosition(), false, EndTurn);
+            iterationPoint, false, EndTurn);
     }
 
     private void EndTurn()

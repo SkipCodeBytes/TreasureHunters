@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class BonfireScript : MonoBehaviour
@@ -8,6 +9,7 @@ public class BonfireScript : MonoBehaviour
 
     private Animator _animator;
     private float _defaultLightIntensity;
+    private GameManager _gm;
 
     public Animator Animator { get => _animator; set => _animator = value; }
 
@@ -19,6 +21,7 @@ public class BonfireScript : MonoBehaviour
 
     private void Start()
     {
+        _gm = GameManager.Instance;
         fireLight.intensity = _defaultLightIntensity;
         _animator.Play("BonfireIdle");
     }
@@ -27,10 +30,6 @@ public class BonfireScript : MonoBehaviour
     {
         fireLight.intensity = 0;
         _animator.Play("BonfireAwake");
-        //Desde la animación "BonfireAwake":
-        //  PlayFireParticles()
-        //  PlaySmokeParticles()
-
     }
 
 
@@ -61,5 +60,10 @@ public class BonfireScript : MonoBehaviour
     public void HideElements()
     {
         gameObject.SetActive(false);
+    }
+
+    public void PlayFallHitSound()
+    {
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("FallHit"));
     }
 }

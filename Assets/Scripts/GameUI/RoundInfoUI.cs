@@ -41,7 +41,7 @@ public class RoundInfoUI : MonoBehaviour
     private void showTittle()
     {
         Debug.Log("Show Tittle");
-        SoundController.Instance.PlaySound(_gm.SoundLibrary.DiceResult);
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("NewRound"));
         StartCoroutine(CinematicAnimation.UiTextTypewriter(roundTittle, defaultTxt, timeBetweenWrite));
         StartCoroutine(CinematicAnimation.WaitTime(animationEndTime, exitAnimation));
     }
