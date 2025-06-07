@@ -327,11 +327,14 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         Debug.Log("Attaker Index " + atackerIndex + "ofenseValue " + ofenseValue);
         _gm.OfensivePlayerValue = ofenseValue + _gm.GameRules.GetAttackValuePlayer(atackerIndex);
-        _gm.GuiManager.BattlePanelGui.ShowOfenseValue();
-
         if (_gm.IsHostPlayer)
         {
             _gm.HostManager.mtDefenderElection();
+        }
+        _gm.GuiManager.BattlePanelGui.ShowOfenseValue();
+        if(atackerIndex == _gm.PlayerIndex)
+        {
+            EventManager.TriggerEvent("EndEvent");
         }
     }
 

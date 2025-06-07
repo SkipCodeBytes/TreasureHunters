@@ -123,7 +123,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
             diceValTxt_1.text = "" + _gm.OfensivePlayerValue;
             //ShowDefensiveOptions();
         }
-        EventManager.TriggerEvent("EndEvent");
+
     }
 
     public void ShowDefensiveOptions()
