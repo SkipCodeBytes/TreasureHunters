@@ -243,6 +243,19 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     }
 
+
+    //TransmutationTile.StartTileEvent() /All
+    [PunRPC]
+    public void SyncroTransmutationTileEffect(int playerId, int gemReward)
+    {
+        int[] rewards = { 0, gemReward, 0, 0 };
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddGem(gemReward);
+        _gm.LastRewards = rewards;
+        _gm.LastRewards = new int[] { 0, gemReward, 0, 0 };
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+
+    }
+
     //ShopPanelGUI.btnBuyItem(); /All
     [PunRPC]
     public void SyncroAddShopReward(int playerId, int itemID, int coinCost)

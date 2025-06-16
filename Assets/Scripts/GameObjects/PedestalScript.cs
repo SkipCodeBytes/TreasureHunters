@@ -28,7 +28,6 @@ public class PedestalScript : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
 
-
         _defaultLightIntensity = strongLight.intensity;
         strongLight.intensity = 0;
     }
@@ -40,6 +39,7 @@ public class PedestalScript : MonoBehaviour
     {
         _animator.Play("Spawn");
     }
+
     private void Start()
     {
         _gm = GameManager.Instance;
@@ -89,7 +89,7 @@ public class PedestalScript : MonoBehaviour
         continousSmokeParticle.Play();
     }
 
-    //Referencia desde animación
+
     public void EndAnimationPedestal()
     {
         _animator.SetTrigger("Destroy");
