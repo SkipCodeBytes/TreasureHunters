@@ -13,6 +13,9 @@ public abstract class TileBehavior : MonoBehaviour
     private Dictionary<Vector3, BoardPlayer> _restPointDicc = new Dictionary<Vector3, BoardPlayer>();
     protected TileBoard _tileBoard;
 
+    [SerializeField] private List<ItemObject> rewardItems = new List<ItemObject>();
+    [SerializeField] private List<int> rewardItemsID = new List<int>();
+
     public List<GameObject> HideableProps { get => _hideableProps; set => _hideableProps = value; }
     public List<Vector3> RestPoints { get => _restPoints; set => _restPoints = value; }
     public Vector3 InteractionPositionOffset { get => _interactionPositionOffset; set => _interactionPositionOffset = value; }
@@ -22,6 +25,7 @@ public abstract class TileBehavior : MonoBehaviour
     {
         _tileBoard = transform.parent.GetComponent<TileBoard>();
         for (int i = 0; i < _restPoints.Count; i++) _restPointDicc[_restPoints[i]] = null;
+        rewardItemsID.Add(0);
     }
 
     protected virtual void Start()
@@ -129,6 +133,45 @@ public abstract class TileBehavior : MonoBehaviour
     {
         Vector3 nuevaPos = transform.position + _interactionPositionOffset + Quaternion.Euler(0, _interactionViewRotation, 0) * Vector3.forward;
         return nuevaPos;
+    }
+
+
+    public void AddTileRewards(int[] RewardsID, ItemObject[] rewardsObjs)
+    {
+        List<ItemObject> rewardsObjsList = new List<ItemObject>(rewardsObjs);
+        rewardItems.AddRange(rewardsObjsList);
+
+        rewardItemsID[0] += RewardsID[0];
+        for(int i = 1; i < RewardsID.Length; i++)
+        {
+            rewardItemsID.Add(RewardsID[i]);
+        }
+    }
+
+    public void GetTileRewards(int playerId)
+    {
+        if (rewardItems.Count <= 0) return;
+        GameManager.Instance.GmView.RPC("PlayerGetTileReward", Photon.Pun.RpcTarget.All, playerId, _tileBoard.Order.x, _tileBoard.Order.y);
+    }
+
+    public void SyncroGetTileRewards(int playerId)
+    {
+        GameManager.Instance.PlayersArray[playerId].Inventory.AddCoins(rewardItemsID[0]);
+        for (int i = 1; i < rewardItemsID.Count; i++)
+        {
+            if (i == 1 && rewardItemsID[i] == 0) continue; 
+            GameManager.Instance.PlayersArray[playerId].Inventory.AddItem(rewardItemsID[i]);
+        }
+
+
+        for (int i = 0; i < rewardItems.Count; i++)
+        {
+            rewardItems[i].TakeObjectAnimation(GameManager.Instance.PlayersArray[playerId].transform, 0.8f);
+        }
+        StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => GameManager.Instance.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo()));
+        rewardItemsID = new List<int>();
+        rewardItemsID.Add(0);
+        rewardItems = new List<ItemObject>(); 
     }
 
 

@@ -93,7 +93,7 @@ public class PedestalScript : MonoBehaviour
     public void EndAnimationPedestal()
     {
         _animator.SetTrigger("Destroy");
-        cardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+        cardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
     }
 
     public void CloseAnimation()

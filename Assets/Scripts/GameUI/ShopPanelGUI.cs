@@ -37,6 +37,8 @@ public class ShopPanelGUI : MonoBehaviour
 
     public void SkipPanel()
     {
+        Vector2Int tileOrder = _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.Order;
+        _gm.GmView.RPC("SyncroSkipShop", Photon.Pun.RpcTarget.All, tileOrder.x, tileOrder.y);
         gameObject.SetActive(false);
         EventManager.TriggerEvent("EndEvent");
     }

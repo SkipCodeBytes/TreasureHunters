@@ -1,8 +1,20 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerInventory : MonoBehaviour
 {
+
+    [SerializeField] private Vector3 itemSpawnPos;
+
+    [SerializeField] private float itemTimeDrop;
+    [SerializeField] private float itemDropMaxRadio;
+    [SerializeField] private float itemDropHeight;
+
+    [SerializeField] private float itemTimeStand;
+
+
     [SerializeField] private int coinsQuantity;
     [SerializeField] private int safeRelicsQuantity;
     [SerializeField] private List<GemItemData> gemItems;
@@ -10,6 +22,8 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private bool hasRelicItem;
     [SerializeField] private RelicItemData relicItemData;
     [SerializeField] private GameObject relicVisual;
+
+
 
     public int CoinsQuantity { get => coinsQuantity; set => coinsQuantity = value; }
     public int SafeRelicsQuantity { get => safeRelicsQuantity; set => safeRelicsQuantity = value; }
@@ -96,10 +110,76 @@ public class PlayerInventory : MonoBehaviour
         else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
     }
 
-    public void DropRelic()
+    public int[] CalculateRandomDrop()
     {
+        List<int> dropItemsID = new List<int>();
 
+        dropItemsID.Add(Mathf.CeilToInt(coinsQuantity / 3));
+
+        if (relicItemData != null) dropItemsID.Add(ItemManager.Instance.GetItemID(relicItemData));
+        else dropItemsID.Add(0);
+
+        int dropGemsQuantity = Mathf.CeilToInt(gemItems.Count / 3);
+        List<GemItemData> aleatorios = gemItems.GetRandomElements(dropGemsQuantity);
+
+        for(int i = 0; i < aleatorios.Count; i++)
+        {
+            dropItemsID.Add(ItemManager.Instance.GetItemID(aleatorios[i]));
+        }
+
+        return dropItemsID.ToArray();
     }
+
+    public ItemObject[] DropObjects(int[] dropObjects)
+    {
+        List<ItemObject> _rewardObjs = new List<ItemObject>();
+
+        for (int i = 0; i < dropObjects.Length; i++)
+        {
+            if (i == 0)
+            {
+                coinsQuantity -= dropObjects[0];
+                for (int j = 0; j < dropObjects[0]; j++)
+                {
+                    _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(0));
+                }
+            }
+            else
+            {
+                if (dropObjects[i] == 0) continue;
+
+                _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(dropObjects[i]));
+                ItemType itemType = ItemManager.Instance.GetItemType(dropObjects[i]);
+
+                switch (itemType)
+                {
+                    case ItemType.Relic:
+                        relicItemData = null;
+                        hasRelicItem = false;
+                        break;
+
+                    case ItemType.Gem:
+                        gemItems.Remove(ItemManager.Instance.GetItemData(dropObjects[i]) as GemItemData);
+                        break;
+
+                    default:
+                        Debug.LogError("Item no dropeable: ID" + dropObjects[i]);
+                        break;
+                }
+            }
+        }
+
+        //Animación
+        for (int i = 0; i < _rewardObjs.Count; i++)
+        {
+            _rewardObjs[i].DropAnimation(_pm.Transform.position + itemSpawnPos, _pm.Transform.position, itemDropHeight, itemDropMaxRadio, itemTimeDrop);
+        }
+
+        //_gm.GuiManager.SlotInfoUIList[playerIndex].SetPlayerInfo();
+
+        return _rewardObjs.ToArray();
+    }
+
 
     public void SaveRelic()
     {
@@ -110,10 +190,18 @@ public class PlayerInventory : MonoBehaviour
             relicVisual.SetActive(false);
             _pm.Graphics.ConfetiParticle.Play();
 
+            SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Relic"));
             StartCoroutine(CinematicAnimation.WaitTime(0.4f, () => _pm.Graphics.PlayCheerAnim()));
         }
     }
 
 
-    //Drop items
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(transform.position + itemSpawnPos, 0.1f);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, itemDropMaxRadio);
+    }
 }

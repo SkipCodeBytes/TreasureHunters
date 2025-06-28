@@ -87,6 +87,8 @@ public class ShopScript : MonoBehaviour
         }
 
         _rewardObj.DropAnimation(transform.position + itemSpawnPos, transform.position, itemDropHeight, itemDropMaxRadio, itemTimeDrop);
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.PlayCheerAnim();
+
         StartCoroutine(CinematicAnimation.WaitTime(itemTimeDrop + itemTimeStand, EndAnimationShop));
     }
 
@@ -94,8 +96,11 @@ public class ShopScript : MonoBehaviour
     public void EndAnimationShop()
     {
         _animator.SetTrigger("Destroy");
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Graphics.PlayCheerAnim();
-        _rewardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+        if(_rewardObj != null)
+        {
+            _rewardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
+            _rewardObj = null;
+        }
         continousParticle.Play();
     }
 

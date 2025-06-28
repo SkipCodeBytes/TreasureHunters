@@ -39,6 +39,7 @@ public class GameMoments : MonoBehaviour
     {
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].View.RPC("SyncroLeaveRestSpace", RpcTarget.All, _gm.CurrentPlayerTurnIndex);
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.NumOfMovements = _gm.LastDiceResult;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.GetTileRewards(_gm.CurrentPlayerTurnIndex);
         for (int i = 0; i < _gm.LastDiceResult; i++)
         {
             if (i == _gm.LastDiceResult - 1)

@@ -276,7 +276,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b78483e778c83e1449cb8e4a2c940ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinsQuantity: 200
+  itemSpawnPos: {x: 0, y: 0.25, z: 0}
+  itemTimeDrop: 0.8
+  itemDropMaxRadio: 1.15
+  itemDropHeight: 1
+  itemTimeStand: 1
+  coinsQuantity: 50
   safeRelicsQuantity: 0
   gemItems: []
   cardItems: []

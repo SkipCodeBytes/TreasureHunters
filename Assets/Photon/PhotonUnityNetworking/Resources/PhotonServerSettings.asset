@@ -110,6 +110,12 @@ MonoBehaviour:
   - SyncroPortalEffect
   - SyncroEndPortal
   - SyncroTransmutationTileEffect
+  - SyncroGameGemsNeeded
+  - SyncroRuinEvent
+  - CloseWaitPanel
+  - PlayerDropObject
+  - PlayerGetTileReward
+  - SyncroSkipShop
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

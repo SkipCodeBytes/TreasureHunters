@@ -197,6 +197,7 @@ public class BoardPlayer : MonoBehaviour
     {
         currentTilePosition = _nextTile;
         _nextTile = null;
+        currentTilePosition.TileBehavior.GetTileRewards(GameManager.Instance.CurrentPlayerTurnIndex);
         EventManager.TriggerEvent("EndPlayerMovent", true);
     }
 

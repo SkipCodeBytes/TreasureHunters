@@ -18,3 +18,4 @@ MonoBehaviour:
   itemObjectPrefab: {fileID: 8023321340107356989, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
   icon: {fileID: 21300000, guid: f2cefe89678df0244b526b6ddf6ac5c0, type: 3}
   price: 75
+  relicItemImage: {fileID: 21300000, guid: d5681fd1a32206446acbdb95777a27b4, type: 3}

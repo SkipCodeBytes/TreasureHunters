@@ -49,6 +49,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private int ofensivePlayerValue = 0;
     [SerializeField] private int defensivePlayerValue = 0;
 
+    //[SerializeField] public Dictionary<Vector2, List<ItemObject>> tileReward;
+
 
     //Componentes de GameManager
     private GameRPC _gameRPC;

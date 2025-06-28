@@ -18,4 +18,4 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 5e1b66b2669b9fc46aa3df6a35856524, type: 3}
   price: 20
   gemMaterial: {fileID: 2100000, guid: f00b915bb624ee14eb6ac9af147cb7bf, type: 2}
-  glowIntensity: 0
+  gemItemImage: {fileID: 21300000, guid: e6bea588a28aaf94785e884fa1aff6f1, type: 3}

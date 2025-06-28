@@ -83,7 +83,7 @@ public class ChestScript : MonoBehaviour
         _animator.SetTrigger("Close");
         for (int i = 0; i < _rewardObjs.Count; i++)
         {
-            _rewardObjs[i].TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+            _rewardObjs[i].TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
         }
         
     }

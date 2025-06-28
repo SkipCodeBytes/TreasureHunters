@@ -79,7 +79,7 @@ public class GuiItem : MonoBehaviour
     private void SetInfoGem(GemItemData gemItemData)
     {
         borderImg.sprite = defaultBorder;
-        imgIcon.sprite = gemItemData.Icon;
+        imgIcon.sprite = gemItemData.GemItemImage;
         title.text = gemItemData.ItemName;
         description.text = gemItemData.ItemDescription;
     }
@@ -87,7 +87,7 @@ public class GuiItem : MonoBehaviour
     private void SetInfoRelic(RelicItemData relicItemData)
     {
         borderImg.sprite = defaultBorder;
-        imgIcon.sprite = relicItemData.Icon;
+        imgIcon.sprite = relicItemData.RelicItemImage;
         title.text = relicItemData.ItemName;
         description.text = relicItemData.ItemDescription;
     }

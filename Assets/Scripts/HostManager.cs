@@ -166,6 +166,9 @@ public class HostManager : MonoBehaviour
             _gm.GmView.RPC("FirstSyncGameData", RpcTarget.Others, _gm.PlayersPhotonId[0], _gm.PlayersPhotonId[1], _gm.PlayersPhotonId[2], _gm.PlayersPhotonId[3]);
             _gm.GeneratePlayerIndex();
 
+            //Creamos una lista de gemas para todos
+            RuinsTile.GenerateGemsNeeded();
+
             StartCoroutine(StartingGame(waitToInitGame));
         }
     }
@@ -349,7 +352,14 @@ public class HostManager : MonoBehaviour
 
 
     //Para el Tile de batalla
-    public void mtBattleUseCardElection() { 
+    public int[] AttackerPosibleDrop;
+    public int[] DefenderPosibleDrop;
+
+    public void mtBattleUseCardElection() {
+        AttackerPosibleDrop = _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.CalculateRandomDrop();
+        DefenderPosibleDrop = _gm.PlayersArray[_gm.SecondaryPlayerTurn].Inventory.CalculateRandomDrop();
+        Debug.Log("AttackerPosibleDrop: " + string.Join(", ", AttackerPosibleDrop));
+        Debug.Log("DefenderPosibleDrop: " + string.Join(", ", DefenderPosibleDrop));
         _momentManager.MomentList.Add(new Moment(CardElection));
         _momentManager.MomentList.Add(new Moment(PlayAttaker));
     }

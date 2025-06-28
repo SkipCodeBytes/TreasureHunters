@@ -1,7 +1,9 @@
 
+using NUnit.Framework;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameRPC : MonoBehaviourPunCallbacks
@@ -291,6 +293,12 @@ public class GameRPC : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    public void SyncroSkipShop(int tileX, int tileY)
+    {
+        StartCoroutine(CinematicAnimation.WaitTime(0.3f, () => (_gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior as ShopTile).shopScript.EndAnimationShop()));
+    }
+
+    [PunRPC]
     public void SyncroPortalEffect(int playerId, int tileX, int tileY)
     {
         Vector2Int newPosOrder = new Vector2Int(tileX, tileY);
@@ -328,6 +336,32 @@ public class GameRPC : MonoBehaviourPunCallbacks
         {
             EventManager.TriggerEvent("EndEvent");
         }
+    }
+
+    //RuinsTile.GenerateGemsNeeded() //All
+    [PunRPC]
+    public void SyncroGameGemsNeeded(int gem0, int gem1, int gem2, int gem3)
+    {
+        int[] gems = new int[4];
+        gems[0] = gem0;
+        gems[1] = gem1;
+        gems[2] = gem2;
+        gems[3] = gem3;
+
+        RuinsTile.SetGemsNeeded(gems);
+    }
+
+    //RuinsTile.PlayTileEvent() //All
+    [PunRPC]
+    public void SyncroRuinEvent(int playerId)
+    {
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+    }
+
+    [PunRPC]
+    public void CloseWaitPanel()
+    {
+        _gm.GuiManager.WaitIfoUI.SetActive(false);
     }
 
     //HostManager.CardElection() // All
@@ -409,16 +443,43 @@ public class GameRPC : MonoBehaviourPunCallbacks
         EventManager.TriggerEvent("EndEvent");
     }
 
+    //HostManager.ReverseBattle() / All
+    //HostManager.ReverseBattle() / All
     [PunRPC]
     public void EndBattle()
     {
+
+
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.HideProps();
         _gm.GuiManager.BattlePanelGui.gameObject.SetActive(false);
         _gm.PlayersArray[_gm.SecondaryPlayerTurn].IsPlayerSubTurn = false;
-        _gm.SecondaryPlayerTurn = -1;
         EventManager.TriggerEvent("EndEvent");
+
+
+        if (_gm.IsHostPlayer)
+        {
+            if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.Life <= 0) _gm.GmView.RPC("PlayerDropObject", RpcTarget.All, _gm.CurrentPlayerTurnIndex, _gm.HostManager.AttackerPosibleDrop);
+            if (_gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.Life <= 0) _gm.GmView.RPC("PlayerDropObject", RpcTarget.All, _gm.SecondaryPlayerTurn, _gm.HostManager.DefenderPosibleDrop);
+        }
+
+        _gm.SecondaryPlayerTurn = -1;
     }
 
+    //GameRPC.EndBattle() / All
+    //GameRPC.EndBattle() / All
+    [PunRPC]
+    public void PlayerDropObject(int playerId, int[] itemsId)
+    {
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.AddTileRewards(itemsId, _gm.PlayersArray[playerId].Inventory.DropObjects(itemsId));
+        _gm.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
+    }
+
+    //TileBehabior.GetTileRewards() //All
+    [PunRPC]
+    public void PlayerGetTileReward(int playerId, int tileX, int tileY)
+    {
+        _gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior.SyncroGetTileRewards(playerId);
+    }
 
     //********************************************************************************************************************//
     //**********************************************  ACCIONES DE CICLO  *************************************************//
@@ -434,7 +495,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.GameRound++;
         _gm.GuiManager.RoundInfoPanel.gameObject.SetActive(true);
         _gm.GuiManager.RoundInfoPanel.StartPresentation();
-        if(_gm.GameRound % 4 == 0)
+        if(_gm.GameRound % 3 == 0)
         {
             _gm.MusicManager.NextMusic();
         }
@@ -493,6 +554,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     {
         _gm.PlayersArray[playerIndex].Rules.Life = _gm.PlayersArray[playerIndex].SelectedCharacter.lifeStat;
         _gm.PlayersArray[playerIndex].Graphics.reviveAnimation();
+        _gm.PlayersArray[playerIndex].BoardPlayer.CurrentTilePosition.TileBehavior.GetTileRewards(GameManager.Instance.CurrentPlayerTurnIndex);
         _gm.GuiManager.SlotInfoUIList[playerIndex].SetPlayerInfo();
     }
 

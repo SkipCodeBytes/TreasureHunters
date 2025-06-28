@@ -59,7 +59,7 @@ public class FontainScript : MonoBehaviour
     public void EndAnimation()
     {
         _animator.SetTrigger("Destroy");
-        gemObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform.position, itemTimeDrop);
+        gemObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
     }
 
     public void CloseAnimation()

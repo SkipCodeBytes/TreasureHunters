@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ShopTile : TileBehavior
 {
-    [SerializeField] private ShopScript shopScript;
+    public ShopScript shopScript;
 
     private GameManager _gm;
 

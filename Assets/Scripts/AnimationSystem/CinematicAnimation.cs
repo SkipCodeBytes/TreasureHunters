@@ -106,7 +106,19 @@ public class CinematicAnimation : MonoBehaviour
         duration = (affectedTransform.position - target).magnitude / speed;
         yield return InternalMove(affectedTransform, target, duration, callback);
     }
-        
+
+    public static IEnumerator MoveTowardDinamicTargetFor(Transform affectedTransform, Transform dinamicTarget, Vector3 offset, float duration, Action callback = null)
+    {
+        Vector3 origin = affectedTransform.position;
+        return LerpUtils.LerpVector3(
+            value => affectedTransform.position = value,
+            origin,
+            () => dinamicTarget.position + offset,
+            duration,
+            callback
+        );
+    }
+
     static private IEnumerator InternalMove(Transform affectedTransform, Vector3 target, float duration, Action callback){
         return LerpUtils.LerpVector3(value => affectedTransform.position = value, affectedTransform.position, target, duration, callback);
     }

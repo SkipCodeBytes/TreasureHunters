@@ -33,6 +33,7 @@ public class LerpUtils
         callback?.Invoke();
     }
 
+    // Para target fijo (estático)
     public static IEnumerator LerpVector3(Action<Vector3> setter, Vector3 origin, Vector3 target, float duration, Action callback = null)
     {
         float t = 0;
@@ -44,6 +45,21 @@ public class LerpUtils
             yield return null;
         }
         setter(target);
-        if (callback != null) { callback?.Invoke(); }
+        callback?.Invoke();
+    }
+
+    // Para target dinámico (ej: Transform en movimiento)
+    public static IEnumerator LerpVector3(Action<Vector3> setter, Vector3 origin, Func<Vector3> dynamicTarget, float duration, Action callback = null)
+    {
+        float t = 0;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            Vector3 value = Vector3.Lerp(origin, dynamicTarget(), t / duration);
+            setter(value);
+            yield return null;
+        }
+        setter(dynamicTarget());
+        callback?.Invoke();
     }
 }
