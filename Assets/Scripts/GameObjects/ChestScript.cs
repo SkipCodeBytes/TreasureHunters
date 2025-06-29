@@ -20,11 +20,13 @@ public class ChestScript : MonoBehaviour
 
     private int[] _rewardArray;
     private List<ItemObject> _rewardObjs;
+    private TileBehavior _tileBehavior;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
         _transform = GetComponent<Transform>();
+        _tileBehavior = GetComponentInParent<TileBehavior>();
         glowParticle.Stop();
         glowParticle.Clear();
     }
@@ -83,6 +85,19 @@ public class ChestScript : MonoBehaviour
         _animator.SetTrigger("Close");
         for (int i = 0; i < _rewardObjs.Count; i++)
         {
+            int itemID = _rewardObjs[i].IDReference;
+            ItemType itemType = ItemManager.Instance.GetItemType(itemID);
+            if(itemType == ItemType.Relic)
+            {
+                if (!_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.availableToReceiveRelic)
+                {
+                    _tileBehavior.AddTileRewards(new int[] {0, itemID }, new ItemObject[] {_rewardObjs[i]});
+                    continue;
+                } else
+                {
+                    _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.availableToReceiveRelic = false;
+                }
+            }
             _rewardObjs[i].TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
         }
         

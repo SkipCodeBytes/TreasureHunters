@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ItemObject: MonoBehaviour
 {
+    public int IDReference = 0;
     private Transform _transform;
     [Header("Pickable object")]
     [SerializeField] protected float levitationHeight = 0.1f;
@@ -18,7 +19,10 @@ public class ItemObject: MonoBehaviour
         _transform.Rotate(rotationSpeed * Time.deltaTime);
     }
 
-    virtual public void SetItemObjectValues(ItemData gameItemData) { }
+    virtual public void SetItemObjectValues(int ID, ItemData gameItemData) 
+    {
+        IDReference = ID;
+    }
 
     public void DropAnimation(Vector3 initPosition, Vector3 targetPosition, float height, float maxRadius, float animTime)
     {

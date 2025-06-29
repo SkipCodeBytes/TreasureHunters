@@ -50,7 +50,7 @@ public class FontainScript : MonoBehaviour
     public void DropCardAnimation()
     {
         gemObj = ItemManager.Instance.GenerateItemInScene(_rewardArray[1]);
-        if (gemObj is GemItemObject gem) gem.SetItemObjectValues(ItemManager.Instance.GetItemData(_rewardArray[1]));
+        if (gemObj is GemItemObject gem) gem.SetItemObjectValues(_rewardArray[1], ItemManager.Instance.GetItemData(_rewardArray[1]));
         gemObj.DropAnimation(transform.position + itemSpawnPos, transform.position, itemDropHeight, itemDropMaxRadio, itemTimeDrop);
         StartCoroutine(CinematicAnimation.WaitTime(itemTimeDrop + itemTimeStand, EndAnimation));
         GlowParticles.Play();

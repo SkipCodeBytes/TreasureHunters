@@ -15,16 +15,15 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private int coinsQuantity;
     [SerializeField] private List<GemItemData> gemItems;
     [SerializeField] private List<CardItemData> cardItems;
-    [SerializeField] private bool hasRelicItem;
     [SerializeField] private RelicItemData relicItemData;
     [SerializeField] private GameObject relicVisual;
 
+    public bool availableToReceiveRelic = false;
 
 
     public int CoinsQuantity { get => coinsQuantity; set => coinsQuantity = value; }
     public List<GemItemData> GemItems { get => gemItems; set => gemItems = value; }
     public List<CardItemData> CardItems { get => cardItems; set => cardItems = value; }
-    public bool HasRelicItem { get => hasRelicItem; set => hasRelicItem = value; }
     public RelicItemData RelicItemData { get => relicItemData; set => relicItemData = value; }
 
     private GameManager _gm;
@@ -93,17 +92,19 @@ public class PlayerInventory : MonoBehaviour
     public void AddRelic(int itemId)
     {
         if (itemId == -1 || itemId == 0) return;
-        if (relicItemData != null) return;
-        //DROP RELIC EN CASO DE QUE TENGA ALGUNO EN POSESIÓN
+        if (relicItemData != null) return; 
 
         ItemData data = _im.GetItemData(itemId);
         RelicItemData relic = data as RelicItemData;
 
-        StartCoroutine(CinematicAnimation.WaitTime(1.8f, () => relicVisual.SetActive(true)));
 
-        if (relic != null) relicItemData = relic;
+        if (relic != null) { 
+            relicItemData = relic;
+            StartCoroutine(CinematicAnimation.WaitTime(1.8f, () => relicVisual.SetActive(true)));
+        }
         else Debug.LogError($"[AddGem] El item con ID {itemId} no es de tipo GemItemData. Tipo real: {data?.GetType().Name}");
     }
+
 
     public int[] CalculateRandomDrop()
     {
@@ -112,7 +113,6 @@ public class PlayerInventory : MonoBehaviour
         dropItemsID.Add(Mathf.CeilToInt(coinsQuantity / 3));
 
         if (relicItemData != null) dropItemsID.Add(ItemManager.Instance.GetItemID(relicItemData));
-        else dropItemsID.Add(0);
 
         int dropGemsQuantity = Mathf.CeilToInt(gemItems.Count / 3);
         List<GemItemData> aleatorios = gemItems.GetRandomElements(dropGemsQuantity);
@@ -124,6 +124,7 @@ public class PlayerInventory : MonoBehaviour
 
         return dropItemsID.ToArray();
     }
+
 
     public ItemObject[] DropObjects(int[] dropObjects)
     {
@@ -141,8 +142,6 @@ public class PlayerInventory : MonoBehaviour
             }
             else
             {
-                if (dropObjects[i] == 0) continue;
-
                 _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(dropObjects[i]));
                 ItemType itemType = ItemManager.Instance.GetItemType(dropObjects[i]);
 
@@ -150,7 +149,6 @@ public class PlayerInventory : MonoBehaviour
                 {
                     case ItemType.Relic:
                         relicItemData = null;
-                        hasRelicItem = false;
                         relicVisual.SetActive(false);
                         break;
 

@@ -17,6 +17,7 @@ public class RuinPedestal : MonoBehaviour
 
     private int targetPlayerId;
     private ItemObject[] gemsObjs;
+    private Coroutine itemAnim;
 
     private void OnEnable()
     {
@@ -30,12 +31,17 @@ public class RuinPedestal : MonoBehaviour
         gemsObjs = gemsUsed;
         for (int i = 0; i < gemsUsed.Length; i++)
         {
-            StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gemsUsed[i].transform, pedestalList[i].position + gemVisualOffset, 0.8f, PlayCollectGems));
+            StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gemsUsed[i].transform, pedestalList[i].position + gemVisualOffset, 0.8f));
         }
+        StartCoroutine(CinematicAnimation.WaitTime(1.2f, PlayCollectGems));
     }
 
     private void PlayCollectGems()
     {
+        for (int i = 0; i < gemsObjs.Length; i++)
+        {
+            itemAnim = StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(gemsObjs[i].transform, pedestalList[i].position + new Vector3(0,-0.5f,0), 0.6f));
+        }
         _gm.PlayersArray[targetPlayerId].Rules.AddGameStar();
 
         animator.Play("Interactue");
@@ -48,6 +54,7 @@ public class RuinPedestal : MonoBehaviour
 
     public void EndAnimation()
     {
+        StopCoroutine(itemAnim);
         _gm.GuiManager.SlotInfoUIList[targetPlayerId].SetPlayerInfo();
         for (int i = 0; i < gemsObjs.Length; i++) gemsObjs[i].gameObject.SetActive(false);
         if (_gm.CurrentPlayerTurnIndex == _gm.PlayerIndex) EventManager.TriggerEvent("EndEvent");

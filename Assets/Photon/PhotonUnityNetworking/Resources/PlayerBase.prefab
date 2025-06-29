@@ -282,7 +282,7 @@ MonoBehaviour:
   itemTimeDrop: 0.8
   itemDropMaxRadio: 1.15
   itemDropHeight: 1
-  coinsQuantity: 50
+  coinsQuantity: 60
   gemItems:
   - {fileID: 11400000, guid: 9f5cb828b1c520147be28f94a95709bb, type: 2}
   - {fileID: 11400000, guid: ba92533df66fd7f4fa4e7ed703e7f582, type: 2}
@@ -301,9 +301,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8d005c4f7e7ef847bb47d35275257fb, type: 2}
   - {fileID: 11400000, guid: 167db462ccbe0e24c9929f70a8c13240, type: 2}
   cardItems: []
-  hasRelicItem: 0
-  relicItemData: {fileID: 0}
+  relicItemData: {fileID: 11400000, guid: 9337f7f0d388dd94c86d7bd40d71098c, type: 2}
   relicVisual: {fileID: 8934098617157329063}
+  availableToReceiveRelic: 0
 --- !u!1001 &663363629596540526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -366,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8271132224791469769, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

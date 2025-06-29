@@ -37,6 +37,14 @@ public class DiceManager : MonoBehaviour
             dicePool.GetChild(i).gameObject.SetActive(false);
         }
         fieldViewCamBase = diceCamera.fieldOfView;
+
+        EventManager.StartListening("MSJ_D1", () => DebugSkip(1));
+        EventManager.StartListening("MSJ_D2", () => DebugSkip(2));
+        EventManager.StartListening("MSJ_D3", () => DebugSkip(3));
+        EventManager.StartListening("MSJ_D4", () => DebugSkip(4));
+        EventManager.StartListening("MSJ_D5", () => DebugSkip(5));
+        EventManager.StartListening("MSJ_D6", () => DebugSkip(6));
+        EventManager.StartListening("MSJ_D12", () => DebugSkip(12));
     }
 
     private void Update()
@@ -46,6 +54,12 @@ public class DiceManager : MonoBehaviour
         {
             CheckDiceStatus();
         }
+    }
+
+    private void DebugSkip(int value)
+    {
+        isCheckingResults = true;
+        _gm.GmView.RPC("SentDiceResults", RpcTarget.All, value);
     }
 
     private void CheckDiceStatus()

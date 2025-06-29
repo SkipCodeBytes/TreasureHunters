@@ -24,8 +24,9 @@ public class GemItemObject : ItemObject
         SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("GemObj"))));
     }
 
-    override public void SetItemObjectValues(ItemData data)
+    override public void SetItemObjectValues(int ID, ItemData data)
     {
+        base.SetItemObjectValues(ID, data);
         gemItemData = data as GemItemData;
         m_Renderer.material = gemItemData.GemMaterial;
     }

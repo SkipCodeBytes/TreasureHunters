@@ -24,10 +24,12 @@ public class ShopScript : MonoBehaviour
     [SerializeField] private ParticleSystem continousParticle;
 
     [SerializeField] private Animator _skeletonAnimator;
+    private TileBehavior _tileBehavior;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        _tileBehavior = GetComponentInParent<TileBehavior>();
     }
 
     private void OnEnable()
@@ -98,6 +100,17 @@ public class ShopScript : MonoBehaviour
         _animator.SetTrigger("Destroy");
         if(_rewardObj != null)
         {
+            ItemType itemType = ItemManager.Instance.GetItemType(_rewardObj.IDReference);
+            if (itemType == ItemType.Relic)
+            {
+                if (!_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.availableToReceiveRelic)
+                {
+                    _tileBehavior.AddTileRewards( new int[] {0, _rewardObj.IDReference }, new ItemObject[] { _rewardObj });
+                    _rewardObj = null;
+                    continousParticle.Play();
+                    return;
+                }
+            }
             _rewardObj.TakeObjectAnimation(_gm.PlayersArray[_targetPlayerIndex].transform, itemTimeDrop);
             _rewardObj = null;
         }

@@ -14,6 +14,7 @@ public abstract class TileBehavior : MonoBehaviour
     protected TileBoard _tileBoard;
 
     [SerializeField] private List<ItemObject> rewardItems = new List<ItemObject>();
+    //[SerializeField] private int relicRewardCount = 0;
     [SerializeField] private List<int> rewardItemsID = new List<int>();
 
     public List<GameObject> HideableProps { get => _hideableProps; set => _hideableProps = value; }
@@ -25,7 +26,7 @@ public abstract class TileBehavior : MonoBehaviour
     {
         _tileBoard = transform.parent.GetComponent<TileBoard>();
         for (int i = 0; i < _restPoints.Count; i++) _restPointDicc[_restPoints[i]] = null;
-        rewardItemsID.Add(0);
+        rewardItemsID.Insert(0, 0);
     }
 
     protected virtual void Start()
@@ -156,22 +157,56 @@ public abstract class TileBehavior : MonoBehaviour
 
     public void SyncroGetTileRewards(int playerId)
     {
-        GameManager.Instance.PlayersArray[playerId].Inventory.AddCoins(rewardItemsID[0]);
+        PlayerManager targetPlayer = GameManager.Instance.PlayersArray[playerId];
+        targetPlayer.Inventory.AddCoins(rewardItemsID[0]);
+
+        List<int> noTakeObjID = new List<int>();
+
         for (int i = 1; i < rewardItemsID.Count; i++)
         {
-            if (i == 1 && rewardItemsID[i] == 0) continue; 
-            GameManager.Instance.PlayersArray[playerId].Inventory.AddItem(rewardItemsID[i]);
+            ItemType itemType = ItemManager.Instance.GetItemType(rewardItemsID[i]);
+            if(itemType == ItemType.Relic)
+            {
+                if (targetPlayer.Inventory.RelicItemData != null)
+                {
+                    noTakeObjID.Add(rewardItemsID[i]);
+                    continue;
+                }
+                targetPlayer.Inventory.availableToReceiveRelic = true;
+            }
+            targetPlayer.Inventory.AddItem(rewardItemsID[i]);
         }
+        rewardItemsID = new List<int>();
+        rewardItemsID.Add(0);
+        rewardItemsID.AddRange(noTakeObjID);
 
+        List<ItemObject> noTakeObj = new List<ItemObject>();
 
         for (int i = 0; i < rewardItems.Count; i++)
         {
-            rewardItems[i].TakeObjectAnimation(GameManager.Instance.PlayersArray[playerId].transform, 0.8f);
+            ItemType itemType = ItemManager.Instance.GetItemType(rewardItems[i].IDReference);
+            if (itemType == ItemType.Relic)
+            {
+                if (targetPlayer.Inventory.availableToReceiveRelic)
+                {
+                    targetPlayer.Inventory.availableToReceiveRelic = false;
+                    rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 0.8f);
+                    continue;
+                }
+                else
+                {
+                    noTakeObj.Add(rewardItems[i]);
+                    continue;
+                }
+            }
+            rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 0.8f);
         }
-        StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => GameManager.Instance.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo()));
-        rewardItemsID = new List<int>();
-        rewardItemsID.Add(0);
-        rewardItems = new List<ItemObject>(); 
+
+        rewardItems = noTakeObj;
+
+        StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => {
+            GameManager.Instance.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
+            }));
     }
 
 

@@ -207,17 +207,25 @@ public class GameRPC : MonoBehaviourPunCallbacks
         SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("DiceResult"));
     }
 
+
     //ChestTile.SettingTileEvent() / All
     [PunRPC]
     public void SyncroAddChestReward(int playerId, int coins, int gem, int card, int relic)
     {
         int[] rewards = { coins, gem, card, relic };
-        if(coins > 0) _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCoins(coins);
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddGem(gem);
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddCard(card);
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddRelic(relic);
+
+        if(coins > 0) _gm.PlayersArray[playerId].Inventory.AddCoins(coins);
+        _gm.PlayersArray[playerId].Inventory.AddGem(gem);
+        _gm.PlayersArray[playerId].Inventory.AddCard(card);
+
+        if(_gm.PlayersArray[playerId].Inventory.RelicItemData == null)
+        {
+            _gm.PlayersArray[playerId].Inventory.AddRelic(relic);
+            _gm.PlayersArray[playerId].Inventory.availableToReceiveRelic = true;
+        }
+
         _gm.LastRewards = rewards;
-        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
+        _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior.PlayTileEvent();
     }
 
 
@@ -278,7 +286,12 @@ public class GameRPC : MonoBehaviourPunCallbacks
                 break;
 
             case ItemType.Relic:
-                _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.AddRelic(itemID);
+
+                if (_gm.PlayersArray[playerId].Inventory.RelicItemData == null)
+                {
+                    _gm.PlayersArray[playerId].Inventory.AddRelic(itemID);
+                    _gm.PlayersArray[playerId].Inventory.availableToReceiveRelic = true;
+                }
                 _gm.LastRewards = new int[] { 0, 0, 0, itemID };
                 break;
 
@@ -481,6 +494,8 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior.SyncroGetTileRewards(playerId);
     }
 
+
+    //RuinPanelUI.btnSubmit() //All
     [PunRPC]
     public void SyncroSubmitRuins(int playerId)
     {
@@ -492,6 +507,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
         //ruinTile.RuinPedestal.PlayRuinEvent(playerId, objects);
 
         StartCoroutine(CinematicAnimation.WaitTime(_gm.PlayersArray[playerId].Inventory.itemTimeDrop + 0.1f, () => ruinTile.RuinPedestal.PlayRuinEvent(playerId, objects)));
+        CloseWaitPanel();
         //_gm.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
     }
 

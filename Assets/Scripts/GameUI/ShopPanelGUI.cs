@@ -28,6 +28,9 @@ public class ShopPanelGUI : MonoBehaviour
     {
         ItemData itemObtained = itemGui.Item;
         int itemId = ItemManager.Instance.GetItemID(itemObtained);
+        ItemType itemType = ItemManager.Instance.GetItemType(itemId);
+
+        //if (ItemType.Relic == itemType && _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.HasRelicItem) { return; }
         if (itemObtained.Price <= _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.CoinsQuantity) {
             _gm.GmView.RPC("SyncroAddShopReward", Photon.Pun.RpcTarget.All, _gm.CurrentPlayerTurnIndex, itemId, itemObtained.Price);
             gameObject.SetActive(false);

@@ -75,7 +75,7 @@ public class ItemManager : MonoBehaviour
 
         if (selectedItem != null) {
             itemObject = InstanceManager.Instance.GetObject(selectedItem.ItemObjectPrefab.gameObject).GetComponent<ItemObject>();
-            itemObject.SetItemObjectValues(selectedItem);
+            itemObject.SetItemObjectValues(itemID, selectedItem);
         }
 
         return itemObject;

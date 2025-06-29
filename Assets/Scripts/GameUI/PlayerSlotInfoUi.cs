@@ -73,10 +73,10 @@ public class PlayerSlotInfoUi : MonoBehaviour
             slotPoolObj[i].SetActive(true);
         }
 
-        if (_playerInventory.HasRelicItem)
+        if (_playerInventory.RelicItemData != null)
         {
-            slotPoolImg[_playerInventory.CardItems.Count - 1].sprite = _playerInventory.RelicItemData.Icon;
-            slotPoolObj[_playerInventory.CardItems.Count - 1].SetActive(true);
+            slotPoolImg[slotsCount - 1].sprite = _playerInventory.RelicItemData.Icon;
+            slotPoolObj[slotsCount - 1].SetActive(true);
         }
 
         for(int i = 0; i < _playerRules.GameStarsQuantity; i++)
