@@ -54,6 +54,9 @@ MonoBehaviour:
   - {x: 0.75, y: 0, z: -0.75}
   - {x: -0.75, y: 0, z: 0.75}
   - {x: -0.75, y: 0, z: -0.75}
+  rewardItems: []
+  rewardItemsID: 
+  RuinPedestal: {fileID: 2038546991221015075}
 --- !u!1 &3725202808957598256
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,6 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1594916102247282107}
   - component: {fileID: 6627023525775941307}
+  - component: {fileID: 2038546991221015075}
   m_Layer: 0
   m_Name: PropGroup
   m_TagString: Untagged
@@ -112,6 +116,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2038546991221015075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3725202808957598256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be2d4df80c689764b8f5f81a9b3845e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pedestalList:
+  - {fileID: 5296920990743102173}
+  - {fileID: 4826438482221101817}
+  - {fileID: 3341775428755900612}
+  - {fileID: 4104316878297382810}
+  gemVisualOffset: {x: 0, y: 0.5, z: 0}
 --- !u!1001 &3020479875134959407
 PrefabInstance:
   m_ObjectHideFlags: 0

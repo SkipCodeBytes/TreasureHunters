@@ -39,10 +39,10 @@ public class RuinPanelUI : MonoBehaviour
         {
             GameObject slot = Instantiate(itemSlotPrefab, gemItemsContent);
             RectTransform rectSlot = slot.GetComponent<RectTransform>();
-            rectSlot.anchoredPosition = new Vector2(0f, -15f - (i * 85));
+            //rectSlot.anchoredPosition = new Vector2(0f, -15f - (i * 85));
 
             rectSlot.GetChild(0).GetComponent<Image>().sprite = player.GemItems[i].Icon;
-            rectSlot.GetChild(1).GetComponent<Text>().text = player.GemItems[i].ItemName;
+            //rectSlot.GetChild(1).GetComponent<Text>().text = player.GemItems[i].ItemName;
 
             int itemId = ItemManager.Instance.GetItemID(player.GemItems[i]);
             
@@ -76,5 +76,11 @@ public class RuinPanelUI : MonoBehaviour
     public void btnSubmit()
     {
         //RPC para perder objetos del inventario, brindar una estrella y cambiar GemsNeeded
+        //DropObjects
+        //
+
+        _gm.GmView.RPC("SyncroSubmitRuins", Photon.Pun.RpcTarget.All, _gm.CurrentPlayerTurnIndex);
+        //EventManager.TriggerEvent("EndEvent");
+        gameObject.SetActive(false);
     }
 }

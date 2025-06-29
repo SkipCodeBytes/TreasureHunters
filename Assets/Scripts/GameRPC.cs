@@ -481,6 +481,20 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior.SyncroGetTileRewards(playerId);
     }
 
+    [PunRPC]
+    public void SyncroSubmitRuins(int playerId)
+    {
+        List<int> dropsId = new List<int>();
+        dropsId.Add(0);
+        dropsId.AddRange(RuinsTile.GemsNeededID);
+        ItemObject[] objects = _gm.PlayersArray[playerId].Inventory.DropObjects(dropsId.ToArray());
+        RuinsTile ruinTile = _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior as RuinsTile;
+        //ruinTile.RuinPedestal.PlayRuinEvent(playerId, objects);
+
+        StartCoroutine(CinematicAnimation.WaitTime(_gm.PlayersArray[playerId].Inventory.itemTimeDrop + 0.1f, () => ruinTile.RuinPedestal.PlayRuinEvent(playerId, objects)));
+        //_gm.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
+    }
+
     //********************************************************************************************************************//
     //**********************************************  ACCIONES DE CICLO  *************************************************//
     //********************************************************************************************************************//

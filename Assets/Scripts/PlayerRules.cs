@@ -8,6 +8,8 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     [Header("Player Info")]
     [SerializeField] private int life = 0;
     [SerializeField] private int reviveValue = 0;
+    [SerializeField] private int gameStarsQuantity = 0;
+    [SerializeField] private int starsToWin = 4;
 
     [Header("Config Values")]
     [SerializeField] private List<CharacterData> availableCharacters;
@@ -19,6 +21,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
 
     public int Life { get => life; set => life = value; }
     public int ReviveValue { get => reviveValue; set => reviveValue = value; }
+    public int GameStarsQuantity { get => gameStarsQuantity; set => gameStarsQuantity = value; }
 
     private void Awake()
     {
@@ -65,6 +68,20 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         if(life <= 0) { 
             life = 0;
             reviveValue = _pm.SelectedCharacter.reviveStat;
+        }
+    }
+
+    public void AddGameStar()
+    {
+        gameStarsQuantity++;
+        _pm.Graphics.ConfetiParticle.Play();
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Relic"));
+        StartCoroutine(CinematicAnimation.WaitTime(0.4f, () => _pm.Graphics.PlayCheerAnim()));
+
+        if (gameStarsQuantity > starsToWin)
+        {
+            EventManager.TriggerEvent("WinGame", true);
+            Debug.Log("Has Ganado");
         }
     }
 }

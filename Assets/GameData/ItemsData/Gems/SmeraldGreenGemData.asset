@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Esmeralda Verde
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -4555269648522212324, guid: 2b3e61df6f90a304589c648d8b446e16, type: 3}
-  icon: {fileID: 21300000, guid: f623cd9d0157dd54bb26042632e793d8, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: 108965a7ec62d254599104af13d89818, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: 6823d14d773e40f46b0da64f87ec5067, type: 2}
   gemItemImage: {fileID: 21300000, guid: b1c4361f9bd57ae43a8411db449639f1, type: 3}

@@ -8,15 +8,11 @@ public class PlayerInventory : MonoBehaviour
 
     [SerializeField] private Vector3 itemSpawnPos;
 
-    [SerializeField] private float itemTimeDrop;
+    public float itemTimeDrop;
     [SerializeField] private float itemDropMaxRadio;
     [SerializeField] private float itemDropHeight;
 
-    [SerializeField] private float itemTimeStand;
-
-
     [SerializeField] private int coinsQuantity;
-    [SerializeField] private int safeRelicsQuantity;
     [SerializeField] private List<GemItemData> gemItems;
     [SerializeField] private List<CardItemData> cardItems;
     [SerializeField] private bool hasRelicItem;
@@ -26,7 +22,6 @@ public class PlayerInventory : MonoBehaviour
 
 
     public int CoinsQuantity { get => coinsQuantity; set => coinsQuantity = value; }
-    public int SafeRelicsQuantity { get => safeRelicsQuantity; set => safeRelicsQuantity = value; }
     public List<GemItemData> GemItems { get => gemItems; set => gemItems = value; }
     public List<CardItemData> CardItems { get => cardItems; set => cardItems = value; }
     public bool HasRelicItem { get => hasRelicItem; set => hasRelicItem = value; }
@@ -156,6 +151,7 @@ public class PlayerInventory : MonoBehaviour
                     case ItemType.Relic:
                         relicItemData = null;
                         hasRelicItem = false;
+                        relicVisual.SetActive(false);
                         break;
 
                     case ItemType.Gem:
@@ -185,15 +181,13 @@ public class PlayerInventory : MonoBehaviour
     {
         if (relicItemData != null)
         {
-            safeRelicsQuantity++;
             relicItemData = null;
             relicVisual.SetActive(false);
-            _pm.Graphics.ConfetiParticle.Play();
 
-            SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Relic"));
-            StartCoroutine(CinematicAnimation.WaitTime(0.4f, () => _pm.Graphics.PlayCheerAnim()));
+            _pm.Rules.AddGameStar();
         }
     }
+
 
 
     private void OnDrawGizmosSelected()

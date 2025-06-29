@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Diamante Azul
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -7541860823127592346, guid: d575df3d37eb56d44ab538b8a988c71c, type: 3}
-  icon: {fileID: 21300000, guid: 5e1b66b2669b9fc46aa3df6a35856524, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: 879e774652f295a4dbdf122619be3a04, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: f00b915bb624ee14eb6ac9af147cb7bf, type: 2}
   gemItemImage: {fileID: 21300000, guid: 629df45da46b67b43a17eff994bdda38, type: 3}

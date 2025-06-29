@@ -32,14 +32,15 @@ public class HomeTile : TileBehavior
         //AÑADIR ANIMACIÓN DE SALUD AQUI
         //AÑADIR ANIMACIÓN DE GUARDAR RELIQUIA AQUI
 
-        if(_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.SafeRelicsQuantity >= 4)
+        StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => EventManager.TriggerEvent("EndEvent")));
+        /*
+        if (_gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Inventory.GameStarsQuantity >= 4)
         {
             Debug.Log("JUGADOR " + _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Player.NickName + " ha ganado la partida");
         }
         else
         {
-            StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => EventManager.TriggerEvent("EndEvent")));
-        }
+        }*/
     }
 
     public override void HideProps()

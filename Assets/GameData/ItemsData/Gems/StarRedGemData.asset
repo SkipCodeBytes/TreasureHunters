@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Estrella Rojo
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -939793798556501044, guid: 641b73ed146916640880a9780db1f54c, type: 3}
-  icon: {fileID: 21300000, guid: ea1aff2f1d4e2ae4c9cea447bdb28fce, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: 5ed966c927ff4a742ab1d51dbcc95452, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: 367fa24de2bc2d8438d9011fcf6a7819, type: 2}
   gemItemImage: {fileID: 21300000, guid: 37a70502f8e991e4e9e129ddface2885, type: 3}

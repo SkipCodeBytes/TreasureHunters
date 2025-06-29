@@ -79,9 +79,9 @@ public class PlayerSlotInfoUi : MonoBehaviour
             slotPoolObj[_playerInventory.CardItems.Count - 1].SetActive(true);
         }
 
-        for(int i = 0; i < _playerInventory.SafeRelicsQuantity; i++)
+        for(int i = 0; i < _playerRules.GameStarsQuantity; i++)
         {
-            if(safeRelicContent.transform.childCount < _playerInventory.SafeRelicsQuantity)
+            if(safeRelicContent.transform.childCount < _playerRules.GameStarsQuantity)
             {
                 safeRelicsIcons.Add(Instantiate(safeRelicIconPrefab, safeRelicContent.transform).GetComponent<Image>());
             }

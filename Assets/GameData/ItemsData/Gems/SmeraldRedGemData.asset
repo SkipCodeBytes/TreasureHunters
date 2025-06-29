@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Esmeralda Rojo
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -4555269648522212324, guid: 2b3e61df6f90a304589c648d8b446e16, type: 3}
-  icon: {fileID: 21300000, guid: ea1aff2f1d4e2ae4c9cea447bdb28fce, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: 44ce087f04643e64f9718cc62016b8f7, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: 367fa24de2bc2d8438d9011fcf6a7819, type: 2}
   gemItemImage: {fileID: 21300000, guid: 0a404710bb3d6274cb2fa2885f38207e, type: 3}

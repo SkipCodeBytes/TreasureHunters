@@ -36,6 +36,7 @@ public class ItemObject: MonoBehaviour
 
     private void HideObject()
     {
+        SoundController.Instance.PlaySound(GameManager.Instance.SoundLibrary.GetClip("TakeItem"));
         gameObject.SetActive(false);
     }
 }

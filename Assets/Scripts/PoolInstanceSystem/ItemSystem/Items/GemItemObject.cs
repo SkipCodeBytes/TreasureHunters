@@ -21,7 +21,7 @@ public class GemItemObject : ItemObject
     private void OnEnable()
     {
         StartCoroutine(CinematicAnimation.WaitTime(Random.Range(0.08f, 0.2f), () =>
-        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Gem"))));
+        SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("GemObj"))));
     }
 
     override public void SetItemObjectValues(ItemData data)

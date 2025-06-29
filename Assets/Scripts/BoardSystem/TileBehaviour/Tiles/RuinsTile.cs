@@ -6,6 +6,8 @@ public class RuinsTile : TileBehavior
     //Debe ser asignado por el Host con el GameManager
     public static int[] GemsNeededID = new int[4];
     public static GemItemData[] GemsNeeded = new GemItemData[4];
+    
+    public RuinPedestal RuinPedestal;
     private GameManager _gm;
 
     protected override void Start()

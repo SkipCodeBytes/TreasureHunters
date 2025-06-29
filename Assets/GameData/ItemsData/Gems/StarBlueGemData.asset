@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Estrella Azul
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -939793798556501044, guid: 641b73ed146916640880a9780db1f54c, type: 3}
-  icon: {fileID: 21300000, guid: 5e1b66b2669b9fc46aa3df6a35856524, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: a274145b998c30649949ab32a5343e3f, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: f00b915bb624ee14eb6ac9af147cb7bf, type: 2}
   gemItemImage: {fileID: 21300000, guid: 41d45ee87700077489257f36727841f7, type: 3}

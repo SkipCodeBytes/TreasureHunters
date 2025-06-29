@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Esmeralda Azul
   itemDescription: "Solo mira c\xF3mo brilla"
   itemObjectPrefab: {fileID: -4555269648522212324, guid: 2b3e61df6f90a304589c648d8b446e16, type: 3}
-  icon: {fileID: 21300000, guid: 5e1b66b2669b9fc46aa3df6a35856524, type: 3}
-  price: 20
+  icon: {fileID: 21300000, guid: 3a03b9a2784bc594fa78996b3e4ca1f7, type: 3}
+  price: 8
   gemMaterial: {fileID: 2100000, guid: f00b915bb624ee14eb6ac9af147cb7bf, type: 2}
   gemItemImage: {fileID: 21300000, guid: 25a6a93ed6289fd4f82f7378fb318dca, type: 3}
