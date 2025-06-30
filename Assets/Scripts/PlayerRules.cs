@@ -9,7 +9,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     [SerializeField] private int life = 0;
     [SerializeField] private int reviveValue = 0;
     [SerializeField] private int gameStarsQuantity = 0;
-    [SerializeField] private int starsToWin = 4;
+    public int starsToWin = 4;
 
     [Header("Config Values")]
     [SerializeField] private List<CharacterData> availableCharacters;
@@ -78,7 +78,7 @@ public class PlayerRules : MonoBehaviourPunCallbacks
         SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Relic"));
         StartCoroutine(CinematicAnimation.WaitTime(0.4f, () => _pm.Graphics.PlayCheerAnim()));
 
-        if (gameStarsQuantity > starsToWin)
+        if (gameStarsQuantity >= starsToWin)
         {
             EventManager.TriggerEvent("WinGame", true);
             Debug.Log("Has Ganado");

@@ -15,6 +15,7 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private RevivePanelUI revivePanelUI;
     [SerializeField] private RuinPanelUI ruinPanelUI;
     [SerializeField] private GameObject waitIfoUI;
+    [SerializeField] private WinPanelGUI winPanelGUI;
 
     public GameObject PlayerInfoPanel { get => playerInfoPanel; set => playerInfoPanel = value; }
     public RoundInfoUI RoundInfoPanel { get => roundInfoPanel; set => roundInfoPanel = value; }
@@ -27,6 +28,7 @@ public class GUIManager : MonoBehaviour
     public RevivePanelUI RevivePanelUI { get => revivePanelUI; set => revivePanelUI = value; }
     public RuinPanelUI RuinPanelUI { get => ruinPanelUI; set => ruinPanelUI = value; }
     public GameObject WaitIfoUI { get => waitIfoUI; set => waitIfoUI = value; }
+    public WinPanelGUI WinPanelGUI { get => winPanelGUI; set => winPanelGUI = value; }
 
     private GameManager _gm;
 

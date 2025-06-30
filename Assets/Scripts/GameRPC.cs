@@ -588,4 +588,11 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.GuiManager.SlotInfoUIList[playerIndex].SetPlayerInfo();
     }
 
+    [PunRPC]
+    public void WinGame()
+    {
+        _gm.GuiManager.WinPanelGUI.gameObject.SetActive(true);
+        _gm.GuiManager.WinPanelGUI.StartWinPanel();
+    }
+
 }
