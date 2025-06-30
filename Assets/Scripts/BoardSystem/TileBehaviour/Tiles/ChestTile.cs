@@ -75,7 +75,7 @@ public class ChestTile : TileBehavior
                     switch (_rewardGroups[i].Rewards[j])
                     {
                         case ItemType.Coin:
-                            int quantity = (int)(diceResult * (0.25f * (4f - i)) * _gm.GameRules.CoinsBonusScale);
+                            int quantity = (int)(diceResult - i * _gm.GameRules.CoinsBonusScale);
                             rewardArray[0] = quantity;
                             break;
 
