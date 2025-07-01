@@ -272,17 +272,6 @@ public class HostManager : MonoBehaviour
         WaitForEvent();
         WaitForSyncro();
 
-        //Comprobamos si hay jugadores que ganaron la partida
-        for (int i = 0; i < _gm.PlayersArray.Length; i++)
-        {
-            if (_gm.PlayersArray[i] == null) continue;
-            if(_gm.PlayersArray[i].Rules.starsToWin <= _gm.PlayersArray[i].Rules.GameStarsQuantity)
-            {
-                _gm.GmView.RPC("WinGame", RpcTarget.All);
-                return;
-            }
-        }
-
             //Comprobamos si hay jugadores suficientes en juego
         int activePlayersCount = 0;
         for (int i = 0; i < _gm.PlayersArray.Length; i++)
@@ -306,6 +295,18 @@ public class HostManager : MonoBehaviour
     public void NewTurn()
     {
         WaitForEvent();
+
+        //Comprobamos si hay jugadores que ganaron la partida
+        for (int i = 0; i < _gm.PlayersArray.Length; i++)
+        {
+            if (_gm.PlayersArray[i] == null) continue;
+            if (_gm.PlayersArray[i].Rules.starsToWin <= _gm.PlayersArray[i].Rules.GameStarsQuantity)
+            {
+                _gm.GmView.RPC("WinGame", RpcTarget.All);
+                return;
+            }
+        }
+
         while (true)
         {
             _gm.CurrentPlayerTurnIndex++;
