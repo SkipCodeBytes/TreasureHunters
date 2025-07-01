@@ -232,7 +232,7 @@ MonoBehaviour:
   life: 0
   reviveValue: 0
   gameStarsQuantity: 0
-  starsToWin: 4
+  starsToWin: 1
   availableCharacters:
   - {fileID: 11400000, guid: 6ffa6a153448f0c4987b5fbab11a55ad, type: 2}
   - {fileID: 11400000, guid: 25ce572acfc3557439af2c90f5b1a7f4, type: 2}
