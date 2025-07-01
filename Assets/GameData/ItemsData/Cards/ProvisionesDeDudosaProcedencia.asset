@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85c1c86c0def9d24883808a556cd9dc5, type: 3}
-  m_Name: GenericCard
+  m_Name: ProvisionesDeDudosaProcedencia
   m_EditorClassIdentifier: 
-  itemName: "Pr\xF3ximamente"
-  itemDescription: "El programador no tuvo tiempo de implementar esta carta, est\xE1
-    durmiendo."
+  itemName: Provisiones de dudosa procedencia
+  itemDescription: Recupera un punto de vida
   itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
   icon: {fileID: 21300000, guid: 00c85275df5b5754a86b1633ec9cc563, type: 3}
-  price: 6
-  cardType: 1
-  imageCard: {fileID: 21300000, guid: 0dbb81214c2c26041a94a6e17dd4b891, type: 3}
-  cardLevel: 1
+  price: 3
+  cardType: 3
+  imageCard: {fileID: 21300000, guid: 85dbc2a498414544085bb89fe49da4f1, type: 3}
+  cardLevel: 0

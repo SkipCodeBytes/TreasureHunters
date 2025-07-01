@@ -98,6 +98,18 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         Debug.LogError("No implementado");
         cardButtons.SetActive(false);
         btnSkipCard();
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public void btnSkipCard()
