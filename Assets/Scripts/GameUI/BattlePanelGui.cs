@@ -55,18 +55,29 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
 
         battleCamera_1.position = target_1.transform.position;
         battleCamera_1.rotation = target_1.transform.rotation;
+        /*
         atkTxt_1.text = target_1.SelectedCharacter.attackStat.ToString();
         defTxt_1.text = target_1.SelectedCharacter.defenseStat.ToString();
-        evaTxt_1.text = target_1.SelectedCharacter.evadeStat.ToString();
+        evaTxt_1.text = target_1.SelectedCharacter.evadeStat.ToString();*/
+        atkTxt_1.text = _gm.GameRules.GetAttackValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
+        defTxt_1.text = _gm.GameRules.GetDefenseValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
+        evaTxt_1.text = _gm.GameRules.GetEvasionValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
+
         vitTxt_1.text = target_1.Rules.Life + " / " + target_1.SelectedCharacter.lifeStat;
         actionTxt_1.text = "ATK";
         resultPanel_1.SetActive(false);
 
         battleCamera_2.position = target_2.transform.position;
         battleCamera_2.rotation = target_2.transform.rotation;
+        /*
         atkTxt_2.text = target_2.SelectedCharacter.attackStat.ToString();
         defTxt_2.text = target_2.SelectedCharacter.defenseStat.ToString();
-        evaTxt_2.text = target_2.SelectedCharacter.evadeStat.ToString();
+        evaTxt_2.text = target_2.SelectedCharacter.evadeStat.ToString();*/
+
+        atkTxt_2.text = _gm.GameRules.GetAttackValuePlayer(_gm.SecondaryPlayerTurn).ToString();
+        defTxt_2.text = _gm.GameRules.GetDefenseValuePlayer(_gm.SecondaryPlayerTurn).ToString();
+        evaTxt_2.text = _gm.GameRules.GetEvasionValuePlayer(_gm.SecondaryPlayerTurn).ToString();
+
         vitTxt_2.text = target_2.Rules.Life + " / " + target_2.SelectedCharacter.lifeStat;
         actionTxt_2.text = "ATK";
         resultPanel_2.SetActive(false);

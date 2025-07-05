@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactionPositionOffset: {x: -0.4, y: 0, z: -0.4}
-  _interactionViewRotation: 0
+  _interactionViewRotation: 50.26
   _hideableProps:
   - {fileID: 8468908463381750854}
   _restPoints:

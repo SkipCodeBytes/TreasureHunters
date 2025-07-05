@@ -373,6 +373,7 @@ public class HostManager : MonoBehaviour
         Debug.Log("AttackerPosibleDrop: " + string.Join(", ", AttackerPosibleDrop));
         Debug.Log("DefenderPosibleDrop: " + string.Join(", ", DefenderPosibleDrop));
         _momentManager.MomentList.Add(new Moment(CardElection));
+        _momentManager.MomentList.Add(new Moment(UseBattleCard));
         _momentManager.MomentList.Add(new Moment(PlayAttaker));
     }
 
@@ -396,6 +397,24 @@ public class HostManager : MonoBehaviour
         WaitForEvent();
         WaitForSyncro();
         _gm.GmView.RPC("OpenCardActions", RpcTarget.All);
+    }
+
+    private void UseBattleCard() 
+    {
+        WaitForEvent();
+
+        if (_gm.PrimaryCardUsed == null && _gm.SecondaryCardUsed == null)
+        {
+            _gm.GuiManager.BattlePanelGui.btnSkipCard();
+            return;
+        } else
+        {
+            WaitForSyncro();
+            int cardId = 0;
+            if (_gm.PrimaryCardUsed != null) cardId = ItemManager.Instance.GetItemID(_gm.PrimaryCardUsed);
+            if (_gm.SecondaryCardUsed != null) cardId = ItemManager.Instance.GetItemID(_gm.SecondaryCardUsed);
+            _gm.GmView.RPC("PlayCardEffect", RpcTarget.All, _gm.CurrentPlayerTurnIndex, cardId);
+        }
     }
 
     private void PlayAttaker()

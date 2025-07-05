@@ -18,7 +18,7 @@ MonoBehaviour:
   itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
   icon: {fileID: 21300000, guid: 00c85275df5b5754a86b1633ec9cc563, type: 3}
   price: 6
-  cardType: 1
+  cardType: 4
   imageCard: {fileID: 21300000, guid: 0dbb81214c2c26041a94a6e17dd4b891, type: 3}
   cardLevel: 1
   methodName: SinEfecto

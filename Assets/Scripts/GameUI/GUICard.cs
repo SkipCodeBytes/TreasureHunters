@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,6 +20,9 @@ public class GUICard : MonoBehaviour, IPointerClickHandler
         ImageCard.sprite = cardItemData.ImageCard;
         Tittle.text = cardItemData.ItemName;
         Description.text = cardItemData.ItemDescription;
+
+        Tittle.color = Color.white;
+        Description.color = Color.white;
 
         switch (cardItemData.CardType)
         {

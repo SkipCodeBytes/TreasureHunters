@@ -67,6 +67,7 @@ public class ChestScript : MonoBehaviour
             }
             else
             {
+                if (_rewardArray[i] == 0) continue;
                 _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(_rewardArray[i]));
             }
         }

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: CasillaClausurada
   m_EditorClassIdentifier: 
   itemName: Casilla clausurada
-  itemDescription: "Los impuestos han llegado a esta casilla. No se activar\xE1 el
-    evento de esta casilla"
+  itemDescription: "No se activar\xE1 el evento de esta casilla"
   itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
   icon: {fileID: 21300000, guid: 02443e5274a156140b84ab5f9a76a2ca, type: 3}
   price: 4

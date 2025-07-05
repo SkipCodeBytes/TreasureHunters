@@ -43,7 +43,7 @@ public class CardPanelUI : MonoBehaviour
             case CardType.Battle:
                 if (!isInBattle)
                 {
-                    Debug.Log("No se puede usar en esta situación");
+                    NotificationUI.Instance.SetMessage("No se puede usar en esta situación", Color.red);
                     return;
                 }
                 break;
@@ -51,7 +51,7 @@ public class CardPanelUI : MonoBehaviour
             default:
                 if (isInBattle)
                 {
-                    Debug.Log("No se puede usar en esta situación");
+                    NotificationUI.Instance.SetMessage("No se puede usar en esta situación", Color.red);
                     return;
                 }
                 break;

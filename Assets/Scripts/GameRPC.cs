@@ -305,10 +305,15 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     }
 
+    //ShopPanelGUI.SkipPanel() //All
     [PunRPC]
     public void SyncroSkipShop(int tileX, int tileY)
     {
-        StartCoroutine(CinematicAnimation.WaitTime(0.3f, () => (_gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior as ShopTile).shopScript.EndAnimationShop()));
+        ShopScript shopScript = (_gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior as ShopTile).shopScript;
+        shopScript.continousParticle.Play();
+        StartCoroutine(CinematicAnimation.WaitTime(0.3f, () => {
+            _gm.BoardManager.TileDicc[new Vector2Int(tileX, tileY)].TileBehavior.HideProps();
+        }));
     }
 
     [PunRPC]
@@ -475,6 +480,14 @@ public class GameRPC : MonoBehaviourPunCallbacks
             if (_gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.Life <= 0) _gm.GmView.RPC("PlayerDropObject", RpcTarget.All, _gm.SecondaryPlayerTurn, _gm.HostManager.DefenderPosibleDrop);
         }
 
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.AttackStatMod = 0;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.DefenseStatMod = 0;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].Rules.EvasionStatMod = 0;
+
+        _gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.AttackStatMod = 0;
+        _gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.DefenseStatMod = 0;
+        _gm.PlayersArray[_gm.SecondaryPlayerTurn].Rules.EvasionStatMod = 0;
+
         _gm.SecondaryPlayerTurn = -1;
     }
 
@@ -611,8 +624,8 @@ public class GameRPC : MonoBehaviourPunCallbacks
             case CardType.Battle:
                 if (playerCasterIndex == _gm.CurrentPlayerTurnIndex) _gm.PrimaryCardUsed = cardData;
                 if (playerCasterIndex == _gm.SecondaryPlayerTurn) _gm.SecondaryCardUsed = cardData;
-                _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
-                _gm.GuiManager.CardViewUI.StartCardView();
+
+                if (_gm.PlayerIndex == playerCasterIndex) EventManager.TriggerEvent("EndEvent");
                 //Se debe esperar a que ambos decidan usar o no cartas antes de mostrar
                 //Actualizar los valores de los jugadores
                 break;
@@ -627,7 +640,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
                 break;
 
             default:
-                _gm.PrimaryCardUsed = cardData;
+                //_gm.PrimaryCardUsed = cardData;
                 _gm.GuiManager.SlotInfoUIList[playerCasterIndex].SetPlayerInfo();
                 PlayCardEffect(playerCasterIndex, cardIndex);
                 break;
@@ -635,7 +648,7 @@ public class GameRPC : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void PlayCardEffect(int playerTagetIndex, int cardIndex)
+    public void PlayCardEffect(int playerTargetIndex, int cardIndex)
     {
         CardItemData cardData = ItemManager.Instance.GetItemData(cardIndex) as CardItemData;
         if (cardData == null) { Debug.LogError("Card not exist ID: " + cardIndex); return; }
@@ -645,13 +658,17 @@ public class GameRPC : MonoBehaviourPunCallbacks
         switch (cardData.CardType)
         {
             case CardType.Battle:
-                //ESTE EVENTO SE DEBE ACTIVAR SOLO UNA VEZ INDEPENDIENTEMENTE DE LA CANTIDAD DE CARTAS USADAS
+                
+
+                _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
+                _gm.GuiManager.CardViewUI.StartCardView(() => EventManager.TriggerEvent("EndEvent"));
                 _gm.GuiManager.SlotInfoUIList[_gm.CurrentPlayerTurnIndex].SetPlayerInfo();
 
                 if (_gm.PrimaryCardUsed != null) { 
                     _gm.GuiManager.CardViewUI.SetCardView(_gm.PrimaryCardUsed, 2);
                     _gm.PlayCardEffect(_gm.CurrentPlayerTurnIndex, _gm.PrimaryCardUsed);
                 }
+
                 if (_gm.SecondaryCardUsed != null) { 
                     _gm.GuiManager.CardViewUI.SetCardView(_gm.SecondaryCardUsed, 1);
                     _gm.PlayCardEffect(_gm.SecondaryPlayerTurn, _gm.SecondaryCardUsed);
@@ -663,16 +680,16 @@ public class GameRPC : MonoBehaviourPunCallbacks
                 break;
 
             case CardType.Tramp:
-                _gm.PlayersArray[playerTagetIndex].BoardPlayer.CurrentTilePosition.TileBehavior.RemoveTrampCard();
+                _gm.PlayersArray[playerTargetIndex].BoardPlayer.CurrentTilePosition.TileBehavior.RemoveTrampCard();
                 _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
-                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTagetIndex, cardData));
+                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTargetIndex, cardData));
                 _gm.GuiManager.CardViewUI.SetCardView(cardData);
                 _gm.GuiManager.CardViewUI.PlayAnimation();
                 break;
 
             default:
                 _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
-                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTagetIndex, cardData));
+                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTargetIndex, cardData));
                 _gm.GuiManager.CardViewUI.SetCardView(cardData);
                 _gm.GuiManager.CardViewUI.PlayAnimation();
                 break;

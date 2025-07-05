@@ -11,6 +11,10 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     [SerializeField] private int gameStarsQuantity = 0;
     public int starsToWin = 4;
 
+    public int AttackStatMod = 0;
+    public int DefenseStatMod = 0;
+    public int EvasionStatMod = 0;
+
     [Header("Config Values")]
     [SerializeField] private List<CharacterData> availableCharacters;
 

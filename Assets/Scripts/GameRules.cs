@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameRules : MonoBehaviour
 {
-    [SerializeField] private int adicionalDice = 0;
+    public int AdicionalDice = 0;
     [SerializeField] private float coinsBonusScale = 1f;
 
     [SerializeField] private int lifeInHomeAdded = 1;
@@ -22,7 +22,9 @@ public class GameRules : MonoBehaviour
 
     public int GetDiceQuantityUse(int actionValue)
     {
-        return dicesQuantityForAction[actionValue] + adicionalDice;
+        int diceQuantity = dicesQuantityForAction[actionValue] + AdicionalDice;
+        AdicionalDice = 0;
+        return diceQuantity;
     }
 
     public int GetLifeInHomeAdded()
@@ -32,13 +34,14 @@ public class GameRules : MonoBehaviour
 
     public void ResetValues()
     {
-        adicionalDice = 0;
+        AdicionalDice = 0;
         coinsBonusScale = 1f;
     }
 
     public int GetAttackValuePlayer(int playerIndex)
     {
         int atk = _gm.PlayersArray[playerIndex].SelectedCharacter.attackStat;
+        atk += _gm.PlayersArray[playerIndex].Rules.AttackStatMod;
         return atk;
     }
 
@@ -46,12 +49,14 @@ public class GameRules : MonoBehaviour
     public int GetDefenseValuePlayer(int playerIndex)
     {
         int def = _gm.PlayersArray[playerIndex].SelectedCharacter.defenseStat;
+        def += _gm.PlayersArray[playerIndex].Rules.DefenseStatMod;
         return def;
     }
 
     public int GetEvasionValuePlayer(int playerIndex)
     {
         int eva = _gm.PlayersArray[playerIndex].SelectedCharacter.evadeStat;
+        eva += _gm.PlayersArray[playerIndex].Rules.EvasionStatMod;
         return eva;
     }
 }

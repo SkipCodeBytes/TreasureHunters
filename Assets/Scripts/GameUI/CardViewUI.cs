@@ -14,6 +14,7 @@ public class CardViewUI : MonoBehaviour
     [SerializeField] private float transicionEndDuration = 0.8f;
     [SerializeField] private Vector3 scaleZoomAnim = new Vector3(1.5f, 1.5f, 1f);
 
+    [SerializeField] private Vector3 centerCardView;
     [SerializeField] private Vector3 rightCardView;
     [SerializeField] private Vector3 leftCardView;
 
@@ -65,32 +66,36 @@ public class CardViewUI : MonoBehaviour
 
     public void PlayAnimation()
     {
+        SoundController.Instance.PlaySound(GameManager.Instance.SoundLibrary.GetClip("ShowCards"));
+
         centerView.anchoredPosition = new Vector3(0f, -800f);
-        StartCoroutine(CinematicAnimation.UiMoveTo(centerView, Vector2.zero, transicionInitDuration));
-        StartCoroutine(LerpUtils.LerpVector3(x => centerView.localScale = x, Vector3.one, scaleZoomAnim, transicionInitDuration));
+        StartCoroutine(CinematicAnimation.UiMoveTo(centerView, centerCardView, transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => centerView.localScale = x, new Vector3(0.75f, 0.75f, 0.75f), scaleZoomAnim, transicionInitDuration));
 
 
         leftView.anchoredPosition = new Vector3(-1200f, -180f);
         StartCoroutine(CinematicAnimation.UiMoveTo(leftView, leftCardView, transicionInitDuration));
-        StartCoroutine(LerpUtils.LerpVector3(x => leftView.localScale = x, Vector3.one, scaleZoomAnim, transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => leftView.localScale = x, new Vector3(0.75f, 0.75f, 0.75f), scaleZoomAnim, transicionInitDuration));
 
 
         rightView.anchoredPosition = new Vector3(1200f, -180f);
         StartCoroutine(CinematicAnimation.UiMoveTo(rightView, rightCardView, transicionInitDuration));
-        StartCoroutine(LerpUtils.LerpVector3(x => rightView.localScale = x, Vector3.one, scaleZoomAnim, transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => rightView.localScale = x, new Vector3(0.75f, 0.75f, 0.75f), scaleZoomAnim, transicionInitDuration));
 
         StartCoroutine(CinematicAnimation.WaitTime(transicionInitDuration + waitDuration, EndAnimation));
     }
 
     private void EndAnimation()
     {
+        SoundController.Instance.PlaySound(GameManager.Instance.SoundLibrary.GetClip("Owl"));
+
         StartCoroutine(CinematicAnimation.UiMoveTo(centerView, new Vector3(0f, 800f), transicionEndDuration));
         StartCoroutine(CinematicAnimation.UiMoveTo(leftView, new Vector3(leftCardView.x, 800f), transicionEndDuration));
         StartCoroutine(CinematicAnimation.UiMoveTo(rightView, new Vector3(rightCardView.x, 800f), transicionEndDuration));
 
-        StartCoroutine(LerpUtils.LerpVector3(x => centerView.localScale = x, scaleZoomAnim, Vector3.one, transicionInitDuration));
-        StartCoroutine(LerpUtils.LerpVector3(x => leftView.localScale = x, scaleZoomAnim, Vector3.one, transicionInitDuration));
-        StartCoroutine(LerpUtils.LerpVector3(x => rightView.localScale = x, scaleZoomAnim, Vector3.one, transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => centerView.localScale = x, scaleZoomAnim, new Vector3(0.25f, 0.25f, 0.25f), transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => leftView.localScale = x, scaleZoomAnim, new Vector3(0.25f, 0.25f, 0.25f), transicionInitDuration));
+        StartCoroutine(LerpUtils.LerpVector3(x => rightView.localScale = x, scaleZoomAnim, new Vector3(0.25f, 0.25f, 0.25f), transicionInitDuration));
 
         StartCoroutine(CinematicAnimation.WaitTime(transicionEndDuration, CloseCardView));
     }

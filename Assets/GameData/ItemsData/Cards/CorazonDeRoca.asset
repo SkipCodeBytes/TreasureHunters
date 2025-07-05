@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c1c86c0def9d24883808a556cd9dc5, type: 3}
+  m_Name: CorazonDeRoca
+  m_EditorClassIdentifier: 
+  itemName: "Coraz\xF3n de roca"
+  itemDescription: "A\xF1ade 2 puntos de defensa en una batalla"
+  itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
+  icon: {fileID: 21300000, guid: 3a698cb691e98844eb9494c90b7c0524, type: 3}
+  price: 5
+  cardType: 0
+  imageCard: {fileID: 21300000, guid: fdf7945e8a848bc489962de9b5b88624, type: 3}
+  cardLevel: 0
+  methodName: DefensaMejorada

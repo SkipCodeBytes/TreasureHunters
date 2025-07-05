@@ -142,6 +142,8 @@ public class PlayerInventory : MonoBehaviour
             }
             else
             {
+                if (dropObjects[i] == 0) continue;
+
                 _rewardObjs.Add(ItemManager.Instance.GenerateItemInScene(dropObjects[i]));
                 ItemType itemType = ItemManager.Instance.GetItemType(dropObjects[i]);
 

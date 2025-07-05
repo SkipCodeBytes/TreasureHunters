@@ -4,7 +4,7 @@ using UnityEngine;
 public class ShopScript : MonoBehaviour
 {
 
-    private Animator _animator;
+    public Animator Animator;
     private int _targetPlayerIndex;
 
     [SerializeField] private Vector3 itemSpawnPos;
@@ -21,20 +21,20 @@ public class ShopScript : MonoBehaviour
     private ItemObject _rewardObj;
 
     [SerializeField] private ParticleSystem construcParticle;
-    [SerializeField] private ParticleSystem continousParticle;
+    public ParticleSystem continousParticle;
 
     [SerializeField] private Animator _skeletonAnimator;
     private TileBehavior _tileBehavior;
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
+        Animator = GetComponent<Animator>();
         _tileBehavior = GetComponentInParent<TileBehavior>();
     }
 
     private void OnEnable()
     {
-        _animator.Play("ShopAwake");
+        Animator.Play("ShopAwake");
         construcParticle.Play();
         if(_gm != null) SoundController.Instance.PlaySound(_gm.SoundLibrary.GetClip("Shop"));
     }
@@ -53,7 +53,7 @@ public class ShopScript : MonoBehaviour
     {
         _rewardArray = rewards;
         _targetPlayerIndex = playerIndex;
-        _animator.SetTrigger("Drop");
+        Animator.SetTrigger("Drop");
     }
 
 
@@ -97,7 +97,7 @@ public class ShopScript : MonoBehaviour
     //Referencia desde animación
     public void EndAnimationShop()
     {
-        _animator.SetTrigger("Destroy");
+        Animator.SetTrigger("Destroy");
         if(_rewardObj != null)
         {
             ItemType itemType = ItemManager.Instance.GetItemType(_rewardObj.IDReference);

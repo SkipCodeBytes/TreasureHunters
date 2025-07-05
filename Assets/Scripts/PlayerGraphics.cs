@@ -18,6 +18,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     [Header("Player References")]
     [SerializeField] private ParticleSystem healingParticle;
     [SerializeField] private ParticleSystem confetiParticle;
+    [SerializeField] private ParticleSystem continousSmoke;
 
     [Header("Player Values - ReadOnly")]
 
@@ -37,6 +38,7 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
     public int AnimStatus { get => animStatus; set => animStatus = value; }
     public ParticleSystem HealingParticle { get => healingParticle; set => healingParticle = value; }
     public ParticleSystem ConfetiParticle { get => confetiParticle; set => confetiParticle = value; }
+    public ParticleSystem ContinousSmoke { get => continousSmoke; set => continousSmoke = value; }
 
     /*
      * 0 - Idle
@@ -59,6 +61,8 @@ public class PlayerGraphics : MonoBehaviourPunCallbacks
         healingParticle.Clear();
         confetiParticle.Stop();
         confetiParticle.Clear();
+        continousSmoke.Stop();
+        continousSmoke.Clear();
     }
 
 

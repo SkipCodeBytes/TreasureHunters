@@ -20,4 +20,4 @@ MonoBehaviour:
   cardType: 0
   imageCard: {fileID: 21300000, guid: c71b4723002f0274ba3f6d5b68116f3a, type: 3}
   cardLevel: 0
-  methodName: SinEfecto
+  methodName: AtaqueMejorado
