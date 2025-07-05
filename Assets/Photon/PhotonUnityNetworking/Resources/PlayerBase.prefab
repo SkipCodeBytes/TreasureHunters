@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 1267731009501999969}
   - component: {fileID: 4791087903368924159}
   - component: {fileID: 6890984425498750945}
+  - component: {fileID: 2547663750788967332}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -288,6 +289,19 @@ MonoBehaviour:
   relicItemData: {fileID: 0}
   relicVisual: {fileID: 8934098617157329063}
   availableToReceiveRelic: 0
+--- !u!114 &2547663750788967332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797882284151870367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5cfa89eb8017394fbe58781236ca29d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EffectList: []
 --- !u!1001 &663363629596540526
 PrefabInstance:
   m_ObjectHideFlags: 0

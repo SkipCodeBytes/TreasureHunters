@@ -201,14 +201,14 @@ public class HostManager : MonoBehaviour
         //También se acomoda la cámara, se espera que termine ese evento.
         _gm.GmView.RPC("ShowPlayerInfoUI", RpcTarget.All);
     }
-    
+
 
 
 
 
     //Llamada automática después de evento tras finalizar algún momento
-    private void GenericMomentEnd() => _momentManager.IsMomentRunnning = false;
-    private void GenericEndEvent() => _momentManager.IsWaitingForEvent = false;
+    public void GenericMomentEnd() => _momentManager.IsMomentRunnning = false;
+    public void GenericEndEvent() => _momentManager.IsWaitingForEvent = false;
 
 
 
@@ -267,7 +267,7 @@ public class HostManager : MonoBehaviour
     //********************************************************************************************************************//
 
 
-    private void NewRound()
+    public void NewRound()
     {
         WaitForEvent();
         WaitForSyncro();

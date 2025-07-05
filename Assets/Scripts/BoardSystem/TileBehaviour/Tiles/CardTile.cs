@@ -36,4 +36,10 @@ public class CardTile : TileBehavior
         //_pedestalScript.PresentAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
         //_pedestalScript.SpawnObjectsAnimation(_gm.CurrentPlayerTurnIndex, _gm.LastRewards);
     }
+
+    public override void HideProps()
+    {
+        base.HideProps();
+        pedestalScript.StopParticles();
+    }
 }

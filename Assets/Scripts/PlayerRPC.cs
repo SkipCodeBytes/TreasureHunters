@@ -51,8 +51,16 @@ public class PlayerRPC : MonoBehaviourPunCallbacks
     public void SetPlayerHomeTile(int tileOrderX, int tileOrderY)
     {
         TileBoard tile = _gm.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
-        _pm.BoardPlayer.SetTilePosition(tile);
+        SetPlayerTilePosition(tileOrderX, tileOrderY);
         _pm.BoardPlayer.HomeTile = tile;
+    }
+
+    //CardMethod.EfectoNinja() / All
+    [PunRPC]
+    public void SetPlayerTilePosition(int tileOrderX, int tileOrderY)
+    {
+        TileBoard tile = _gm.BoardManager.TileDicc[new Vector2Int(tileOrderX, tileOrderY)];
+        _pm.BoardPlayer.SetTilePosition(tile);
     }
 
 

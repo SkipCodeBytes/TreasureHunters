@@ -16,6 +16,8 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private RuinPanelUI ruinPanelUI;
     [SerializeField] private GameObject waitIfoUI;
     [SerializeField] private WinPanelGUI winPanelGUI;
+    [SerializeField] private CardPanelUI cardPanelUI;
+    [SerializeField] private CardViewUI cardViewUI;
 
     public GameObject PlayerInfoPanel { get => playerInfoPanel; set => playerInfoPanel = value; }
     public RoundInfoUI RoundInfoPanel { get => roundInfoPanel; set => roundInfoPanel = value; }
@@ -29,19 +31,6 @@ public class GUIManager : MonoBehaviour
     public RuinPanelUI RuinPanelUI { get => ruinPanelUI; set => ruinPanelUI = value; }
     public GameObject WaitIfoUI { get => waitIfoUI; set => waitIfoUI = value; }
     public WinPanelGUI WinPanelGUI { get => winPanelGUI; set => winPanelGUI = value; }
-
-    private GameManager _gm;
-
-    private void Awake()
-    {
-        _gm = GameManager.Instance;
-    }
-
-    public void btnMovePlayer()
-    {
-        _gm.DiceAction = PlayerDiceAction.Move;
-        _gm.GmView.RPC("OpenDiceForAction", _gm.HostPlayer, _gm.CurrentPlayerTurnIndex, (int)_gm.DiceAction);
-    }
-    public void btnCardPlayer() => _gm.GmView.RPC("OpenCardPanel", _gm.HostPlayer);
-
+    public CardPanelUI CardPanelUI { get => cardPanelUI; set => cardPanelUI = value; }
+    public CardViewUI CardViewUI { get => cardViewUI; set => cardViewUI = value; }
 }

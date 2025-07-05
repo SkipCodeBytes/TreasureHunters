@@ -2,6 +2,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks
@@ -49,8 +50,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private int ofensivePlayerValue = 0;
     [SerializeField] private int defensivePlayerValue = 0;
 
-    //[SerializeField] public Dictionary<Vector2, List<ItemObject>> tileReward;
-
+    public CardItemData PrimaryCardUsed;
+    public CardItemData SecondaryCardUsed;
 
     //Componentes de GameManager
     private GameRPC _gameRPC;
@@ -152,6 +153,20 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
 
+    public void PlayCardEffect(int casterPlayerIndex,CardItemData carta)
+    {
+        CardMethods.CasterPlayerIndex = casterPlayerIndex;
+
+        var metodo = typeof(CardMethods).GetMethod(carta.MethodName, BindingFlags.Static | BindingFlags.Public);
+        if (metodo != null && metodo.GetParameters().Length == 0)
+        {
+            metodo.Invoke(null, null);
+        }
+        else
+        {
+            Debug.LogWarning($"Método {carta.MethodName} no encontrado o inválido.");
+        }
+    }
 
 
 

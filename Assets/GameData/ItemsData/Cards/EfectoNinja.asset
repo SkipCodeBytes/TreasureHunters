@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: EfectoNinja
   m_EditorClassIdentifier: 
   itemName: EfectoNinja
-  itemDescription: "Teletransp\xF3rtate a una casilla aleatoria al finalizar tu turno"
+  itemDescription: "Teletransp\xF3rtate a una casilla aleatoria."
   itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
   icon: {fileID: 21300000, guid: 00c85275df5b5754a86b1633ec9cc563, type: 3}
   price: 4
   cardType: 4
   imageCard: {fileID: 21300000, guid: 437f9c6de72e8a14b939121906d1f205, type: 3}
   cardLevel: 0
+  methodName: TeletransporteCasillaAleatoria

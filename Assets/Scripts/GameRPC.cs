@@ -595,4 +595,101 @@ public class GameRPC : MonoBehaviourPunCallbacks
         _gm.GuiManager.WinPanelGUI.StartWinPanel();
     }
 
+
+
+    //CardPanelUI.UseCard() //All
+    [PunRPC]
+    public void UseCard(int playerCasterIndex, int cardIndex) 
+    {
+        CardItemData cardData = ItemManager.Instance.GetItemData(cardIndex) as CardItemData;
+        if (cardData == null) { Debug.LogError("Card not exist ID: " + cardIndex); return; }
+
+        _gm.PlayersArray[playerCasterIndex].Inventory.CardItems.Remove(cardData);
+
+        switch (cardData.CardType)
+        {
+            case CardType.Battle:
+                if (playerCasterIndex == _gm.CurrentPlayerTurnIndex) _gm.PrimaryCardUsed = cardData;
+                if (playerCasterIndex == _gm.SecondaryPlayerTurn) _gm.SecondaryCardUsed = cardData;
+                _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
+                _gm.GuiManager.CardViewUI.StartCardView();
+                //Se debe esperar a que ambos decidan usar o no cartas antes de mostrar
+                //Actualizar los valores de los jugadores
+                break;
+
+            case CardType.Tramp:
+                _gm.PlayersArray[playerCasterIndex].BoardPlayer.CurrentTilePosition.TileBehavior.AddTrampCard(cardData);
+                _gm.GuiManager.SlotInfoUIList[playerCasterIndex].SetPlayerInfo();
+                if(_gm.CurrentPlayerTurnIndex == _gm.PlayerIndex)
+                {
+                    StartCoroutine(CinematicAnimation.WaitTime(0.7f, () => _gm.GuiManager.CardPanelUI.closeCallback?.Invoke()));
+                }
+                break;
+
+            default:
+                _gm.PrimaryCardUsed = cardData;
+                _gm.GuiManager.SlotInfoUIList[playerCasterIndex].SetPlayerInfo();
+                PlayCardEffect(playerCasterIndex, cardIndex);
+                break;
+        }
+    }
+
+    [PunRPC]
+    public void PlayCardEffect(int playerTagetIndex, int cardIndex)
+    {
+        CardItemData cardData = ItemManager.Instance.GetItemData(cardIndex) as CardItemData;
+        if (cardData == null) { Debug.LogError("Card not exist ID: " + cardIndex); return; }
+
+        //Muestra la carta y aplica efecto
+
+        switch (cardData.CardType)
+        {
+            case CardType.Battle:
+                //ESTE EVENTO SE DEBE ACTIVAR SOLO UNA VEZ INDEPENDIENTEMENTE DE LA CANTIDAD DE CARTAS USADAS
+                _gm.GuiManager.SlotInfoUIList[_gm.CurrentPlayerTurnIndex].SetPlayerInfo();
+
+                if (_gm.PrimaryCardUsed != null) { 
+                    _gm.GuiManager.CardViewUI.SetCardView(_gm.PrimaryCardUsed, 2);
+                    _gm.PlayCardEffect(_gm.CurrentPlayerTurnIndex, _gm.PrimaryCardUsed);
+                }
+                if (_gm.SecondaryCardUsed != null) { 
+                    _gm.GuiManager.CardViewUI.SetCardView(_gm.SecondaryCardUsed, 1);
+                    _gm.PlayCardEffect(_gm.SecondaryPlayerTurn, _gm.SecondaryCardUsed);
+                }
+                _gm.GuiManager.CardViewUI.PlayAnimation();
+
+                _gm.PrimaryCardUsed = null;
+                _gm.SecondaryCardUsed = null;
+                break;
+
+            case CardType.Tramp:
+                _gm.PlayersArray[playerTagetIndex].BoardPlayer.CurrentTilePosition.TileBehavior.RemoveTrampCard();
+                _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
+                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTagetIndex, cardData));
+                _gm.GuiManager.CardViewUI.SetCardView(cardData);
+                _gm.GuiManager.CardViewUI.PlayAnimation();
+                break;
+
+            default:
+                _gm.GuiManager.CardViewUI.gameObject.SetActive(true);
+                _gm.GuiManager.CardViewUI.StartCardView(() => _gm.PlayCardEffect(playerTagetIndex, cardData));
+                _gm.GuiManager.CardViewUI.SetCardView(cardData);
+                _gm.GuiManager.CardViewUI.PlayAnimation();
+                break;
+        }
+    }
+
+    //CardMethods.SaltarTurno() // All
+    [PunRPC]
+    public void AddPlayerEffect(int playerTagetIndex, int effectID)
+    {
+        _gm.PlayersArray[playerTagetIndex].PlayerEffects.SetEffect(EffectManager.Instance.GetGameEffect(effectID));
+    }
+
+    //EffectManager.SkipTurn() // Others
+    [PunRPC]
+    public void DropPlayerEffect(int playerTagetIndex, int effectID)
+    {
+        _gm.PlayersArray[playerTagetIndex].PlayerEffects.DropEffect(EffectManager.Instance.GetGameEffect(effectID).EffectName);
+    }
 }

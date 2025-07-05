@@ -12,6 +12,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
     [SerializeField] private Transform battleCamera_2;
 
     [SerializeField] private GameObject cardButtons;
+    [SerializeField] private GameObject useCardButton;
     [SerializeField] private GameObject defenderButtons;
     [SerializeField] private GameObject waitInfo;
 
@@ -83,6 +84,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         {
             waitInfo.SetActive(false);
             cardButtons.SetActive(true);
+            useCardButton.SetActive(true);
         }
         else
         {
@@ -95,21 +97,13 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
     public void btnUseCard()
     {
         //Añade evento de carta y aumenta stats
-        Debug.LogError("No implementado");
+        //Debug.LogError("No implementado");
+        //btnSkipCard();
+
+        useCardButton.SetActive(false);
         cardButtons.SetActive(false);
-        btnSkipCard();
-
-
-
-
-
-
-
-
-
-
-
-
+        _gm.GuiManager.CardPanelUI.gameObject.SetActive(true);
+        _gm.GuiManager.CardPanelUI.InitCardPanel(btnSkipCard);
     }
 
     public void btnSkipCard()

@@ -15,6 +15,8 @@ public class PlayerRules : MonoBehaviourPunCallbacks
     [SerializeField] private List<CharacterData> availableCharacters;
 
     //Lista de efectos
+    //public List<int> EffectListID = new List<int>();
+    //Effect manager con ID de efectos
 
     private PlayerManager _pm;
     private GameManager _gm;

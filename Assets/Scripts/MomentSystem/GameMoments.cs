@@ -45,6 +45,7 @@ public class GameMoments : MonoBehaviour
             if (i == _gm.LastDiceResult - 1)
             {
                 _gm.MomentManager.MomentList.Add(new Moment(MovePlayerLastTile));
+                _gm.MomentManager.MomentList.Add(new Moment(CheckTrampCards));
                 _gm.MomentManager.MomentList.Add(new Moment(OpenTileEvent));
             }
             else
@@ -60,7 +61,7 @@ public class GameMoments : MonoBehaviour
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.MoveNextTile();
     }
 
-    private void MovePlayerLastTile()
+    public void MovePlayerLastTile()
     {
         _gm.MomentManager.IsWaitingForEvent = true;
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.MoveLastTile();
@@ -92,10 +93,15 @@ public class GameMoments : MonoBehaviour
         StartCoroutine(CinematicAnimation.WaitTime(1.2f, () => EventManager.TriggerEvent("EndEvent")));
     }
 
+    public void CheckTrampCards()
+    {
+        _gm.MomentManager.IsWaitingForEvent = true;
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.CheckTrampCard();
+    }
 
 
     //MOMENTO DE EVENTO DE CASILLA
-    private void OpenTileEvent()
+    public void OpenTileEvent()
     {
         _gm.MomentManager.IsWaitingForEvent = true;
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.StartTileEvent();
@@ -114,6 +120,14 @@ public class GameMoments : MonoBehaviour
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.SettingTileEvent();
     }
 
-
+    public void SkipTurnEffect()
+    {
+        _gm.MomentManager.IsWaitingForSyncro = false;
+        _gm.MomentManager.IsWaitingForEvent = true;
+        _gm.MomentManager.MomentList.Clear();
+        _gm.GmView.RPC("DropPlayerEffect", Photon.Pun.RpcTarget.Others, _gm.CurrentPlayerTurnIndex, EffectManager.Instance.GetEffectId("SkipTurn"));
+        _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].PlayerEffects.DropEffect("SkipTurn");
+        _gm.StartCoroutine(CinematicAnimation.WaitTime(0.12f, () => EventManager.TriggerEvent("EndEvent")));
+    }
 
 }

@@ -118,6 +118,11 @@ MonoBehaviour:
   - SyncroSkipShop
   - SyncroSubmitRuins
   - WinGame
+  - PlayCardEffect
+  - UseCard
+  - SetPlayerTilePosition
+  - AddPlayerEffect
+  - DropPlayerEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

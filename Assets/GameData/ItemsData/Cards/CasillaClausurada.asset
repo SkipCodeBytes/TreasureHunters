@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c1c86c0def9d24883808a556cd9dc5, type: 3}
+  m_Name: CasillaClausurada
+  m_EditorClassIdentifier: 
+  itemName: Casilla clausurada
+  itemDescription: "Los impuestos han llegado a esta casilla. No se activar\xE1 el
+    evento de esta casilla"
+  itemObjectPrefab: {fileID: 5857177112624926513, guid: 2df26faca6ad0c141b5a2da9539671d9, type: 3}
+  icon: {fileID: 21300000, guid: 02443e5274a156140b84ab5f9a76a2ca, type: 3}
+  price: 4
+  cardType: 1
+  imageCard: {fileID: 21300000, guid: c0a5b2e7c42d7fd41b1c8f4ff0d4db26, type: 3}
+  cardLevel: 0
+  methodName: SaltarEventoDeCasilla

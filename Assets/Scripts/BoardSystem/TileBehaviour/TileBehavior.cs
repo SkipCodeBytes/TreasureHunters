@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,6 +11,9 @@ public abstract class TileBehavior : MonoBehaviour
 
     private Dictionary<Vector3, BoardPlayer> _restPointDicc = new Dictionary<Vector3, BoardPlayer>();
     protected TileBoard _tileBoard;
+
+    public GameObject trampCardGraphic;
+    public CardItemData trampCardInTile;
 
     [SerializeField] private List<ItemObject> rewardItems = new List<ItemObject>();
     //[SerializeField] private int relicRewardCount = 0;
@@ -207,6 +209,37 @@ public abstract class TileBehavior : MonoBehaviour
         StartCoroutine(CinematicAnimation.WaitTime(0.8f, () => {
             GameManager.Instance.GuiManager.SlotInfoUIList[playerId].SetPlayerInfo();
             }));
+    }
+
+    public bool AddTrampCard(CardItemData cardItemData)
+    {
+        if (trampCardInTile != null) return false;
+
+        trampCardInTile = cardItemData;
+        trampCardGraphic.SetActive(true);
+        return true;
+    }
+
+    public void CheckTrampCard()
+    {
+        if (trampCardInTile != null)
+        {
+            GameManager.Instance.GmView.RPC("PlayCardEffect", Photon.Pun.RpcTarget.All, GameManager.Instance.CurrentPlayerTurnIndex, ItemManager.Instance.GetItemID(trampCardInTile));
+        }
+        else
+        {
+            GameManager.Instance.MomentManager.IsWaitingForEvent = false;
+        }
+    }
+
+    public void RemoveTrampCard()
+    {
+        if (trampCardInTile != null)
+        {
+            //GameManager.Instance.PlayCardEffect(GameManager.Instance.CurrentPlayerTurnIndex, trampCardInTile);
+            trampCardInTile = null;
+            trampCardGraphic.SetActive(false);
+        }
     }
 
 
