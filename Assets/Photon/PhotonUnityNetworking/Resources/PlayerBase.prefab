@@ -261,6 +261,7 @@ MonoBehaviour:
   rotationSpeed: 100
   healingParticle: {fileID: 6901300721868156201}
   confetiParticle: {fileID: 2776382306848743567}
+  continousSmoke: {fileID: 3827596720218452778}
   animStatus: 0
   previusAnimation: 0
   isResting: 0
@@ -382,6 +383,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 662882615641341878, guid: c35efcfcc29973c409fba3935dc93af5, type: 3}
   m_PrefabInstance: {fileID: 16258380174190223}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &3827596720218452778 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3830197241695819173, guid: c35efcfcc29973c409fba3935dc93af5, type: 3}
+  m_PrefabInstance: {fileID: 16258380174190223}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &663363629596540526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -449,7 +455,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8271132224791469769, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8470117269705324205}
   m_SourcePrefab: {fileID: 100100000, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
 --- !u!4 &5987100656939553802 stripped
 Transform:
@@ -461,6 +470,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8271132224791469769, guid: 9411891ef4a033d43b4a45e21b562374, type: 3}
   m_PrefabInstance: {fileID: 663363629596540526}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8470117269705324205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8934098617157329063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250cad04edbf9b2419e47ad3ac52cea9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: {x: 0, y: 1, z: 0}
+  speed: 50
 --- !u!1001 &6995516502193282113
 PrefabInstance:
   m_ObjectHideFlags: 0

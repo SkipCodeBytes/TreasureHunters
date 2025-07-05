@@ -99,6 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc4c260af537d840b8dba4cc401c695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IDReference: 0
   levitationHeight: 0.1
-  rotationSpeed: {x: 0, y: 50, z: 0}
-  coinClip: {fileID: 8300000, guid: 2facfb1c96bb94646bad9a1ea0c446d4, type: 3}
+  rotationSpeed: {x: 0, y: 0, z: 50}

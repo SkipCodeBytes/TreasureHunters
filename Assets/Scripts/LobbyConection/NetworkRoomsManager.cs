@@ -266,6 +266,7 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
     {
         if (isMasterPlayer)
         {
+            int voidSlotCount = 0;
             foreach(Button key in playerSlotDicc.Keys)
             {
                 if(playerSlotDicc[key] != null)
@@ -279,10 +280,15 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    /* *--------------------- RETIRAR ESTO DESPUES DE LOS TESTS -------------------------------------------
+                    /* *--------------------- RETIRAR ESTO PARA LOS TESTS -------------------------------------------*/
+                    if(voidSlotCount < 2)
+                    {
+                        voidSlotCount++;
+                        continue;
+                    }
                     debugText.color = Color.red;
-                    debugText.text = "4 players are needed to start";
-                    return;*/
+                    debugText.text = "2 players are needed to start";
+                    return;
                 }
             }
         }

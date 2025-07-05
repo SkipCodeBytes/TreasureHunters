@@ -71,6 +71,7 @@ public class WinPanelGUI : MonoBehaviourPunCallbacks
         }
 
         //Enfocamos cámara
+        cameraFocus.SetActive(true);
         cameraFocus.transform.position = playersWinSorted[0].transform.position;
         cameraFocus.transform.rotation = playersWinSorted[0].transform.rotation;
 

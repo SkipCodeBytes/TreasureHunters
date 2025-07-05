@@ -32,10 +32,10 @@ public class ItemObject: MonoBehaviour
         StartCoroutine(CinematicAnimation.ParabolicMotion(_transform, punto, animTime, height));
     }
 
-    public void TakeObjectAnimation(Transform target, float animTime)
+    public void TakeObjectAnimation(Transform target, float animSpeed)
     {
         //StartCoroutine(CinematicAnimation.MoveTowardTheTargetFor(_transform, target + new Vector3(0, 0.25f, 0), animTime, HideObject));
-        StartCoroutine(CinematicAnimation.MoveTowardDinamicTargetFor(_transform, target, new Vector3(0, 0.25f, 0), animTime, HideObject));
+        StartCoroutine(CinematicAnimation.MoveTowardDinamicTargetAt(_transform, target, new Vector3(0, 0.25f, 0), animSpeed, HideObject));
     }
 
     private void HideObject()

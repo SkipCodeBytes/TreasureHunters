@@ -56,28 +56,18 @@ public class PlayerSlotInfoUi : MonoBehaviour
         CoinInfoText.text = "$" + _playerInventory.CoinsQuantity;
         GemInfoText.text = "" + _playerInventory.GemItems.Count;
 
-        int slotsCount = _playerInventory.CardItems.Count + 1;
-
-        for (int i = 0; i < slotsCount; i++)
+        for(int i = 0; i < slotPoolObj.Count; i++)
         {
-            if (i >= slotPoolObj.Count) { 
-                CreateSlot();
-                continue;
-            }
             slotPoolObj[i].SetActive(false);
         }
 
-        for(int i = 0; i < _playerInventory.CardItems.Count; i++)
+        for (int i = 0; i < _playerInventory.CardItems.Count; i++)
         {
+            if(slotPoolObj.Count < i + 1) CreateSlot();
             slotPoolImg[i].sprite = _playerInventory.CardItems[i].Icon;
             slotPoolObj[i].SetActive(true);
         }
 
-        if (_playerInventory.RelicItemData != null)
-        {
-            slotPoolImg[slotsCount - 1].sprite = _playerInventory.RelicItemData.Icon;
-            slotPoolObj[slotsCount - 1].SetActive(true);
-        }
 
         for(int i = 0; i < _playerRules.GameStarsQuantity; i++)
         {

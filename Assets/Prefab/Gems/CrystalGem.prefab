@@ -99,7 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154f9b8d86d4f6443b8a36cab331bf91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IDReference: 0
   levitationHeight: 0.1
-  rotationSpeed: {x: 0, y: 50, z: 0}
+  rotationSpeed: {x: 0, y: 0, z: 50}
   gemItemData: {fileID: 0}
   m_Renderer: {fileID: 0}

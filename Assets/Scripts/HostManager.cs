@@ -162,6 +162,17 @@ public class HostManager : MonoBehaviour
                 else _gm.PlayersPhotonId.Add(-1);
             }
 
+
+            for (int i = 0; i < _gm.PlayersArray.Length; i++)
+            {
+                if (_gm.PlayersArray[i] != null)
+                {
+                    _gm.PlayerNumericIcons[i].SetActive(true);
+                    _gm.PlayerNumericIcons[i].transform.SetParent(_gm.PlayersArray[i].transform);
+                    _gm.PlayerNumericIcons[i].transform.localPosition = _gm.NumericIconsOffset;
+                }
+            }
+
             //Sincronizamos los turnos elegidos
             _gm.GmView.RPC("FirstSyncGameData", RpcTarget.Others, _gm.PlayersPhotonId[0], _gm.PlayersPhotonId[1], _gm.PlayersPhotonId[2], _gm.PlayersPhotonId[3]);
             _gm.GeneratePlayerIndex();
@@ -280,15 +291,16 @@ public class HostManager : MonoBehaviour
         }
 
         //AJUSTARLO LUEGO PARA GANAR LA PARTIDA EN CASO QUEDE UNO SOLO
-        if (activePlayersCount > 0)
+        if (activePlayersCount > 1)
         {
             _gm.GmView.RPC("NewRound", RpcTarget.All);
             _momentManager.MomentList.Add(new Moment(NewTurn));
 
-            //_gm.RoundInfoPanel.SetActive(true);
-            //_gm.RoundInfoPanel.Star
         }
-        else Debug.LogError("No hay jugadores disponibles");
+        else { 
+            Debug.LogError("No hay jugadores disponibles");
+            _gm.GmView.RPC("WinGame", RpcTarget.All);
+        }
     }
 
 

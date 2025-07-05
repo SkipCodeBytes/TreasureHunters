@@ -8,8 +8,8 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
     [SerializeField] private PlayerManager target_1;
     [SerializeField] private PlayerManager target_2;
 
-    [SerializeField] private Transform battleCamera_1;
-    [SerializeField] private Transform battleCamera_2;
+    public Transform battleCamera_1;
+    public Transform battleCamera_2;
 
     [SerializeField] private GameObject cardButtons;
     [SerializeField] private GameObject useCardButton;
@@ -53,6 +53,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
     {
         resultPanel.SetActive(false);
 
+        battleCamera_1.gameObject.SetActive(true);
         battleCamera_1.position = target_1.transform.position;
         battleCamera_1.rotation = target_1.transform.rotation;
         /*
@@ -67,6 +68,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         actionTxt_1.text = "ATK";
         resultPanel_1.SetActive(false);
 
+        battleCamera_2.gameObject.SetActive(true);
         battleCamera_2.position = target_2.transform.position;
         battleCamera_2.rotation = target_2.transform.rotation;
         /*

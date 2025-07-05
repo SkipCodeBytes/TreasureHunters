@@ -126,16 +126,28 @@ public abstract class TileBehavior : MonoBehaviour
 
 
 
-
+    /*
     public Vector3 GetInteractionPosition()
     {
         return transform.position + _interactionPositionOffset;
+    }*/
+
+    public Vector3 GetInteractionPosition()
+    {
+        return transform.position + transform.rotation * _interactionPositionOffset;
     }
 
+    /*
     public Vector3 GetIteractionViewPoint()
     {
         Vector3 nuevaPos = transform.position + _interactionPositionOffset + Quaternion.Euler(0, _interactionViewRotation, 0) * Vector3.forward;
         return nuevaPos;
+    }*/
+    public Vector3 GetIteractionViewPoint()
+    {
+        Vector3 offsetWorld = transform.rotation * _interactionPositionOffset;
+        Quaternion totalRotation = transform.rotation * Quaternion.Euler(0, _interactionViewRotation, 0);
+        return transform.position + offsetWorld + totalRotation * Vector3.forward;
     }
 
 
@@ -246,8 +258,14 @@ public abstract class TileBehavior : MonoBehaviour
 #if UNITY_EDITOR
     protected virtual void OnDrawGizmosSelected()
     {
+        /*
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position + _interactionPositionOffset, 0.2f);
+        Gizmos.DrawWireSphere(transform.position + _interactionPositionOffset, 0.2f);*/
+        Vector3 offsetWorld = transform.rotation * _interactionPositionOffset;
+        Vector3 worldPosition = transform.position + offsetWorld;
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(worldPosition, 0.2f);
 
         Gizmos.color = Color.green;
         for (int i = 0; i < _restPoints.Count; i++)
@@ -255,10 +273,16 @@ public abstract class TileBehavior : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position + _restPoints[i], 0.2f);
         }
 
+        /*
         float radians = _interactionViewRotation * Mathf.Deg2Rad;
         Vector3 direction = new Vector3(Mathf.Sin(radians), 0, Mathf.Cos(radians));
         Handles.color = Color.red;
-        Handles.ArrowHandleCap(0, transform.position + _interactionPositionOffset, Quaternion.LookRotation(direction), 0.5f, EventType.Repaint);
+        Handles.ArrowHandleCap(0, transform.position + _interactionPositionOffset, Quaternion.LookRotation(direction), 0.5f, EventType.Repaint);*/
+        Quaternion totalRotation = transform.rotation * Quaternion.Euler(0, _interactionViewRotation, 0);
+        Vector3 direction = totalRotation * Vector3.forward;
+
+        Handles.color = Color.red;
+        Handles.ArrowHandleCap(0, worldPosition, Quaternion.LookRotation(direction), 0.5f, EventType.Repaint);
     }
 #endif
 }

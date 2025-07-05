@@ -107,6 +107,18 @@ public class CinematicAnimation : MonoBehaviour
         yield return InternalMove(affectedTransform, target, duration, callback);
     }
 
+    public static IEnumerator MoveTowardDinamicTargetAt(Transform affectedTransform, Transform dinamicTarget, Vector3 offset, float speed, Action callback = null)
+    {
+        return LerpUtils.LerpVector3(
+            value => affectedTransform.position = value,
+            () => affectedTransform.position,
+            () => dinamicTarget.position + offset,
+            speed,
+            callback
+        );
+    }
+
+
     public static IEnumerator MoveTowardDinamicTargetFor(Transform affectedTransform, Transform dinamicTarget, Vector3 offset, float duration, Action callback = null)
     {
         Vector3 origin = affectedTransform.position;

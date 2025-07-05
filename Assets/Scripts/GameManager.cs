@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private BoardCameraController cameraController;
     [SerializeField] private GlobalLightScript globalLight;
 
-
+    public List<GameObject> PlayerNumericIcons;
+    public Vector3 NumericIconsOffset;
 
     [Header("Game Config")]
     [SerializeField] private Vector3 playerSpawnPoint;

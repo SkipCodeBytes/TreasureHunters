@@ -121,5 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 605d83b49176beb498536665795bbe25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IDReference: 0
   levitationHeight: 0.15
   rotationSpeed: {x: 0, y: 50, z: 0}

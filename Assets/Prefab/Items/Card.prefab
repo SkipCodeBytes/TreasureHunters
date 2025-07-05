@@ -28,13 +28,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6208315405265727749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.018, y: 1, z: 0.0276}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &7685235794547199924
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -122,13 +122,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e0ff5381e78d74f8ed87e68b3f74e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IDReference: 0
   levitationHeight: 0.2
-  rotationSpeed: {x: 0, y: 50, z: 0}
+  rotationSpeed: {x: 0, y: 0, z: 50}
   inBoardScale: {x: 0.1125, y: 1, z: 0.1725}
   inBoardRotationSpeed: {x: 0, y: 50, z: 0}
   inBoardLevitationHeight: 0.05
   inPickableScale: {x: 0.018, y: 1, z: 0.0276}
-  inPickableRotationSpeed: {x: 0, y: 50, z: 0}
+  inPickableRotationSpeed: {x: 0, y: 0, z: 50}
   inPickableLevitationHeight: 0.2
   inUseScale: {x: 0.0225, y: 1, z: 0.0345}
   inUseRotationSpeed: {x: 0, y: 50, z: 0}

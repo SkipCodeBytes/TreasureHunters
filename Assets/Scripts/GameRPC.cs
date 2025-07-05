@@ -76,6 +76,17 @@ public class GameRPC : MonoBehaviourPunCallbacks
             }
         }
         _gm.PlayersArray = array;
+
+        for (int i = 0; i < _gm.PlayersArray.Length; i++) 
+        {
+            if (_gm.PlayersArray[i] != null)
+            {
+                _gm.PlayerNumericIcons[i].SetActive(true);
+                _gm.PlayerNumericIcons[i].transform.SetParent(_gm.PlayersArray[i].transform);
+                _gm.PlayerNumericIcons[i].transform.localPosition = _gm.NumericIconsOffset;
+            }
+        }
+
         _gm.GeneratePlayerIndex();
     }
 
@@ -470,6 +481,10 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
         _gm.PlayersArray[_gm.CurrentPlayerTurnIndex].BoardPlayer.CurrentTilePosition.TileBehavior.HideProps();
         _gm.GuiManager.BattlePanelGui.gameObject.SetActive(false);
+
+        _gm.GuiManager.BattlePanelGui.battleCamera_1.gameObject.SetActive(false);
+        _gm.GuiManager.BattlePanelGui.battleCamera_2.gameObject.SetActive(false);
+
         _gm.PlayersArray[_gm.SecondaryPlayerTurn].IsPlayerSubTurn = false;
         EventManager.TriggerEvent("EndEvent");
 

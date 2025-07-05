@@ -1866,9 +1866,9 @@ MonoBehaviour:
   mapImage: {fileID: 1760249740}
   selectedMapIndex: 0
   playableMapList:
-  - mapName: Prueba
+  - mapName: "Circuito Cl\xE1sico"
     sceneName: Board
-    mapImage: {fileID: 21300000, guid: 9e996209ace4ee34382b8427a9e75c6b, type: 3}
+    mapImage: {fileID: 21300000, guid: e9eea4a80bfc8894a8efe30152acbd92, type: 3}
   nextButton: {fileID: 981594612}
   prevButton: {fileID: 1280280455}
 --- !u!1001 &132098589
@@ -18523,8 +18523,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -35.333332}
-  m_SizeDelta: {x: 175, y: 70.666664}
+  m_AnchoredPosition: {x: 87.5, y: -35.333336}
+  m_SizeDelta: {x: 175, y: 70.66667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1453207324
 MonoBehaviour:
@@ -20198,8 +20198,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -164.66667}
-  m_SizeDelta: {x: 175, y: 70.666664}
+  m_AnchoredPosition: {x: 87.5, y: -164.66669}
+  m_SizeDelta: {x: 175, y: 70.66667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1619066351
 MonoBehaviour:
@@ -22666,7 +22666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 175, y: -35.83333}
+  m_AnchoredPosition: {x: 175, y: -35.833332}
   m_SizeDelta: {x: 350, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1765674905
