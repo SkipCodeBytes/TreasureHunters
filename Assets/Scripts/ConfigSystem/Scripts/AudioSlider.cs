@@ -23,7 +23,7 @@ public class AudioSlider : MonoBehaviour
 
     private void OnEnable()
     {
-        getCurrentVolume();
+        GetCurrentVolume();
     }
 
     void Start()
@@ -63,7 +63,7 @@ public class AudioSlider : MonoBehaviour
     }
 
 
-    private void getCurrentVolume()
+    public void GetCurrentVolume()
     {
         generalVolumeSlider.value = ConfigManager.Instance.MyGameConfig.GeneralVolume;
         musicVolumeSlider.value = ConfigManager.Instance.MyGameConfig.MusicVolume;

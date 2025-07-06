@@ -204,7 +204,7 @@ public abstract class TileBehavior : MonoBehaviour
                 if (targetPlayer.Inventory.availableToReceiveRelic)
                 {
                     targetPlayer.Inventory.availableToReceiveRelic = false;
-                    rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 0.8f);
+                    rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 2.5f);
                     continue;
                 }
                 else
@@ -213,7 +213,7 @@ public abstract class TileBehavior : MonoBehaviour
                     continue;
                 }
             }
-            rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 0.8f);
+            rewardItems[i].TakeObjectAnimation(targetPlayer.transform, 2.5f);
         }
 
         rewardItems = noTakeObj;

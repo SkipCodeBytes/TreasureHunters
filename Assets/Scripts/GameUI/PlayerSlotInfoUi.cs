@@ -16,6 +16,7 @@ public class PlayerSlotInfoUi : MonoBehaviour
     [SerializeField] private Text GemInfoText;
     [SerializeField] private GameObject ItemContent;
 
+    [SerializeField] private Sprite genericCardIcon;
     [SerializeField] private int itemSlotPoolSize = 5;
     [SerializeField] private GameObject itemSlotPrefab;
     [SerializeField] private List<GameObject> slotPoolObj;
@@ -64,7 +65,9 @@ public class PlayerSlotInfoUi : MonoBehaviour
         for (int i = 0; i < _playerInventory.CardItems.Count; i++)
         {
             if(slotPoolObj.Count < i + 1) CreateSlot();
-            slotPoolImg[i].sprite = _playerInventory.CardItems[i].Icon;
+
+            if (playerIndexReference == GameManager.Instance.PlayerIndex) slotPoolImg[i].sprite = _playerInventory.CardItems[i].Icon;
+            else slotPoolImg[i].sprite = genericCardIcon;
             slotPoolObj[i].SetActive(true);
         }
 

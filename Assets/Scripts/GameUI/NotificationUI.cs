@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,6 +30,7 @@ public class NotificationUI : MonoBehaviour
 
     public void SetMessage(string msj, Color color)
     {
+        SoundController.Instance.PlaySound(GameManager.Instance.SoundLibrary.GetClip("Blip"));
         messageInfo.text = msj;
         messageInfo.color = color;
         timer = Time.time + duration;

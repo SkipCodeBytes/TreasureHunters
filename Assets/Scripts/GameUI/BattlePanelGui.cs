@@ -56,10 +56,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         battleCamera_1.gameObject.SetActive(true);
         battleCamera_1.position = target_1.transform.position;
         battleCamera_1.rotation = target_1.transform.rotation;
-        /*
-        atkTxt_1.text = target_1.SelectedCharacter.attackStat.ToString();
-        defTxt_1.text = target_1.SelectedCharacter.defenseStat.ToString();
-        evaTxt_1.text = target_1.SelectedCharacter.evadeStat.ToString();*/
+
         atkTxt_1.text = _gm.GameRules.GetAttackValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
         defTxt_1.text = _gm.GameRules.GetDefenseValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
         evaTxt_1.text = _gm.GameRules.GetEvasionValuePlayer(_gm.CurrentPlayerTurnIndex).ToString();
@@ -71,10 +68,6 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         battleCamera_2.gameObject.SetActive(true);
         battleCamera_2.position = target_2.transform.position;
         battleCamera_2.rotation = target_2.transform.rotation;
-        /*
-        atkTxt_2.text = target_2.SelectedCharacter.attackStat.ToString();
-        defTxt_2.text = target_2.SelectedCharacter.defenseStat.ToString();
-        evaTxt_2.text = target_2.SelectedCharacter.evadeStat.ToString();*/
 
         atkTxt_2.text = _gm.GameRules.GetAttackValuePlayer(_gm.SecondaryPlayerTurn).ToString();
         defTxt_2.text = _gm.GameRules.GetDefenseValuePlayer(_gm.SecondaryPlayerTurn).ToString();
@@ -109,10 +102,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
 
     public void btnUseCard()
     {
-        //Añade evento de carta y aumenta stats
-        //Debug.LogError("No implementado");
-        //btnSkipCard();
-
+        waitInfo.SetActive(true);
         useCardButton.SetActive(false);
         cardButtons.SetActive(false);
         _gm.GuiManager.CardPanelUI.gameObject.SetActive(true);
@@ -122,6 +112,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
     public void btnSkipCard()
     {
         EventManager.TriggerEvent("EndEvent");
+        waitInfo.SetActive(true);
         cardButtons.SetActive(false);
     }
 
@@ -151,6 +142,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         {
             if (target_1 == _gm.PlayersArray[_gm.PlayerIndex])
             {
+                waitInfo.SetActive(false);
                 StartCoroutine(CinematicAnimation.WaitTime(0.5f, () => defenderButtons.SetActive(true)));
             }
             else
@@ -162,6 +154,7 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
         {
             if (target_2 == _gm.PlayersArray[_gm.PlayerIndex])
             {
+                waitInfo.SetActive(false);
                 StartCoroutine(CinematicAnimation.WaitTime(0.5f, () => defenderButtons.SetActive(true)));
             }
             else
@@ -258,6 +251,8 @@ public class BattlePanelGui : MonoBehaviourPunCallbacks
 
         vitTxt_1.text = target_1.Rules.Life + " / " + target_1.SelectedCharacter.lifeStat;
         vitTxt_2.text = target_2.Rules.Life + " / " + target_2.SelectedCharacter.lifeStat;
+
+        waitInfo.SetActive(true);
     }
 
 }

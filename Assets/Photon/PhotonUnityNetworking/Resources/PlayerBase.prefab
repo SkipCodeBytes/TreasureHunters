@@ -288,11 +288,9 @@ MonoBehaviour:
   itemTimeDrop: 0.8
   itemDropMaxRadio: 1.15
   itemDropHeight: 1
-  coinsQuantity: 10
+  coinsQuantity: 5
   gemItems: []
-  cardItems:
-  - {fileID: 11400000, guid: f95ba2982937e4b41b7d88c0ea4e2455, type: 2}
-  - {fileID: 11400000, guid: fc290e8e8df872c42bcd27b174f987de, type: 2}
+  cardItems: []
   relicItemData: {fileID: 0}
   relicVisual: {fileID: 8934098617157329063}
   availableToReceiveRelic: 0

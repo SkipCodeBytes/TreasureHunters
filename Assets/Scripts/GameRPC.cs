@@ -525,11 +525,15 @@ public class GameRPC : MonoBehaviourPunCallbacks
 
     //RuinPanelUI.btnSubmit() //All
     [PunRPC]
-    public void SyncroSubmitRuins(int playerId)
+    public void SyncroSubmitRuins(int playerId,int gem0, int gem1, int gem2, int gem3)
     {
         List<int> dropsId = new List<int>();
         dropsId.Add(0);
-        dropsId.AddRange(RuinsTile.GemsNeededID);
+        dropsId.Add(gem0);
+        dropsId.Add(gem1);
+        dropsId.Add(gem2);
+        dropsId.Add(gem3);
+
         ItemObject[] objects = _gm.PlayersArray[playerId].Inventory.DropObjects(dropsId.ToArray());
         RuinsTile ruinTile = _gm.PlayersArray[playerId].BoardPlayer.CurrentTilePosition.TileBehavior as RuinsTile;
         //ruinTile.RuinPedestal.PlayRuinEvent(playerId, objects);

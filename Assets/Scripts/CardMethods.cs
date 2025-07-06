@@ -51,7 +51,7 @@ public static class CardMethods
         if (CasterPlayerIndex == _gm.PlayerIndex)
         {
             _gm.GmView.RPC("AddPlayerEffect", Photon.Pun.RpcTarget.All, CasterPlayerIndex, EffectManager.Instance.GetEffectId("SkipTurn"));
-            _gm.MomentManager.IsWaitingForEvent = false;
+            _gm.StartCoroutine(CinematicAnimation.WaitTime(0.5f, () => EventManager.TriggerEvent("EndEvent")));
         }
     }
 

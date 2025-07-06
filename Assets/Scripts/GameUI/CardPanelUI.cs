@@ -13,6 +13,8 @@ public class CardPanelUI : MonoBehaviour
     [SerializeField] private RectTransform cardContent;
     [SerializeField] private GameObject guiCardPrefab;
 
+    [SerializeField] private GameObject infoTextEmpty;
+
     public Action closeCallback;
 
     public void InitCardPanel(Action afterCloseCallback = null)
@@ -25,10 +27,20 @@ public class CardPanelUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        for (int i = 0; i < _gm.PlayersArray[_gm.PlayerIndex].Inventory.CardItems.Count; i++)
+        if(_gm.PlayersArray[_gm.PlayerIndex].Inventory.CardItems.Count == 0)
         {
-            GameObject card = Instantiate(guiCardPrefab, cardContent);
-            card.GetComponent<GUICard>().SetData(_gm.PlayersArray[_gm.PlayerIndex].Inventory.CardItems[i]);
+            infoTextEmpty.SetActive(true);
+        }
+        else
+        {
+
+            infoTextEmpty.SetActive(false);
+
+            for (int i = 0; i < _gm.PlayersArray[_gm.PlayerIndex].Inventory.CardItems.Count; i++)
+            {
+                GameObject card = Instantiate(guiCardPrefab, cardContent);
+                card.GetComponent<GUICard>().SetData(_gm.PlayersArray[_gm.PlayerIndex].Inventory.CardItems[i]);
+            }
         }
     }
 
