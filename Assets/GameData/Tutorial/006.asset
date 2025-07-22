@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b46c944f0708242a9d3cfc18e1bb2a, type: 3}
+  m_Name: 006
+  m_EditorClassIdentifier: 
+  titulo: "\xBFC\xF3mo se combate?"
+  descripcion: "Si caes en casilla de batalla, enfrentas a un jugador aleatorio.\n\n(1)
+    > El atacante lanza el dado primero\n(2) > El defensor elige defender o evadir\n(-)
+    > Luego los roles se invierten\n(3) > El da\xF1o m\xEDnimo recibido es 1 si defiendes\n(4)
+    > Puedes recibir o anular todo el da\xF1o si evades\n\nPuedes usar una carta
+    de batalla al inicio del combate."
+  imagen: {fileID: 21300000, guid: 61fa945a5edb87546be30ce9cc08f755, type: 3}

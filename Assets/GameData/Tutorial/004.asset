@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b46c944f0708242a9d3cfc18e1bb2a, type: 3}
+  m_Name: 004
+  m_EditorClassIdentifier: 
+  titulo: Tu turno
+  descripcion: "(1) Cuando sea tu turno, puedes:\n\n> Usar una carta (lo veremos
+    luego)\n> Lanzar los dados para moverte\n\n(2) Tu personaje se mover\xE1 autom\xE1ticamente.
+    Si hay una intersecci\xF3n, elige por d\xF3nde continuar.\n\nAl llegar, se activa
+    el efecto de la casilla."
+  imagen: {fileID: 21300000, guid: bbd15f4e19e24a640938087cebd02a6b, type: 3}

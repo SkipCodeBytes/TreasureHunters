@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b46c944f0708242a9d3cfc18e1bb2a, type: 3}
+  m_Name: 005
+  m_EditorClassIdentifier: 
+  titulo: Tipos de casillas
+  descripcion: "Cada casilla tiene un efecto \xFAnico:\n\n(1) > Hogar: Cura 1 vida.
+    Si llevas una reliquia, obtienes estrella\n(2) > Transmutaci\xF3n: Te da una
+    gema aleatoria\n(3) > Carta: Ganas una carta (evento, trampa o batalla)\n(4)
+    > Cofre: Lanza 2 dados y recibe objetos, monedas o reliquia\n(5) > Tienda: Compra
+    1 objeto entre 3 aleatorios\n(6) > Atajo: Te teletransporta a otra casilla de
+    atajo\n(7) > Batalla: Enfrentas a un jugador aleatorio\n(8) > Santuario: Revela
+    las gemas necesarias para obtener estrella"
+  imagen: {fileID: 21300000, guid: 2648d0082927e814a8ede3dbc610c397, type: 3}

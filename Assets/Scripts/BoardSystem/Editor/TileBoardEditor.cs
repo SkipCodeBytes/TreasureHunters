@@ -63,7 +63,7 @@ public class TileBoardEditor : Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
+            return;
         }
         if (GUILayout.Button("►", GUILayout.Width(60), GUILayout.Height(40))) { createTile(_currentTile.Order + new Vector2Int(1, 0)); }
         GUILayout.FlexibleSpace();
