@@ -2014,6 +2014,9 @@ MonoBehaviour:
   - mapName: "Circuito Cl\xE1sico"
     sceneName: Board
     mapImage: {fileID: 21300000, guid: e9eea4a80bfc8894a8efe30152acbd92, type: 3}
+  - mapName: "Islas \xC1rticas"
+    sceneName: Island
+    mapImage: {fileID: 21300000, guid: c9c51be99f5b17346b4abb785e660134, type: 3}
   nextButton: {fileID: 981594612}
   prevButton: {fileID: 1280280455}
 --- !u!1001 &132098589
@@ -5364,8 +5367,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.8207547, g: 0.74285287, b: 0.53039336, a: 1}
+  m_Intensity: 0.38
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -5427,13 +5430,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 414057314}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.6824178, y: -0.18317193, z: -0.18285327, w: 0.6836071}
+  m_LocalRotation: {x: -0.7353056, y: -0.19731663, z: -0.16749212, w: 0.62636906}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -89.899, y: 0, z: -29.95}
+  m_LocalEulerAnglesHint: {x: -99.162, y: 0.31300354, z: -30.309021}
 --- !u!114 &414057317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25672,8 +25675,8 @@ Camera:
   m_GameObject: {fileID: 1875047422}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
