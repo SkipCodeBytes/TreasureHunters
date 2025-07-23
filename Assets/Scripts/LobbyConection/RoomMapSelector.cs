@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,12 +15,14 @@ public class RoomMapSelector : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
 
+    [SerializeField] private PhotonView view;
+
     public int SelectedMapIndex { get => selectedMapIndex; set => selectedMapIndex = value; }
     public List<PlayableMapArea> PlayableMapList { get => playableMapList; set => playableMapList = value; }
 
     void Start()
     {
-        refreshMapInfo();
+        RefreshMapInfo();
     }
 
     public void DisableButtons()
@@ -41,7 +44,8 @@ public class RoomMapSelector : MonoBehaviour
         {
             selectedMapIndex = 0;
         }
-        refreshMapInfo();
+        RefreshMapInfo();
+        view.RPC("SyncroSelectedMap", RpcTarget.OthersBuffered, selectedMapIndex);
     }
 
     public void prevMapSelection()
@@ -51,12 +55,14 @@ public class RoomMapSelector : MonoBehaviour
         {
             selectedMapIndex = playableMapList.Count - 1;
         }
-        refreshMapInfo();
+        RefreshMapInfo();
+        view.RPC("SyncroSelectedMap", RpcTarget.OthersBuffered, selectedMapIndex);
     }
 
-    private void refreshMapInfo()
+    public void RefreshMapInfo()
     {
         txtMapName.text = playableMapList[selectedMapIndex].MapName;
         mapImage.sprite = playableMapList[selectedMapIndex].MapImage;
     }
+
 }

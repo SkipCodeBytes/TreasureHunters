@@ -2016,9 +2016,10 @@ MonoBehaviour:
     mapImage: {fileID: 21300000, guid: e9eea4a80bfc8894a8efe30152acbd92, type: 3}
   - mapName: "Islas \xC1rticas"
     sceneName: Island
-    mapImage: {fileID: 21300000, guid: c9c51be99f5b17346b4abb785e660134, type: 3}
+    mapImage: {fileID: 21300000, guid: 7c1709d0fbc58b04eb93681d168b950e, type: 3}
   nextButton: {fileID: 981594612}
   prevButton: {fileID: 1280280455}
+  view: {fileID: 1730651796}
 --- !u!1001 &132098589
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24307,7 +24308,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 175, y: -35.83333}
+  m_AnchoredPosition: {x: 175, y: -35.833332}
   m_SizeDelta: {x: 350, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1765674905

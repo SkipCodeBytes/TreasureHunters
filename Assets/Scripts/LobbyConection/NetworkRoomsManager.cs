@@ -365,4 +365,12 @@ public class NetworkRoomsManager : MonoBehaviourPunCallbacks
         Debug.Log("JUEGO EN: " + gameSceneName);
         PhotonNetwork.LoadLevel(gameSceneName);
     }
+
+
+    [PunRPC]
+    public void SyncroSelectedMap(int mapIndex)
+    {
+        mapSelector.SelectedMapIndex = mapIndex;
+        mapSelector.RefreshMapInfo();
+    }
 }
